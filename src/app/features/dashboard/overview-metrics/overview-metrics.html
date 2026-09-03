@@ -1,1 +1,92 @@
-<p>overview-metrics works!</p>
+<section class="overview-page">
+	<header class="overview-header">
+		<div>
+			<p class="eyebrow">Your learning overview</p>
+			<h1>Good morning, scholar.</h1>
+			<p class="overview-intro">Here is a clear view of your progress and what to focus on next.</p>
+		</div>
+		<span class="date-chip">This week <strong>Sep 1 - 7</strong></span>
+	</header>
+
+	<section class="focus-banner">
+		<div class="focus-banner-copy">
+			<span class="focus-banner-label">Today's focus</span>
+			<h2>Finish strong with one meaningful session.</h2>
+			<p>You are 75% through your weekly goal. A 45-minute study session keeps your streak alive.</p>
+			<a routerLink="/quizzes" class="focus-action">Continue learning <span aria-hidden="true">-></span></a>
+		</div>
+		<div class="rhythm-chart" aria-label="Weekly study rhythm">
+			<div class="chart-heading"><span>Study rhythm</span><strong>4.5h</strong></div>
+			<div class="chart-bars"><span style="height: 42%"></span><span style="height: 64%"></span><span style="height: 34%"></span><span style="height: 78%"></span><span style="height: 55%"></span><span class="current" style="height: 86%"></span><span style="height: 18%"></span></div>
+			<div class="chart-days"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+		</div>
+	</section>
+
+	<section class="metrics-grid" aria-label="Learning metrics">
+		<article class="metric-card accent-blue">
+			<span class="metric-label">Learning streak</span>
+			<strong class="metric-value">7 <small>days</small></strong>
+			<span class="metric-change positive">+2 from last week</span>
+		</article>
+		<article class="metric-card accent-green">
+			<span class="metric-label">Completed lessons</span>
+			<strong class="metric-value">24 <small>lessons</small></strong>
+			<span class="metric-change positive">+6 this week</span>
+		</article>
+		<article class="metric-card accent-amber">
+			<span class="metric-label">Assessment score</span>
+			<strong class="metric-value">86<small>%</small></strong>
+			<span class="metric-change">Personal best</span>
+		</article>
+		<article class="metric-card accent-slate">
+			<span class="metric-label">Study time</span>
+			<strong class="metric-value">4.5 <small>hrs</small></strong>
+			<span class="metric-change">of 6 hr weekly goal</span>
+		</article>
+	</section>
+
+	<section class="dashboard-grid">
+		<article class="panel progress-panel">
+			<div class="panel-heading"><div><p class="eyebrow">Weekly target</p><h2>Keep your momentum</h2></div><strong>75%</strong></div>
+			<div class="progress-track"><span></span></div>
+			<div class="progress-meta"><span>4.5 hours completed</span><span>6 hours goal</span></div>
+			<div class="focus-row"><span class="focus-icon">↗</span><div><strong>Recommended next</strong><p>Complete the data structures assessment</p></div><a routerLink="/quizzes">Open</a></div>
+		</article>
+
+		<article class="panel activity-panel">
+			<div class="panel-heading"><div><p class="eyebrow">Recent activity</p><h2>Small steps, visible progress</h2></div></div>
+			<ul class="activity-list">
+				<li><span class="activity-dot done"></span><div><strong>Algorithms fundamentals</strong><small>Lesson completed</small></div><time>Today</time></li>
+				<li><span class="activity-dot score"></span><div><strong>JavaScript assessment</strong><small>Scored 86%</small></div><time>Yesterday</time></li>
+				<li><span class="activity-dot start"></span><div><strong>Data structures</strong><small>Ready to continue</small></div><time>Mon</time></li>
+			</ul>
+		</article>
+	</section>
+
+	<section class="path-section">
+		<div class="section-heading"><div><p class="eyebrow">Continue your path</p><h2>Pick up where you left off</h2></div><a routerLink="/quizzes">View all <span aria-hidden="true">-></span></a></div>
+		<div class="path-grid">
+			<article class="path-card featured-path">
+				<div class="path-topline"><span class="path-type">Assessment</span><span class="path-status">In progress</span></div>
+				<h3>Data structures</h3>
+				<p>Build confidence with arrays, stacks, and queues.</p>
+				<div class="path-progress"><span style="width: 68%"></span></div>
+				<div class="path-footer"><span>68% complete</span><a routerLink="/quizzes">Continue <span aria-hidden="true">-></span></a></div>
+			</article>
+			<article class="path-card">
+				<div class="path-topline"><span class="path-type">Course</span><span class="path-status ready">Ready</span></div>
+				<h3>JavaScript essentials</h3>
+				<p>Strengthen the fundamentals behind modern web apps.</p>
+				<div class="path-progress"><span style="width: 42%"></span></div>
+				<div class="path-footer"><span>42% complete</span><a routerLink="/quizzes">Resume <span aria-hidden="true">-></span></a></div>
+			</article>
+			<article class="milestone-card">
+				<span class="milestone-icon">*</span>
+				<p class="eyebrow">Next milestone</p>
+				<h3>10 day streak</h3>
+				<p>Keep learning for 3 more days to unlock your next achievement.</p>
+				<div class="milestone-dots"><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span></span><span></span><span></span></div>
+			</article>
+		</div>
+	</section>
+</section>

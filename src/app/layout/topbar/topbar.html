@@ -23,5 +23,10 @@
         <span class="user-role">{{ auth.isAdmin() ? 'Administrator' : 'Student Candidate' }}</span>
       </div>
     </div>
+
+    <button class="btn btn-secondary btn-sm logout-btn" type="button" (click)="auth.logout()">
+      <span class="logout-icon" aria-hidden="true">↪</span>
+      <span>Logout</span>
+    </button>
   </div>
 </header>

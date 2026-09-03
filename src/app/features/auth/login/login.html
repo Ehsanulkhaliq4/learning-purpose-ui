@@ -26,6 +26,33 @@
 		</div>
 		<p class="form-intro">Enter your details to open your learning workspace.</p>
 
+		@if (isForgotMode()) {
+			<div class="reset-heading">
+				<h3>Reset your password</h3>
+				<p>Enter your account email and we will send a one-time password.</p>
+			</div>
+
+			@if (errorMessage()) {
+				<div class="alert-banner" role="alert">{{ errorMessage() }}</div>
+			}
+			@if (forgotMessage()) {
+				<div class="alert-banner success" role="status">{{ forgotMessage() }}</div>
+			}
+
+			<form [formGroup]="loginForm" (ngSubmit)="requestPasswordReset()" novalidate>
+				<div class="form-group">
+					<label for="reset-email">Email address</label>
+					<input id="reset-email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" class="form-control" [class.input-error]="isInvalid('email')" />
+					@if (isInvalid('email')) { <span class="field-error">Enter a valid email address</span> }
+				</div>
+				<button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
+					{{ isSubmitting() ? 'Sending OTP...' : 'Send reset OTP' }}
+					@if (!isSubmitting()) { <span aria-hidden="true">→</span> }
+				</button>
+			</form>
+
+			<button type="button" class="back-link" (click)="showLogin()">← Back to sign in</button>
+		} @else {
 		@if (errorMessage()) {
 			<div class="alert-banner" role="alert">{{ errorMessage() }}</div>
 		}
@@ -64,6 +91,8 @@
 				@if (isInvalid('password')) { <span class="field-error">Password must be at least 6 characters</span> }
 			</div>
 
+			<button type="button" class="forgot-link" (click)="showForgotPassword()">Forgot password?</button>
+
 			<button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
 				{{ isSubmitting() ? 'Signing in...' : 'Sign in to workspace' }}
 				@if (!isSubmitting()) { <span aria-hidden="true">→</span> }
@@ -71,5 +100,6 @@
 		</form>
 
 		<p class="register-prompt">New to LearningPurpose? <a routerLink="/auth/register">Create an account</a></p>
+		}
 	</div>
 </section>

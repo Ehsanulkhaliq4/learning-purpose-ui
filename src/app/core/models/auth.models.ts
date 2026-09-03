@@ -19,12 +19,18 @@ export interface RegisterApplicantRequest {
   lastName: string;
   username: string;
   email: string;
+  phone: string;
   password: string;
 }
 
-export interface RegisterApplicantResponse {
-  message?: string;
-  userId?: number;
-  username?: string;
-  email?: string;
+export type RegisterApplicantResponse = AuthResponse;
+
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  otp: number;
+  newPassword: string;
 }

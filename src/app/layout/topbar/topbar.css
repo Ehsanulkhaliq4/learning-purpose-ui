@@ -93,3 +93,53 @@
   font-size: 0.65rem;
   color: var(--text-muted);
 }
+
+.logout-btn {
+  color: var(--status-danger);
+  border-color: #fecaca;
+  background-color: #fff;
+}
+
+.logout-btn:hover {
+  color: #b91c1c;
+  border-color: #fca5a5;
+  background-color: #fff7f7;
+}
+
+.logout-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .topbar-container {
+    padding: 0 1rem;
+  }
+
+  .topbar-search {
+    width: min(260px, 35vw);
+  }
+
+  .stat-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .topbar-search,
+  .user-details,
+  .logout-btn > span:last-child {
+    display: none;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .logout-btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+  }
+}

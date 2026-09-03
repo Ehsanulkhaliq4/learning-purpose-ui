@@ -117,6 +117,18 @@
 	font-size: 0.75rem;
 }
 
+.alert-banner.success {
+	border-color: #bbf7d0;
+	color: var(--status-success);
+	background: #f0fdf4;
+}
+
+.reset-heading h3 { font-size: 1rem; }
+.reset-heading p { margin-top: 0.35rem; color: var(--text-secondary); font-size: 0.75rem; }
+.forgot-link, .back-link { align-self: flex-end; border: 0; color: var(--sky-700); background: transparent; cursor: pointer; font: 600 0.68rem var(--font-sans); }
+.forgot-link:hover, .back-link:hover { text-decoration: underline; }
+.back-link { align-self: flex-start; margin-top: 1rem; }
+
 form { display: flex; flex-direction: column; gap: 1.2rem; }
 .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
 .form-group label, .label-row span { color: var(--text-secondary); font-size: 0.73rem; font-weight: 700; }

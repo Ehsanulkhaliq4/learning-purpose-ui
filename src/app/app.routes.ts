@@ -57,6 +57,13 @@ export const routes: Routes = [
             (m) => m.RegisterApplicant
           )
       },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./features/auth/reset-password/reset-password').then(
+            (m) => m.ResetPassword
+          )
+      },
       { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]
   },

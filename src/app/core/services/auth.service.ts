@@ -1,10 +1,10 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { AuthResponse, UserIdentity, RegisterApplicantRequest, RegisterApplicantResponse } from '../models/auth.models';
+import { AuthResponse, UserIdentity, RegisterApplicantRequest, RegisterApplicantResponse, ForgotPasswordResponse, ResetPasswordRequest } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -25,25 +25,54 @@ export class AuthService {
   readonly isAdmin = computed(() => this.userSignal()?.roles.includes('ROLE_ADMIN') ?? false);
 
   registerApplicant(payload: RegisterApplicantRequest): Observable<RegisterApplicantResponse> {
-    return this.http.post<RegisterApplicantResponse>(`${this.API_URL}/register`, payload);
+    return this.http.post<RegisterApplicantResponse>(`${this.API_URL}/register`, payload).pipe(
+      tap((res) => this.setAuthenticatedSession(res)),
+    );
+  }
+
+  requestPasswordResetOtp(email: string): Observable<ForgotPasswordResponse> {
+    const params = new HttpParams().set('email', email);
+    return this.http.post<ForgotPasswordResponse>(`${this.API_URL}/forgot-password`, null, { params });
+  }
+
+  resetPassword(payload: ResetPasswordRequest): Observable<ForgotPasswordResponse> {
+    return this.http.post<ForgotPasswordResponse>(`${this.API_URL}/reset-password`, payload);
+  }
+
+  startDemoSession(username: string): void {
+    const identity: UserIdentity = {
+      username,
+      email: `${username}@demo.learningpurpose.local`,
+      roles: ['ROLE_USER'],
+    };
+
+    if (this.isBrowser) {
+      localStorage.setItem('access_token', 'demo-user-token');
+      localStorage.setItem('auth_user', JSON.stringify(identity));
+    }
+
+    this.tokenSignal.set('demo-user-token');
+    this.userSignal.set(identity);
   }
 
   login(credentials: { username: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap((res) => {
-        const identity: UserIdentity = {
-          username: res.username,
-          email: res.email,
-          roles: res.roles,
-        };
-        if (this.isBrowser) {
-          localStorage.setItem('access_token', res.token);
-          localStorage.setItem('auth_user', JSON.stringify(identity));
-        }
-        this.tokenSignal.set(res.token);
-        this.userSignal.set(identity);
-      }),
+      tap((res) => this.setAuthenticatedSession(res)),
     );
+  }
+
+  private setAuthenticatedSession(res: AuthResponse): void {
+    const identity: UserIdentity = {
+      username: res.username,
+      email: res.email,
+      roles: res.roles,
+    };
+    if (this.isBrowser) {
+      localStorage.setItem('access_token', res.token);
+      localStorage.setItem('auth_user', JSON.stringify(identity));
+    }
+    this.tokenSignal.set(res.token);
+    this.userSignal.set(identity);
   }
 
   logout(): void {

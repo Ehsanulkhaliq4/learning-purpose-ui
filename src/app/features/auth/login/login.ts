@@ -17,13 +17,16 @@ export class Login {
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly forgotMessage = signal<string | null>(null);
+  readonly isForgotMode = signal(false);
 
   readonly loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    email: ['', [Validators.required, Validators.email]],
   });
 
-  isInvalid(controlName: 'username' | 'password'): boolean {
+  isInvalid(controlName: 'username' | 'password' | 'email'): boolean {
     const control = this.loginForm.get(controlName);
     return !!(control && control.invalid && (control.dirty || control.touched));
   }
@@ -32,16 +35,57 @@ export class Login {
     this.showPassword.update((visible) => !visible);
   }
 
+  showForgotPassword(): void {
+    this.isForgotMode.set(true);
+    this.errorMessage.set(null);
+    this.forgotMessage.set(null);
+  }
+
+  showLogin(): void {
+    this.isForgotMode.set(false);
+    this.errorMessage.set(null);
+    this.forgotMessage.set(null);
+  }
+
+  requestPasswordReset(): void {
+    const email = this.loginForm.controls.email.value;
+    if (this.loginForm.controls.email.invalid || this.isSubmitting()) {
+      this.loginForm.controls.email.markAsTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+    this.forgotMessage.set(null);
+    this.authService.requestPasswordResetOtp(email).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.router.navigate(['/auth/reset-password'], {
+          queryParams: { email },
+        });
+      },
+      error: (err) => {
+        this.isSubmitting.set(false);
+        this.errorMessage.set(err?.error?.message || 'Unable to send OTP. Check your email and try again.');
+      },
+    });
+  }
+
   onSubmit(): void {
-    if (this.loginForm.invalid || this.isSubmitting()) {
-      this.loginForm.markAllAsTouched();
+    const usernameControl = this.loginForm.controls.username;
+    const passwordControl = this.loginForm.controls.password;
+
+    if (usernameControl.invalid || passwordControl.invalid || this.isSubmitting()) {
+      usernameControl.markAsTouched();
+      passwordControl.markAsTouched();
       return;
     }
 
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
 
-    this.authService.login(this.loginForm.getRawValue()).subscribe({
+    const { username, password } = this.loginForm.getRawValue();
+    this.authService.login({ username, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         this.router.navigate(['/dashboard']);
@@ -49,9 +93,9 @@ export class Login {
       error: (err) => {
         this.isSubmitting.set(false);
         this.errorMessage.set(
-          err?.error?.message || 'Sign in failed. Check your details and try again.'
+          err?.error?.message || 'Sign in failed. Check your username and password.'
         );
-      }
+      },
     });
   }
 }

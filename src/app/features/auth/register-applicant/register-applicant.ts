@@ -45,9 +45,9 @@ export class RegisterApplicant {
     this.authService.registerApplicant(this.registerForm.getRawValue()).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.successMessage.set('Applicant account created successfully. Redirecting to login...');
+        this.successMessage.set('Account created successfully. Opening your dashboard...');
         setTimeout(() => {
-          this.router.navigate(['/auth/login']);
+          this.router.navigate(['/dashboard']);
         }, 1500);
       },
       error: (err) => {
