@@ -1,0 +1,11 @@
+<section class="detail-page">
+  <a routerLink="/blog" class="back-link">← Back to community feed</a>
+  @if (isLoading()) { <div class="detail-state">Loading post...</div> }
+  @else if (errorMessage()) { <div class="detail-state error">{{ errorMessage() }}</div> }
+  @else if (post(); as currentPost) {
+    <article class="detail-card">
+      @if (currentPost.imageUrl) { <img class="detail-image" [src]="currentPost.imageUrl" [alt]="currentPost.name" /> }
+      <div class="detail-content"><div class="detail-meta"><span>By {{ currentPost.postedBy }}</span><time>{{ currentPost.createdAt | date:'medium' }}</time></div><h1>{{ currentPost.name }}</h1><p class="detail-copy">{{ currentPost.content }}</p><div class="tag-row">@for (tag of currentPost.tags; track tag) { <span class="tag">#{{ tag }}</span> }</div><div class="detail-stats"><span>♡ {{ currentPost.likeCount }} likes</span><span>◌ {{ currentPost.commentCount }} comments</span><span>◉ {{ currentPost.viewCount }} views</span></div></div>
+    </article>
+  }
+</section>

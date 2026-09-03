@@ -27,8 +27,27 @@ export interface BlogPost {
   name: string;
   content: string;
   postedBy: string;
-  imageUrl: string;
-  createdAt: string;
+  imageUrl?: string;
   viewCount: number;
+  likeCount: number;
   tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  commentCount: number;
+}
+
+export interface PostRequest {
+  name: string;
+  content: string;
+  postedBy: string;
+  tags: string[];
+}
+
+export interface PostPage {
+  content: BlogPost[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  last: boolean;
 }

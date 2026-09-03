@@ -23,7 +23,8 @@ export const authInterceptor: HttpInterceptorFn = (
 
   return next(modifiedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      const isPostRead = req.method === 'GET' && req.url.includes('/api/v1/posts');
+      if (error.status === 401 && !isPostRead) {
         authService.logout();
       }
       return throwError(() => error);

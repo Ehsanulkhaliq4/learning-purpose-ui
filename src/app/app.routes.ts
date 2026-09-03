@@ -39,6 +39,21 @@ export const routes: Routes = [
             (m) => m.QuizTake
           )
       },
+      {
+        path: 'blog',
+        loadComponent: () =>
+          import('./features/blog/post-feed/post-feed').then((m) => m.PostFeed)
+      },
+      {
+        path: 'blog/new',
+        loadComponent: () =>
+          import('./features/blog/post-create/post-create').then((m) => m.PostCreate)
+      },
+      {
+        path: 'blog/:id',
+        loadComponent: () =>
+          import('./features/blog/post-detail/post-detail').then((m) => m.PostDetail)
+      },
     ]
   },
   {

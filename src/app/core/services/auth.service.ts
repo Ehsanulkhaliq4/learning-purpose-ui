@@ -57,7 +57,9 @@ export class AuthService {
 
   login(credentials: { username: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap((res) => this.setAuthenticatedSession(res)),
+      tap((res) => { 
+        console.log('Login successful:', res);
+        this.setAuthenticatedSession(res); }),
     );
   }
 
