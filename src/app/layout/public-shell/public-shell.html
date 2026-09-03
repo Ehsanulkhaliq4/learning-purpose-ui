@@ -1,0 +1,17 @@
+<div class="public-layout">
+  <header class="public-navbar">
+    <a routerLink="/" class="brand-link">
+      <span class="brand-monogram"><span class="spark-icon"></span></span>
+      <span class="brand-name">LearningPurpose</span>
+    </a>
+
+    <nav class="public-nav" aria-label="Account navigation">
+      <a routerLink="/auth/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Sign In</a>
+      <a routerLink="/auth/register" routerLinkActive="active" class="register-link">Register</a>
+    </nav>
+  </header>
+
+  <main class="public-content">
+    <router-outlet />
+  </main>
+</div>

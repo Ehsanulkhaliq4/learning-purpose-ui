@@ -1,0 +1,71 @@
+<div class="assessment-container">
+  @if (loading()) {
+    <div class="card loading-panel">
+      <span>Retrieving examination questions...</span>
+    </div>
+  } @else if (isSubmitted() && result()) {
+    <div class="card evaluation-card">
+      <div class="score-badge">Assessment Completed</div>
+      <h2>Examination Performance</h2>
+      <div class="metric-row">
+        <div class="metric-block">
+          <span class="label">Attempted</span>
+          <span class="value">{{ result()?.attempted }}</span>
+        </div>
+        <div class="metric-block">
+          <span class="label">Correct</span>
+          <span class="value success">{{ result()?.correctAnswers }}</span>
+        </div>
+        <div class="metric-block">
+          <span class="label">Marks Scored</span>
+          <span class="value">{{ result()?.marksScored }}</span>
+        </div>
+      </div>
+      <button class="btn btn-primary" routerLink="/quizzes">Return to Assessments</button>
+    </div>
+  } @else {
+    <div class="card question-card">
+      <div class="quiz-header">
+        <span class="question-tracker">Question {{ currentQuestionIndex() + 1 }} of {{ questions().length }}</span>
+        <button class="btn btn-secondary btn-sm" (click)="submitExam()">Submit Assessment</button>
+      </div>
+
+      @if (questions().length > 0) {
+        @let currQ = questions()[currentQuestionIndex()];
+        <div class="question-body">
+          <h3 class="question-title">{{ currQ.content }}</h3>
+
+          <div class="options-grid">
+            @for (opt of currQ.options; track opt.key) {
+              <div 
+                class="option-item" 
+                [class.selected]="selectedAnswers().get(currQ.quesId) === opt.key"
+                (click)="selectOption(currQ.quesId, opt.key)"
+              >
+                <div class="option-key">{{ opt.key }}</div>
+                <div class="option-text">{{ opt.value }}</div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="navigation-controls">
+          <button 
+            class="btn btn-secondary btn-sm" 
+            [disabled]="currentQuestionIndex() === 0"
+            (click)="currentQuestionIndex.update(i => i - 1)"
+          >
+            Previous
+          </button>
+          <button 
+            class="btn btn-primary btn-sm" 
+            [disabled]="currentQuestionIndex() === questions().length - 1"
+            (click)="currentQuestionIndex.update(i => i + 1)"
+          >
+            Next Question
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

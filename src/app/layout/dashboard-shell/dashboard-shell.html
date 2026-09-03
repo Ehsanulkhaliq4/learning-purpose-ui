@@ -1,0 +1,13 @@
+<div class="dashboard-layout">
+  <app-sidebar />
+  <div class="main-canvas">
+    <app-topbar (toggleAiDrawer)="toggleDrawer()" />
+    <main class="viewport-workspace">
+      <router-outlet />
+    </main>
+  </div>
+
+  @if (isAiDrawerOpen()) {
+    <app-copilot-drawer (closeDrawer)="toggleDrawer()" />
+  }
+</div>

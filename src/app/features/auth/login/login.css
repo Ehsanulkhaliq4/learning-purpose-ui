@@ -1,0 +1,157 @@
+.login-card {
+	width: min(920px, 100%);
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 0.88fr 1.12fr;
+	overflow: hidden;
+	background: var(--surface-white);
+	border: 1px solid var(--surface-border);
+	border-radius: var(--radius-lg);
+	box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+}
+
+.login-aside {
+	padding: 2.75rem;
+	color: #fff;
+	background: linear-gradient(145deg, #0f3550 0%, #075985 58%, #0e7490 100%);
+}
+
+.aside-kicker, .eyebrow {
+	color: var(--sky-400);
+	font-size: 0.68rem;
+	font-weight: 800;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+}
+
+.login-aside h1 {
+	margin-top: 1.6rem;
+	font-size: 2.05rem;
+	line-height: 1.12;
+	letter-spacing: -0.03em;
+}
+
+.aside-image {
+	position: relative;
+	margin-top: 2.25rem;
+}
+
+.aside-image img {
+	width: 100%;
+	height: 118px;
+	display: block;
+	object-fit: cover;
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	border-radius: 12px;
+	opacity: 0.86;
+}
+
+.image-badge {
+	position: absolute;
+	right: 0.65rem;
+	bottom: 0.65rem;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.4rem 0.55rem;
+	color: #fff;
+	background: rgba(15, 23, 42, 0.72);
+	border-radius: 99px;
+	font-size: 0.6rem;
+	font-weight: 700;
+	backdrop-filter: blur(8px);
+}
+
+.image-badge span {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #6ee7b7;
+}
+
+.login-aside > p {
+	margin-top: 1.25rem;
+	color: #c9e6f4;
+	font-size: 0.82rem;
+	line-height: 1.7;
+}
+
+.aside-note {
+	display: flex;
+	gap: 0.7rem;
+	align-items: center;
+	margin-top: 5rem;
+	padding-top: 1rem;
+	border-top: 1px solid rgba(186, 230, 253, 0.25);
+}
+
+.note-mark, .form-icon {
+	display: grid;
+	place-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	color: #075985;
+	background: #bae6fd;
+	font-weight: 800;
+}
+
+.aside-note span:last-child { display: flex; flex-direction: column; }
+.aside-note strong { font-size: 0.72rem; }
+.aside-note small { margin-top: 0.2rem; color: #c9e6f4; font-size: 0.65rem; }
+
+.login-form-panel { padding: 2.75rem 3rem; background: rgba(255, 255, 255, 0.98); }
+.form-heading { display: flex; align-items: center; gap: 0.85rem; }
+.form-icon { flex: 0 0 auto; color: #fff; background: var(--sky-600); }
+.form-heading .eyebrow { margin-bottom: 0.25rem; color: var(--sky-600); }
+.form-heading h2 { font-size: 1.45rem; line-height: 1.15; }
+.form-intro { margin: 0.85rem 0 1.8rem; color: var(--text-secondary); font-size: 0.8rem; }
+
+.alert-banner {
+	margin-bottom: 1.2rem;
+	padding: 0.7rem 0.85rem;
+	border: 1px solid #fecaca;
+	border-radius: var(--radius-md);
+	color: var(--status-danger);
+	background: #fff7f7;
+	font-size: 0.75rem;
+}
+
+form { display: flex; flex-direction: column; gap: 1.2rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label, .label-row span { color: var(--text-secondary); font-size: 0.73rem; font-weight: 700; }
+.label-row { display: flex; justify-content: space-between; align-items: center; }
+.label-row span { color: var(--text-muted); font-size: 0.65rem; font-weight: 500; }
+
+.form-control {
+	width: 100%;
+	padding: 0.72rem 0.85rem;
+	border: 1px solid var(--surface-border);
+	border-radius: var(--radius-md);
+	outline: none;
+	color: var(--text-main);
+	background: var(--surface-subtle);
+	font: 0.8rem var(--font-sans);
+	transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.form-control:focus { border-color: var(--sky-500); background: #fff; box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12); }
+.form-control.input-error { border-color: var(--status-danger); }
+.password-wrap { position: relative; }
+.password-wrap .form-control { padding-right: 4rem; }
+.password-toggle { position: absolute; top: 50%; right: 0.7rem; transform: translateY(-50%); border: 0; color: var(--sky-700); background: transparent; cursor: pointer; font: 600 0.68rem var(--font-sans); }
+.field-error { color: var(--status-danger); font-size: 0.68rem; }
+.submit-btn { width: 100%; margin-top: 0.4rem; padding: 0.75rem 1rem; }
+.submit-btn span { font-size: 1rem; }
+.register-prompt { margin-top: 1.5rem; text-align: center; color: var(--text-secondary); font-size: 0.75rem; }
+.register-prompt a { color: var(--sky-700); font-weight: 700; text-decoration: none; }
+.register-prompt a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) {
+	.login-card { grid-template-columns: 1fr; }
+	.login-aside { padding: 2rem; }
+	.aside-image { margin-top: 1.5rem; }
+	.login-aside h1 { margin-top: 1.25rem; font-size: 1.75rem; }
+	.aside-note { margin-top: 2rem; }
+	.login-form-panel { padding: 2rem 1.5rem; }
+}

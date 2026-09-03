@@ -1,0 +1,27 @@
+<header class="topbar-container">
+  <div class="topbar-search">
+    <input type="text" placeholder="Search assessments, library texts, classroom streams..." class="search-input" />
+  </div>
+
+  <div class="topbar-actions">
+    <button class="btn btn-secondary btn-sm ai-toggle-btn" (click)="toggleAiDrawer.emit()">
+      <span class="sparkle-symbol">✨</span>
+      <span>Gemini Copilot</span>
+    </button>
+
+    <div class="stat-pill">
+      <span class="stat-icon">⚡</span>
+      <span class="stat-value">98.4% Accuracy</span>
+    </div>
+
+    <div class="user-profile-menu">
+      <div class="avatar-ring">
+        <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
+        <span class="user-role">{{ auth.isAdmin() ? 'Administrator' : 'Student Candidate' }}</span>
+      </div>
+    </div>
+  </div>
+</header>

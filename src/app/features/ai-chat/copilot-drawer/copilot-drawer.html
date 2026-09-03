@@ -1,0 +1,41 @@
+<div class="drawer-backdrop" (click)="closeDrawer.emit()"></div>
+<aside class="copilot-drawer">
+  <div class="drawer-header">
+    <div class="header-title">
+      <div class="spark-badge">✨</div>
+      <div>
+        <h3>Gemini Academic Tutor</h3>
+        <p>Real-time token streaming assistant</p>
+      </div>
+    </div>
+    <button class="btn-close" (click)="closeDrawer.emit()">✕</button>
+  </div>
+
+  <div class="message-feed">
+    @for (msg of chatService.messages(); track $index) {
+      <div class="chat-bubble-row" [class.user]="msg.role === 'user'">
+        <div class="chat-bubble" [class.assistant]="msg.role === 'assistant'" [class.system]="msg.role === 'system'">
+          <div class="bubble-sender">{{ msg.role === 'user' ? 'You' : 'Gemini Tutor' }}</div>
+          <div class="bubble-content">{{ msg.content }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="drawer-footer">
+    <form (ngSubmit)="sendPrompt()" class="input-form">
+      <input 
+        type="text" 
+        [ngModel]="userInput()" 
+        (ngModelChange)="userInput.set($event)"
+        name="promptInput" 
+        placeholder="Ask a question about current assessments..." 
+        class="chat-input"
+        [disabled]="chatService.isStreaming()"
+      />
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!userInput().trim() || chatService.isStreaming()">
+        {{ chatService.isStreaming() ? 'Generating...' : 'Send' }}
+      </button>
+    </form>
+  </div>
+</aside>
