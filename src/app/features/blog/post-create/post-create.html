@@ -1,1 +1,45 @@
-<section class="create-page"><a routerLink="/blog" class="back-link">← Back to community feed</a><header class="page-header"><div><p class="eyebrow">Community feed</p><h1>Create a post</h1><p class="page-intro">Share an idea, lesson, or question with the learning community.</p></div></header><article class="composer-panel"><div class="panel-heading"><div><p class="eyebrow">New conversation</p><h2>What are you learning?</h2></div><span class="panel-mark">+</span></div>@if (errorMessage()) { <div class="alert-banner danger" role="alert">{{ errorMessage() }}</div> }<form [formGroup]="postForm" (ngSubmit)="onSubmit()" novalidate><div class="form-group"><label for="post-name">Title</label><input id="post-name" type="text" formControlName="name" placeholder="What did you discover today?" class="form-control" [class.input-error]="isInvalid('name')" />@if (isInvalid('name')) { <span class="field-error">A post title is required</span> }</div><div class="form-group"><label for="post-content">Your thought</label><textarea id="post-content" rows="8" formControlName="content" placeholder="Share the idea, insight, or question..." class="form-control" [class.input-error]="isInvalid('content')"></textarea>@if (isInvalid('content')) { <span class="field-error">Post content cannot be empty</span> }</div><div class="form-row"><div class="form-group"><label for="post-author">Posted by</label><input id="post-author" type="text" formControlName="postedBy" class="form-control" [class.input-error]="isInvalid('postedBy')" />@if (isInvalid('postedBy')) { <span class="field-error">Author is required</span> }</div><div class="form-group"><label for="post-tags">Tags <span>comma separated</span></label><input id="post-tags" type="text" formControlName="tags" placeholder="javascript, study" class="form-control" /></div></div><div class="image-picker"><label for="post-image" class="image-label"><span class="upload-icon">+</span><span><strong>{{ selectedImage()?.name || 'Add a cover image' }}</strong><small>{{ selectedImage() ? 'Image ready to upload' : 'Optional JPG, PNG, or WebP' }}</small></span></label><input id="post-image" type="file" accept="image/png,image/jpeg,image/webp" (change)="onImageSelected($event)" />@if (selectedImage()) { <button type="button" (click)="removeImage()">Remove</button> }</div><div class="form-actions"><a routerLink="/blog" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Publishing...' : 'Publish post' }} @if (!isSubmitting()) { <span aria-hidden="true">→</span> }</button></div></form></article></section>
+<section class="create-page"><a routerLink="/blog" class="back-link">← Back to community feed</a>
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Community feed</p>
+            <h1>Create a post</h1>
+            <p class="page-intro">Share an idea, lesson, or question with the learning community.</p>
+        </div>
+    </header>
+    <article class="composer-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">New conversation</p>
+                <h2>What are you learning?</h2>
+            </div><span class="panel-mark">+</span>
+        </div>@if (errorMessage()) { <div class="alert-banner danger" role="alert">{{ errorMessage() }}</div> }<form
+            [formGroup]="postForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="form-group"><label for="post-name">Title</label><input id="post-name" type="text"
+                    formControlName="name" placeholder="What did you discover today?" class="form-control"
+                    [class.input-error]="isInvalid('name')" />@if (isInvalid('name')) { <span class="field-error">A post
+                    title is required</span> }</div>
+            <div class="form-group"><label for="post-content">Your thought</label><textarea id="post-content" rows="8"
+                    formControlName="content" placeholder="Share the idea, insight, or question..." class="form-control"
+                    [class.input-error]="isInvalid('content')"></textarea>@if (isInvalid('content')) { <span
+                    class="field-error">Post content cannot be empty</span> }</div>
+            <div class="form-row">
+                <div class="form-group"><label for="post-author">Posted by</label><input id="post-author" type="text"
+                        formControlName="postedBy" class="form-control"
+                        [class.input-error]="isInvalid('postedBy')" />@if (isInvalid('postedBy')) { <span
+                        class="field-error">Author is required</span> }</div>
+                <div class="form-group"><label for="post-tags">Tags <span>comma separated</span></label><input
+                        id="post-tags" type="text" formControlName="tags" placeholder="javascript, study"
+                        class="form-control" /></div>
+            </div>
+            <div class="image-picker"><label for="post-image" class="image-label"><span
+                        class="upload-icon">+</span><span><strong>{{ selectedImage()?.name || 'Add a cover image'
+                            }}</strong><small>{{ selectedImage() ? 'Image ready to upload' : 'Optional JPG, PNG, or
+                            WebP' }}</small></span></label><input id="post-image" type="file"
+                    accept="image/png,image/jpeg,image/webp" (change)="onImageSelected($event)" />@if (selectedImage())
+                { <button type="button" (click)="removeImage()">Remove</button> }</div>
+            <div class="form-actions"><a routerLink="/blog" class="btn btn-secondary">Cancel</a><button type="submit"
+                    class="btn btn-primary" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Publishing...' : 'Publish
+                    post' }} @if (!isSubmitting()) { <span aria-hidden="true">→</span> }</button></div>
+        </form>
+    </article>
+</section>

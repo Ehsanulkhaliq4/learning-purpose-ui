@@ -9,7 +9,17 @@ export const routes: Routes = [
     path: '',
     component: PublicShell,
     children: [
-      { path: '', component: Intro, pathMatch: 'full' }
+      { path: '', component: Intro, pathMatch: 'full' },
+      {
+        path: 'blog',
+        loadComponent: () =>
+          import('./features/blog/post-feed/post-feed').then((m) => m.PostFeed)
+      },
+      {
+        path: 'blog/:id',
+        loadComponent: () =>
+          import('./features/blog/post-detail/post-detail').then((m) => m.PostDetail)
+      }
     ]
   },
   {

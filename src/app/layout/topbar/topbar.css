@@ -10,6 +10,8 @@
 
 .topbar-search {
   width: 380px;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .search-input {
@@ -22,6 +24,24 @@
   font-family: var(--font-sans);
   outline: none;
   transition: all 0.15s;
+}
+
+.search-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  color: var(--sky-700);
+  background: var(--sky-50);
+  border: 1px solid var(--sky-200);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.search-button:hover {
+  background: var(--sky-100);
 }
 
 .search-input:focus {

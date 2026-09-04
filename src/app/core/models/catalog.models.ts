@@ -43,6 +43,20 @@ export interface PostRequest {
   tags: string[];
 }
 
+export interface PostComment {
+  id?: number;
+  postId: number;
+  content: string;
+  postedBy: string;
+  createdAt?: string;
+}
+
+export interface CommentRequest {
+  postId: number;
+  content: string;
+  postedBy: string;
+}
+
 export interface PostPage {
   content: BlogPost[];
   totalElements: number;

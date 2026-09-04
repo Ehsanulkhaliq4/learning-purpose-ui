@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 import { PostService } from '../../../core/services/post.service';
 import { BlogPost } from '../../../core/models/catalog.models';
 
 @Component({ selector: 'app-post-feed', imports: [DatePipe, RouterLink], styleUrl: './post-feed.css', templateUrl: './post-feed.html' })
 export class PostFeed implements OnInit {
   private readonly postService = inject(PostService);
+  readonly authService = inject(AuthService);
   readonly posts = signal<BlogPost[]>([]);
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);

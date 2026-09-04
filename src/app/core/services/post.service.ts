@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BlogPost, PostPage, PostRequest } from '../models/catalog.models';
+import { BlogPost, CommentRequest, PostComment, PostPage, PostRequest } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -32,6 +32,18 @@ export class PostService {
 
   searchPosts(query: string): Observable<BlogPost[]> {
     return this.http.get<BlogPost[]>(`${this.API_URL}/search`, { params: { query } });
+  }
+
+  createComment(comment: CommentRequest): Observable<PostComment> {
+    return this.http.post<PostComment>('http://localhost:8080/api/v1/comments', comment);
+  }
+
+  getCommentsByPost(postId: number): Observable<PostComment[]> {
+    return this.http.get<PostComment[]>(`http://localhost:8080/api/v1/comments/post/${postId}`);
+  }
+
+  deleteComment(id: number): Observable<void> {
+    return this.http.delete<void>(`http://localhost:8080/api/v1/comments/${id}`);
   }
 
   likePost(id: number): Observable<void> {

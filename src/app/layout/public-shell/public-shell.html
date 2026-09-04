@@ -6,6 +6,7 @@
     </a>
 
     <nav class="public-nav" aria-label="Account navigation">
+      <a routerLink="/blog" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Community</a>
       <a routerLink="/auth/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Sign In</a>
       <a routerLink="/auth/register" routerLinkActive="active" class="register-link">Register</a>
     </nav>
