@@ -22,6 +22,22 @@ export interface BookItem {
   pdfDownloadUrl: string;
 }
 
+export interface BookPage {
+  content: BookItem[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  last: boolean;
+}
+
+export interface BookRequest {
+  title: string;
+  author: string;
+  contentType: string;
+  description: string;
+}
+
 export interface BlogPost {
   id: number;
   name: string;

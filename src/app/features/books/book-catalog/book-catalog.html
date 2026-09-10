@@ -1,1 +1,20 @@
-<p>book-catalog works!</p>
+<section class="library-page">
+	<header class="page-header">
+		<div><p class="eyebrow">Academic library</p><h1>Find your next chapter.</h1><p class="intro">Browse books and learning material shared with the community.</p></div>
+	</header>
+	<form class="search-bar" (submit)="$event.preventDefault(); search()">
+		<input type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" name="bookSearch" placeholder="Search books or authors..." aria-label="Search books" />
+		<button type="submit" class="btn btn-primary">Search</button>
+	</form>
+	@if (errorMessage()) { <div class="alert" role="alert">{{ errorMessage() }}</div> }
+	@if (isLoading()) { <div class="state">Loading books...</div> } @else if (books().length === 0) { <div class="state">No books found.</div> } @else {
+		<div class="book-grid">
+			@for (book of books(); track book.id) {
+				<article class="book-card">
+					@if (book.coverImageUrl) { <img [src]="book.coverImageUrl" [alt]="book.title" /> } @else { <div class="cover-placeholder">LIBRARY</div> }
+					<div class="book-body"><p class="book-type">{{ book.contentType }}</p><h2>{{ book.title }}</h2><p class="author">By {{ book.author }}</p><p class="description">{{ book.description }}</p><div class="book-actions"><button type="button" class="btn btn-primary" (click)="download(book)">Download PDF</button><button type="button" class="delete-button" (click)="deleteBook(book)">Delete</button></div></div>
+				</article>
+			}
+		</div>
+	}
+</section>

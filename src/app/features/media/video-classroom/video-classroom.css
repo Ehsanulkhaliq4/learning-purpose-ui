@@ -1,0 +1,11 @@
+.classroom-page { max-width: 1180px; margin: 0 auto; }
+.page-header { margin-bottom: 2rem; }
+.eyebrow { color: var(--sky-600); font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+h1 { margin-top: .35rem; font-size: 1.8rem; letter-spacing: -.03em; }
+.intro { margin-top: .4rem; color: var(--text-secondary); font-size: .8rem; }
+.empty-classroom { max-width: 680px; padding: 3rem; background: linear-gradient(135deg, #0f3550, #164e63); border-radius: var(--radius-lg); color: #fff; box-shadow: var(--shadow-card); }
+.media-mark { display: grid; place-items: center; width: 54px; height: 54px; margin-bottom: 2rem; border-radius: 50%; color: #075985; background: #bae6fd; font-size: .65rem; font-weight: 800; letter-spacing: .08em; }
+.empty-classroom .eyebrow { color: #7dd3fc; }
+.empty-classroom h2 { max-width: 420px; margin-top: .45rem; font-size: 1.5rem; line-height: 1.2; }
+.empty-classroom p:not(.eyebrow) { max-width: 520px; margin: 1rem 0 1.5rem; color: #c9e6f4; font-size: .8rem; line-height: 1.7; }
+@media (max-width: 520px) { .empty-classroom { padding: 1.5rem; } }

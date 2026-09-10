@@ -1,6 +1,6 @@
 <section class="post-page">
   <header class="page-header"><div><p class="eyebrow">Community feed</p><h1>Ideas worth sharing.</h1><p class="page-intro">Explore lessons, questions, and insights from the learning community.</p></div>@if (authService.isAuthenticated()) { <a routerLink="/blog/new" class="btn btn-primary create-post-btn">+ Create post</a> }</header>
-  <form class="search-bar" (ngSubmit)="search()"><input type="search" [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" placeholder="Search posts, ideas, or topics..." aria-label="Search posts" /><button type="submit" class="btn btn-secondary">Search</button></form>
+  <form class="search-bar" (submit)="$event.preventDefault(); search()"><input type="search" [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" placeholder="Search posts, ideas, or topics..." aria-label="Search posts" /><button type="submit" class="btn btn-primary">Search</button></form>
   @if (errorMessage()) { <div class="alert-banner danger" role="alert">{{ errorMessage() }}</div> }
   <section class="feed-section"><div class="section-heading"><div><p class="eyebrow">Latest thinking</p><h2>Community posts</h2></div><span class="post-count">{{ posts().length }} shown</span></div>
     @if (isLoading()) { <div class="feed-state">Loading community posts...</div> } @else if (posts().length === 0) { <div class="feed-state">No posts found yet. Be the first to start a conversation.</div> } @else {

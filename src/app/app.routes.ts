@@ -1,10 +1,44 @@
 import { Routes } from '@angular/router';
 import { DashboardShell } from './layout/dashboard-shell/dashboard-shell';
 import { PublicShell } from './layout/public-shell/public-shell';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, authMatchGuard } from './core/guards/auth.guard';
 import { Intro } from './features/intro/intro';
 
 export const routes: Routes = [
+  {
+    path: 'blog',
+    component: DashboardShell,
+    canMatch: [authMatchGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/blog/post-feed/post-feed').then((m) => m.PostFeed)
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('./features/blog/post-create/post-create').then((m) => m.PostCreate)
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./features/blog/post-detail/post-detail').then((m) => m.PostDetail)
+      }
+    ]
+  },
+  {
+    path: 'blog/new',
+    component: DashboardShell,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/blog/post-create/post-create').then((m) => m.PostCreate)
+      }
+    ]
+  },
   {
     path: '',
     component: PublicShell,
@@ -48,6 +82,16 @@ export const routes: Routes = [
           import('./features/quizzes/quiz-take/quiz-take').then(
             (m) => m.QuizTake
           )
+      },
+      {
+        path: 'books',
+        loadComponent: () =>
+          import('./features/books/book-catalog/book-catalog').then((m) => m.BookCatalog)
+      },
+      {
+        path: 'media',
+        loadComponent: () =>
+          import('./features/media/video-classroom/video-classroom').then((m) => m.VideoClassroom)
       },
       {
         path: 'blog',

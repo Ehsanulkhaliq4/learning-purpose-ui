@@ -9,6 +9,7 @@ import { BlogPost } from '../../../core/models/catalog.models';
 export class PostFeed implements OnInit {
   private readonly postService = inject(PostService);
   readonly authService = inject(AuthService);
+  readonly allPosts = signal<BlogPost[]>([]);
   readonly posts = signal<BlogPost[]>([]);
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -19,24 +20,32 @@ export class PostFeed implements OnInit {
   loadPosts(): void {
     this.isLoading.set(true);
     this.postService.getAllPosts().subscribe({
-      next: (page) => { this.posts.set(page.content); this.isLoading.set(false); },
+      next: (page) => { this.allPosts.set(page.content); this.posts.set(page.content); this.isLoading.set(false); },
       error: (err) => { this.errorMessage.set(err?.error?.message || 'Unable to load posts.'); this.isLoading.set(false); },
     });
   }
 
   search(): void {
     const query = this.searchTerm().trim();
-    if (!query) { this.loadPosts(); return; }
+    if (!query) { this.posts.set(this.allPosts()); return; }
     this.isLoading.set(true);
+    this.errorMessage.set(null);
     this.postService.searchPosts(query).subscribe({
       next: (posts) => { this.posts.set(posts); this.isLoading.set(false); },
-      error: (err) => { this.errorMessage.set(err?.error?.message || 'Unable to search posts.'); this.isLoading.set(false); },
+      error: (err) => {
+        this.errorMessage.set(err?.error?.message || 'Unable to search posts.');
+        this.isLoading.set(false);
+      },
     });
   }
 
   likePost(post: BlogPost): void {
     this.postService.likePost(post.id).subscribe({
-      next: () => this.posts.update((posts) => posts.map((item) => item.id === post.id ? { ...item, likeCount: item.likeCount + 1 } : item)),
+      next: () => {
+        const incrementLike = (item: BlogPost) => item.id === post.id ? { ...item, likeCount: item.likeCount + 1 } : item;
+        this.allPosts.update((posts) => posts.map(incrementLike));
+        this.posts.update((posts) => posts.map(incrementLike));
+      },
       error: (err) => this.errorMessage.set(err?.error?.message || 'Unable to like this post.'),
     });
   }
@@ -44,7 +53,10 @@ export class PostFeed implements OnInit {
   deletePost(post: BlogPost): void {
     if (!confirm(`Delete "${post.name}"?`)) return;
     this.postService.deletePost(post.id).subscribe({
-      next: () => this.posts.update((posts) => posts.filter((item) => item.id !== post.id)),
+      next: () => {
+        this.allPosts.update((posts) => posts.filter((item) => item.id !== post.id));
+        this.posts.update((posts) => posts.filter((item) => item.id !== post.id));
+      },
       error: (err) => this.errorMessage.set(err?.error?.message || 'Unable to delete this post.'),
     });
   }
