@@ -1,5 +1,5 @@
 .library-page { max-width: 1180px; margin: 0 auto; }
-.page-header { margin-bottom: 1.5rem; }
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
 .eyebrow, .book-type { color: var(--sky-600); font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin-top: .35rem; font-size: 1.8rem; letter-spacing: -.03em; }
 .intro { margin-top: .4rem; color: var(--text-secondary); font-size: .8rem; }
@@ -18,4 +18,5 @@ h1 { margin-top: .35rem; font-size: 1.8rem; letter-spacing: -.03em; }
 .alert, .state { padding: 1.5rem; color: var(--text-secondary); background: var(--surface-white); border: 1px solid var(--surface-border); border-radius: var(--radius-md); font-size: .78rem; }
 .alert { margin-bottom: 1rem; color: var(--status-danger); border-color: #fecaca; background: #fff7f7; }
 @media (max-width: 800px) { .book-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .page-header { flex-direction: column; } .page-header .btn { width: 100%; text-align: center; } }
 @media (max-width: 520px) { .book-grid { grid-template-columns: 1fr; } .search-bar input { flex: 1; min-width: 0; } }

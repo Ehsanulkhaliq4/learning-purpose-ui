@@ -1,6 +1,7 @@
 <section class="library-page">
 	<header class="page-header">
 		<div><p class="eyebrow">Academic library</p><h1>Find your next chapter.</h1><p class="intro">Browse books and learning material shared with the community.</p></div>
+		<a routerLink="/books/new" class="btn btn-primary">Add a book <span aria-hidden="true">+</span></a>
 	</header>
 	<form class="search-bar" (submit)="$event.preventDefault(); search()">
 		<input type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" name="bookSearch" placeholder="Search books or authors..." aria-label="Search books" />

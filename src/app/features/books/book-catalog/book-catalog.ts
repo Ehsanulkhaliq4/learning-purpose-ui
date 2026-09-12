@@ -1,10 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { BookItem } from '../../../core/models/catalog.models';
 import { BookService } from '../../../core/services/book.service';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   selector: 'app-book-catalog',
   styleUrl: './book-catalog.css',
   templateUrl: './book-catalog.html',

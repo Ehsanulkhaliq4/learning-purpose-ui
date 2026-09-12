@@ -1,0 +1,49 @@
+<section class="create-page">
+  <a routerLink="/books" class="back-link">← Back to library</a>
+  <header class="page-header">
+    <p class="eyebrow">Academic library</p>
+    <h1>Add a book</h1>
+    <p class="page-intro">Share a useful book or learning resource with the community.</p>
+  </header>
+
+  <article class="form-panel">
+    @if (errorMessage()) { <div class="alert-banner" role="alert">{{ errorMessage() }}</div> }
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="book-title">Book title</label>
+          <input id="book-title" type="text" formControlName="title" class="form-control" placeholder="e.g. Clean Code" [class.input-error]="isInvalid('title')" />
+          @if (isInvalid('title')) { <span class="field-error">Book title is required</span> }
+        </div>
+        <div class="form-group">
+          <label for="book-author">Author</label>
+          <input id="book-author" type="text" formControlName="author" class="form-control" placeholder="e.g. Robert C. Martin" [class.input-error]="isInvalid('author')" />
+          @if (isInvalid('author')) { <span class="field-error">Author name is required</span> }
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="book-type">Content type <span>optional</span></label>
+          <input id="book-type" type="text" formControlName="contentType" class="form-control" placeholder="e.g. Programming" />
+        </div>
+        <div class="form-group">
+          <label for="book-description">Description <span>optional</span></label>
+          <textarea id="book-description" rows="4" formControlName="description" class="form-control" placeholder="What will readers learn?"></textarea>
+        </div>
+      </div>
+      <div class="upload-grid">
+        <div class="upload-box">
+          <label for="book-cover">Cover image</label>
+          <input id="book-cover" type="file" accept="image/png,image/jpeg,image/webp" (change)="onCoverSelected($event)" />
+          @if (selectedCover()) { <span class="file-name">{{ selectedCover()?.name }} <button type="button" (click)="removeCover()">Remove</button></span> } @else { <span class="file-hint">Optional JPG, PNG, or WebP</span> }
+        </div>
+        <div class="upload-box">
+          <label for="book-pdf">PDF file</label>
+          <input id="book-pdf" type="file" accept="application/pdf" (change)="onPdfSelected($event)" />
+          @if (selectedPdf()) { <span class="file-name">{{ selectedPdf()?.name }} <button type="button" (click)="removePdf()">Remove</button></span> } @else { <span class="file-hint">Optional PDF document</span> }
+        </div>
+      </div>
+      <div class="form-actions"><a routerLink="/books" class="btn btn-secondary">Cancel</a><button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Adding book...' : 'Add book' }} @if (!isSubmitting()) { <span aria-hidden="true">→</span> }</button></div>
+    </form>
+  </article>
+</section>

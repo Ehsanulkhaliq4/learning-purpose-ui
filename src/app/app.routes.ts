@@ -89,6 +89,11 @@ export const routes: Routes = [
           import('./features/books/book-catalog/book-catalog').then((m) => m.BookCatalog)
       },
       {
+        path: 'books/new',
+        loadComponent: () =>
+          import('./features/books/book-create/book-create').then((m) => m.BookCreate)
+      },
+      {
         path: 'media',
         loadComponent: () =>
           import('./features/media/video-classroom/video-classroom').then((m) => m.VideoClassroom)
