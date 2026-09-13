@@ -31,6 +31,15 @@
   margin-bottom: 1.25rem;
 }
 
+.question-image {
+  display: block;
+  max-width: 100%;
+  max-height: 280px;
+  margin: 0 auto 1.25rem;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+}
+
 .options-grid {
   display: flex;
   flex-direction: column;
@@ -92,6 +101,7 @@
 
 .metric-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   margin: 1rem 0;
 }
@@ -113,4 +123,28 @@
 
 .metric-block .value.success {
   color: var(--status-success);
+}
+
+.result-status {
+  width: fit-content;
+  padding: 0.35rem 0.65rem;
+  color: var(--status-danger);
+  background: #fef2f2;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.result-status.passed {
+  color: var(--status-success);
+  background: #ecfdf5;
+}
+
+.submission-error {
+  padding: 0.7rem 0.85rem;
+  color: var(--status-danger);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
 }

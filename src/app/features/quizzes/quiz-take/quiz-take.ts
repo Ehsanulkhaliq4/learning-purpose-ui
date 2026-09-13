@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 import { QuizService } from '../../../core/services/quiz.service';
-import { Question, QuizEvaluationResult } from '../../../core/models/quiz.models';
+import { ExamSubmission, Question, QuizEvaluationResult } from '../../../core/models/quiz.models';
 
 @Component({
   imports: [RouterLink],
@@ -12,6 +13,7 @@ import { Question, QuizEvaluationResult } from '../../../core/models/quiz.models
 export class QuizTake {
 
   private readonly route = inject(ActivatedRoute);
+  private readonly auth = inject(AuthService);
   private readonly quizService = inject(QuizService);
 
   readonly quizId = signal<number>(0);
@@ -21,6 +23,8 @@ export class QuizTake {
   readonly isSubmitted = signal<boolean>(false);
   readonly result = signal<QuizEvaluationResult | null>(null);
   readonly loading = signal<boolean>(true);
+  readonly submitting = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -39,24 +43,48 @@ export class QuizTake {
     });
   }
 
-  selectOption(quesId: number, key: string): void {
+  selectOption(questionId: number, option: string): void {
     if (this.isSubmitted()) return;
     const map = new Map(this.selectedAnswers());
-    map.set(quesId, key);
+    map.set(questionId, option);
     this.selectedAnswers.set(map);
   }
 
   submitExam(): void {
-    const payload = Array.from(this.selectedAnswers().entries()).map(([quesId, selectedOption]) => ({
-      quesId,
-      selectedOption
-    }));
+    const user = this.auth.currentUser();
+    if (!user?.username) {
+      this.errorMessage.set('Your user session is missing a username. Please sign in again.');
+      return;
+    }
 
-    this.quizService.evaluateQuiz(this.quizId(), payload).subscribe({
+    if (this.selectedAnswers().size === 0) {
+      this.errorMessage.set('Select at least one answer before submitting.');
+      return;
+    }
+
+    const payload: ExamSubmission = {
+      quizId: this.quizId(),
+      username: user.username,
+      userEmail: user.email,
+      selectedAnswers: Object.fromEntries(this.selectedAnswers()),
+    };
+
+    this.submitting.set(true);
+    this.errorMessage.set(null);
+    this.quizService.evaluateQuiz(payload).subscribe({
       next: (evaluation) => {
         this.result.set(evaluation);
         this.isSubmitted.set(true);
-      }
+        this.submitting.set(false);
+      },
+      error: (error) => {
+        this.submitting.set(false);
+        this.errorMessage.set(
+          typeof error?.error === 'string'
+            ? error.error
+            : error?.error?.message || 'Unable to submit this assessment.'
+        );
+      },
     });
   }
 }
