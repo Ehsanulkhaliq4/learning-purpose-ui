@@ -1,0 +1,74 @@
+<section class="admin-page">
+  @if (!auth.isAdmin()) {
+    <div class="empty-state"><span class="empty-icon">!</span><h1>Administrator access required</h1><p>This workspace is reserved for assessment administrators.</p><a class="btn btn-primary" routerLink="/quizzes">Back to assessments</a></div>
+  } @else {
+    <header class="admin-hero">
+      <div>
+        <p class="eyebrow">Assessment studio</p>
+        <h1>Build better learning checks.</h1>
+        <p class="hero-copy">Organise your knowledge base, shape the assessment, and keep every question intentional.</p>
+      </div>
+      <div class="hero-stat"><span class="stat-number">{{ categories().length + quizzes().length }}</span><span>published items</span></div>
+    </header>
+
+    <nav class="admin-tabs" aria-label="Assessment administration">
+      <a routerLink="/admin/quiz/categories" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Categories <span>{{ categories().length }}</span></a>
+      <a routerLink="/admin/quiz/quizzes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Quizzes <span>{{ quizzes().length }}</span></a>
+      <a routerLink="/admin/quiz/questions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Questions <span>{{ questions().length }}</span></a>
+    </nav>
+
+    @if (toast(); as notice) {
+      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status"><span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span><span>{{ notice.message }}</span></div>
+    }
+
+    @if (isLoading()) {
+      <div class="loading-state"><span class="spinner"></span>Loading your assessment library...</div>
+    } @else {
+      @if (section() === 'categories') {
+        <div class="workspace-grid">
+          <form class="editor-card" [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
+            <div class="card-kicker">01 / Structure</div><h2>Add a category</h2><p class="card-copy">Give a learning theme a clear home so quizzes stay easy to discover.</p>
+            <label>Category name<input formControlName="title" placeholder="e.g. Algorithms" /></label>
+            <label>Description <span>Optional</span><textarea formControlName="description" rows="5" placeholder="What belongs in this category?"></textarea></label>
+            <button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Publishing...' : 'Publish category' }} <span aria-hidden="true">-&gt;</span></button>
+          </form>
+          <section class="inventory-card"><div class="section-heading"><div><div class="card-kicker">Library index</div><h2>Existing categories</h2></div><span class="count-badge">{{ categories().length }}</span></div>
+            @if (categories().length) { @for (category of categories(); track category.id) { <article class="inventory-row"><span class="row-icon">{{ category.title.charAt(0).toUpperCase() }}</span><div><strong>{{ category.title }}</strong><p>{{ category.description || 'No description yet' }}</p></div><span class="row-id">#{{ category.id }}</span></article> } } @else { <div class="list-empty">Your first category starts here.</div> }
+          </section>
+        </div>
+      } @else if (section() === 'quizzes') {
+        <div class="workspace-grid">
+          <form class="editor-card" [formGroup]="quizForm" (ngSubmit)="submitQuiz()">
+            <div class="card-kicker">02 / Assessment</div><h2>Create a quiz</h2><p class="card-copy">Set the brief first. You can add questions from the Questions workspace next.</p>
+            <label>Quiz title<input formControlName="title" placeholder="e.g. Data structures fundamentals" /></label>
+            <label>Description<textarea formControlName="description" rows="4" placeholder="What will learners practise?"></textarea></label>
+            <div class="field-grid"><label>Max marks<input type="number" min="1" formControlName="maxMarks" /></label><label>Questions<input type="number" min="1" formControlName="numberOfQuestions" /></label></div>
+            <label>Category<select formControlName="categoryId"><option [ngValue]="0">Select category</option>@for (category of categories(); track category.id) {<option [ngValue]="category.id">{{ category.title }}</option>}</select></label>
+            <button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Creating...' : 'Create quiz' }} <span aria-hidden="true">-&gt;</span></button>
+          </form>
+          <section class="inventory-card"><div class="section-heading"><div><div class="card-kicker">Assessment index</div><h2>Existing quizzes</h2></div><span class="count-badge">{{ quizzes().length }}</span></div>
+            @if (quizzes().length) { @for (quiz of quizzes(); track quiz.id) { <article class="inventory-row quiz-row"><div class="quiz-status"></div><div><strong>{{ quiz.title }}</strong><p>{{ categoryName(quiz) }} · {{ quiz.numberOfQuestions }} questions · {{ quiz.maxMarks }} marks</p></div><span class="active-chip">{{ quiz.active ? 'Active' : 'Draft' }}</span></article> } } @else { <div class="list-empty">No quizzes published yet.</div> }
+          </section>
+        </div>
+      } @else {
+        <div class="question-workspace">
+          <section class="selector-bar"><div><div class="card-kicker">03 / Question bank</div><h2>Choose a quiz to edit</h2></div><select [value]="selectedQuizId()" (change)="selectQuiz(+$any($event.target).value)"><option value="0">Select a quiz</option>@for (quiz of quizzes(); track quiz.id) {<option [value]="quiz.id">{{ quiz.title }}</option>}</select></section>
+          <div class="question-grid">
+            <form class="editor-card" [formGroup]="questionForm" (ngSubmit)="submitQuestion()">
+              <h2>Add a question</h2><p class="card-copy">Make the correct answer one of the options below, exactly as written.</p>
+              <label>Quiz<select formControlName="quizId"><option [ngValue]="0">Select quiz</option>@for (quiz of quizzes(); track quiz.id) {<option [ngValue]="quiz.id">{{ quiz.title }}</option>}</select></label>
+              <label>Question prompt<textarea formControlName="content" rows="4" placeholder="Write a clear question"></textarea></label>
+              <label>Answer options <span>One per line</span><textarea formControlName="options" rows="5" placeholder="Option A&#10;Option B&#10;Option C"></textarea></label>
+              <label>Correct answer<input formControlName="answer" placeholder="Must match an option" /></label>
+              <div class="field-grid"><label>Marks<input type="number" min="1" formControlName="marks" /></label><label>Image URL <span>Optional</span><input type="url" formControlName="imageUrl" /></label></div>
+              <button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Adding...' : 'Add question' }} <span aria-hidden="true">-&gt;</span></button>
+            </form>
+            <section class="inventory-card"><div class="section-heading"><div><div class="card-kicker">Live question bank</div><h2>{{ selectedQuizId() ? 'Questions in this quiz' : 'Select a quiz' }}</h2></div><span class="count-badge">{{ questions().length }}</span></div>
+              @if (!selectedQuizId()) { <div class="list-empty">Choose a quiz above to inspect its questions.</div> } @else if (questions().length) { @for (question of questions(); track question.id) { <article class="question-row"><span class="question-number">{{ $index + 1 }}</span><div><strong>{{ question.content }}</strong><p>{{ question.options.length }} options · {{ question.marks || 1 }} mark{{ (question.marks || 1) === 1 ? '' : 's' }}</p></div></article> } } @else { <div class="list-empty">This quiz has no questions yet.</div> }
+            </section>
+          </div>
+        </div>
+      }
+    }
+  }
+</section>

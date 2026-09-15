@@ -9,52 +9,7 @@
 	</header>
 
 	@if (auth.isAdmin()) {
-		<section class="admin-panel">
-			<div class="admin-heading">
-				<div>
-					<p class="eyebrow">Administrator tools</p>
-					<h2>Build an assessment</h2>
-				</div>
-				<span class="admin-note">Create categories, quizzes, and questions</span>
-			</div>
-
-			@if (successMessage()) { <p class="success-message">{{ successMessage() }}</p> }
-			@if (errorMessage()) { <p class="form-error">{{ errorMessage() }}</p> }
-
-			<div class="admin-forms">
-				<form [formGroup]="categoryForm" (ngSubmit)="submitCategory()" class="admin-form">
-					<h3>New category</h3>
-					<label>Title<input type="text" formControlName="title" placeholder="e.g. Algorithms" /></label>
-					<label>Description<textarea formControlName="description" rows="2"></textarea></label>
-					<button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">Add category</button>
-				</form>
-
-				<form [formGroup]="quizForm" (ngSubmit)="submitQuiz()" class="admin-form">
-					<h3>New quiz</h3>
-					<label>Title<input type="text" formControlName="title" placeholder="e.g. Data structures" /></label>
-					<label>Description<textarea formControlName="description" rows="2"></textarea></label>
-					<div class="form-row">
-						<label>Max marks<input type="number" formControlName="maxMarks" min="1" /></label>
-						<label>Questions<input type="number" formControlName="numberOfQuestions" min="1" /></label>
-					</div>
-					<label>Category<select formControlName="categoryId"><option [ngValue]="0">Select category</option>@for (category of categories(); track category.id) {<option [ngValue]="category.id">{{ category.title }}</option>}</select></label>
-					<button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">Add quiz</button>
-				</form>
-
-				<form [formGroup]="questionForm" (ngSubmit)="submitQuestion()" class="admin-form">
-					<h3>New question</h3>
-					<label>Quiz<select formControlName="quizId"><option [ngValue]="0">Select quiz</option>@for (quiz of quizzes(); track quiz.id) {<option [ngValue]="quiz.id">{{ quiz.title }}</option>}</select></label>
-					<label>Question<textarea formControlName="content" rows="2" placeholder="Write the question"></textarea></label>
-					<label>Options <span class="field-hint">one per line</span><textarea formControlName="options" rows="4"></textarea></label>
-					<label>Correct answer<input type="text" formControlName="answer" placeholder="Must match an option" /></label>
-					<div class="form-row">
-						<label>Marks<input type="number" formControlName="marks" min="1" /></label>
-						<label>Image URL<input type="url" formControlName="imageUrl" /></label>
-					</div>
-					<button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">Add question</button>
-				</form>
-			</div>
-		</section>
+		<a class="admin-entry" routerLink="/admin/quiz/categories"><span class="admin-entry-mark">+</span><span><strong>Assessment Studio</strong><small>Create categories, quizzes, and questions in a dedicated workspace.</small></span><span aria-hidden="true">-&gt;</span></a>
 	}
 
 	@if (isLoading()) {

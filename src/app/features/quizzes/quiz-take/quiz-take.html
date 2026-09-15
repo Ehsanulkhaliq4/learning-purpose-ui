@@ -1,39 +1,41 @@
 <div class="assessment-container">
   @if (loading()) {
     <div class="card loading-panel">
-      <span>Retrieving examination questions...</span>
+      <span class="loading-orb"></span><span>Retrieving examination questions...</span>
     </div>
   } @else if (isSubmitted() && result()) {
-    <div class="card evaluation-card">
-      <div class="score-badge">Assessment Completed</div>
-      <h2>Examination Performance</h2>
-      <div class="metric-row">
-        <div class="metric-block">
-          <span class="label">Attempted</span>
-          <span class="value">{{ result()?.attempted }}</span>
-        </div>
-        <div class="metric-block">
-          <span class="label">Correct</span>
-          <span class="value success">{{ result()?.correctAnswers }}</span>
-        </div>
-        <div class="metric-block">
-          <span class="label">Marks Scored</span>
-          <span class="value">{{ result()?.marksScored }}</span>
-        </div>
-        <div class="metric-block">
-          <span class="label">Percentage</span>
-          <span class="value">{{ result()?.percentage }}%</span>
-        </div>
+    <div class="result-shell">
+      <header class="result-hero" [class.result-hero-fail]="!result()?.passed">
+        <div><span class="result-eyebrow">Assessment complete</span><h1>{{ result()?.quizTitle }}</h1><p>{{ result()?.passed ? 'Excellent work. Your result is ready to download.' : 'Keep practising. Review your performance and try again.' }}</p></div>
+        <div class="score-orb"><strong>{{ result()?.percentage }}%</strong><span>overall score</span></div>
+      </header>
+      <div class="result-content">
+        <div class="result-status" [class.passed]="result()?.passed"><span class="status-dot"></span>{{ result()?.passed ? 'Passed' : 'Not passed' }}</div>
+        <section class="performance-grid" aria-label="Performance summary">
+          <article class="performance-card"><span class="metric-label">Marks earned</span><strong>{{ result()?.marksScored }} <small>/ {{ result()?.maxMarks }}</small></strong><span class="metric-caption">Total score</span></article>
+          <article class="performance-card"><span class="metric-label">Correct answers</span><strong>{{ result()?.correctAnswers }}</strong><span class="metric-caption">Out of {{ result()?.totalQuestions }} questions</span></article>
+          <article class="performance-card"><span class="metric-label">Attempted</span><strong>{{ result()?.attempted }}</strong><span class="metric-caption">{{ result()?.totalQuestions! - result()?.attempted! }} unanswered</span></article>
+        </section>
+        <section class="result-insight"><div><span class="metric-label">Accuracy</span><strong>{{ result()?.attempted ? ((result()?.correctAnswers! / result()?.attempted!) * 100 | number:'1.0-0') : 0 }}%</strong></div><div class="accuracy-track"><span [style.width.%]="result()?.attempted ? (result()?.correctAnswers! / result()?.attempted!) * 100 : 0"></span></div><p>Accuracy is calculated from the questions you attempted.</p></section>
+        <div class="result-actions"><button class="btn btn-primary" type="button" (click)="downloadResult()"><span aria-hidden="true">&#8595;</span> Download result</button><button class="btn btn-secondary" type="button" routerLink="/quizzes">Return to assessments</button></div>
       </div>
-      <p class="result-status" [class.passed]="result()?.passed">
-        {{ result()?.passed ? 'Passed' : 'Not passed' }}
-      </p>
-      <button class="btn btn-primary" routerLink="/quizzes">Return to Assessments</button>
     </div>
-  } @else {
-    <div class="card question-card">
+  } @else if (questions().length > 0) {
+    <div class="assessment-layout">
+      <aside class="question-rail">
+        <div class="rail-header"><span class="rail-kicker">Assessment</span><strong>Your progress</strong><span class="rail-caption">{{ answeredCount() }} of {{ questions().length }} answered</span></div>
+        <div class="progress-track"><span [style.width.%]="questions().length ? (answeredCount() / questions().length) * 100 : 0"></span></div>
+        <div class="rail-timer" [class.urgent]="timerIsUrgent()"><span class="timer-icon">&#9201;</span><span><small>Time remaining</small><strong>{{ timerLabel() }}</strong></span></div>
+        <div class="question-map" aria-label="Question navigation">
+          @for (question of questions(); track question.id) {
+            <button type="button" class="map-item" [class.current]="$index === currentQuestionIndex()" [class.answered]="selectedAnswers().has(question.id)" (click)="goToQuestion($index)"><span>{{ $index + 1 }}</span><small>{{ selectedAnswers().has(question.id) ? 'Answered' : 'Open' }}</small></button>
+          }
+        </div>
+        <div class="rail-legend"><span><i class="legend-dot current-dot"></i>Current</span><span><i class="legend-dot answered-dot"></i>Answered</span></div>
+      </aside>
+      <section class="card question-card">
       <div class="quiz-header">
-        <span class="question-tracker">Question {{ currentQuestionIndex() + 1 }} of {{ questions().length }}</span>
+        <div><span class="question-tracker">Question {{ currentQuestionIndex() + 1 }} of {{ questions().length }}</span><span class="question-state">{{ selectedAnswers().has(questions()[currentQuestionIndex()].id) ? 'Response saved' : 'Awaiting your answer' }}</span></div>
         <button class="btn btn-secondary btn-sm" [disabled]="submitting()" (click)="submitExam()">
           {{ submitting() ? 'Submitting...' : 'Submit Assessment' }}
         </button>
@@ -45,6 +47,7 @@
       @if (questions().length > 0) {
         @let currQ = questions()[currentQuestionIndex()];
         <div class="question-body">
+          <span class="question-number">Q{{ currentQuestionIndex() + 1 }} <b>{{ currQ.marks || 1 }} mark{{ (currQ.marks || 1) === 1 ? '' : 's' }}</b></span>
           <h3 class="question-title">{{ currQ.content }}</h3>
           @if (currQ.imageUrl) {
             <img class="question-image" [src]="currQ.imageUrl" alt="Question illustration" />
@@ -52,14 +55,15 @@
 
           <div class="options-grid">
             @for (opt of currQ.options; track opt) {
-              <div 
+              <button type="button"
                 class="option-item" 
                 [class.selected]="selectedAnswers().get(currQ.id) === opt"
                 (click)="selectOption(currQ.id, opt)"
               >
                 <div class="option-key">{{ $index + 1 }}</div>
                 <div class="option-text">{{ opt }}</div>
-              </div>
+                <span class="option-check" aria-hidden="true">{{ selectedAnswers().get(currQ.id) === opt ? '&#10003;' : '' }}</span>
+              </button>
             }
           </div>
         </div>
@@ -68,19 +72,22 @@
           <button 
             class="btn btn-secondary btn-sm" 
             [disabled]="currentQuestionIndex() === 0"
-            (click)="currentQuestionIndex.update(i => i - 1)"
+            (click)="goToQuestion(currentQuestionIndex() - 1)"
           >
             Previous
           </button>
           <button 
             class="btn btn-primary btn-sm" 
             [disabled]="currentQuestionIndex() === questions().length - 1"
-            (click)="currentQuestionIndex.update(i => i + 1)"
+            (click)="goToQuestion(currentQuestionIndex() + 1)"
           >
             Next Question
           </button>
         </div>
       }
+      </section>
     </div>
+  } @else {
+    <div class="card empty-assessment"><span class="empty-mark">?</span><h2>No questions yet</h2><p>This assessment is not ready to take. Please return to the assessment list.</p><button class="btn btn-primary" routerLink="/quizzes">Return to Assessments</button></div>
   }
 </div>

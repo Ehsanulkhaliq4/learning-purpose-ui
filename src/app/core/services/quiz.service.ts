@@ -33,6 +33,6 @@ export class QuizService {
   }
 
   evaluateQuiz(submission: ExamSubmission): Observable<QuizEvaluationResult> {
-    return this.http.post<QuizEvaluationResult>(`${this.GATEWAY_URL}/quizzes/evaluate`, submission);
+    return this.http.post<QuizEvaluationResult>(`${this.GATEWAY_URL}/quizzes/eval-quiz`, submission);
   }
 }

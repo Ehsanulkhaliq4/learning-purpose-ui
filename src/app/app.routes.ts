@@ -77,6 +77,30 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/quiz/categories',
+        data: { section: 'categories' },
+        loadComponent: () =>
+          import('./features/quizzes/admin-quiz-manager/admin-quiz-manager').then(
+            (m) => m.AdminQuizManager
+          )
+      },
+      {
+        path: 'admin/quiz/quizzes',
+        data: { section: 'quizzes' },
+        loadComponent: () =>
+          import('./features/quizzes/admin-quiz-manager/admin-quiz-manager').then(
+            (m) => m.AdminQuizManager
+          )
+      },
+      {
+        path: 'admin/quiz/questions',
+        data: { section: 'questions' },
+        loadComponent: () =>
+          import('./features/quizzes/admin-quiz-manager/admin-quiz-manager').then(
+            (m) => m.AdminQuizManager
+          )
+      },
+      {
         path: 'quizzes/:id',
         loadComponent: () =>
           import('./features/quizzes/quiz-take/quiz-take').then(

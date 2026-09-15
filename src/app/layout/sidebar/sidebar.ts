@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface NavItem {
   label: string;
@@ -14,6 +15,7 @@ export interface NavItem {
   templateUrl: './sidebar.html',
 })
 export class Sidebar {
+  readonly auth = inject(AuthService);
   readonly isCollapsed = input<boolean>(false);
 
   readonly navItems: NavItem[] = [
