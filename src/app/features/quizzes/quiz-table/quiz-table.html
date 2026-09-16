@@ -1,46 +1,65 @@
-<section class="quiz-page">
-	<header class="quiz-header">
-		<div>
-			<p class="eyebrow">Knowledge check</p>
-			<h1>Active assessments</h1>
-			<p class="quiz-intro">Choose an assessment to test what you have learned.</p>
-		</div>
-		<span class="quiz-count">{{ quizzes().length }} available</span>
-	</header>
+﻿<section class="quiz-page">
+<header class="quiz-header">
+<div>
+<p class="eyebrow">Knowledge check</p>
+<h1>Active assessments</h1>
+<p class="quiz-intro">Choose an assessment to test what you have learned.</p>
+</div>
+<span class="quiz-count">&#9670; {{ quizzes().length }} available</span>
+</header>
 
-	@if (auth.isAdmin()) {
-		<a class="admin-entry" routerLink="/admin/quiz/categories"><span class="admin-entry-mark">+</span><span><strong>Assessment Studio</strong><small>Create categories, quizzes, and questions in a dedicated workspace.</small></span><span aria-hidden="true">-&gt;</span></a>
-	}
+@if (auth.isAdmin()) {
+<a class="admin-entry" routerLink="/admin/quiz/categories">
+<span class="admin-entry-mark">+</span>
+<span>
+<strong>Assessment Studio</strong>
+<small>Create categories, quizzes, and questions in a dedicated workspace.</small>
+</span>
+<span aria-hidden="true">&#8594;</span>
+</a>
+}
 
-	@if (isLoading()) {
-		<div class="state-panel">Loading assessments...</div>
-	} @else if (errorMessage()) {
-		<div class="state-panel error-panel">
-			<p>{{ errorMessage() }}</p>
-			<button type="button" class="retry-button" (click)="loadQuizzes()">Try again</button>
-		</div>
-	} @else if (quizzes().length === 0) {
-		<div class="state-panel">
-			<h2>No assessments available</h2>
-			<p>Active quizzes will appear here when they are published.</p>
-		</div>
-	} @else {
-		<div class="quiz-grid">
-			@for (quiz of quizzes(); track quiz.id) {
-				<article class="quiz-card">
-					<div class="quiz-card-topline">
-						<span class="category-label">{{ categoryName(quiz) }}</span>
-						<span class="active-label">Active</span>
-					</div>
-					<h2>{{ quiz.title }}</h2>
-					<p class="quiz-description">{{ quiz.description || 'Test your understanding with this assessment.' }}</p>
-					<div class="quiz-meta">
-						<span><strong>{{ quiz.numberOfQuestions }}</strong> questions</span>
-						<span><strong>{{ quiz.maxMarks }}</strong> marks</span>
-					</div>
-					<a class="take-button" [routerLink]="['/quizzes', quiz.id]">Take assessment <span aria-hidden="true">-&gt;</span></a>
-				</article>
-			}
-		</div>
-	}
+@if (isLoading()) {
+<div class="state-panel">
+<span class="state-spinner"></span>
+<p>Loading assessments...</p>
+</div>
+} @else if (errorMessage()) {
+<div class="state-panel error-panel">
+<p>{{ errorMessage() }}</p>
+<button type="button" class="retry-button" (click)="loadQuizzes()">&#8635; Try again</button>
+</div>
+} @else if (quizzes().length === 0) {
+<div class="state-panel">
+<h2>No assessments available</h2>
+<p>Active quizzes will appear here when they are published.</p>
+</div>
+} @else {
+<div class="quiz-grid">
+@for (quiz of quizzes(); track quiz.id) {
+<article class="quiz-card">
+<div class="quiz-card-topline">
+<span class="category-label">{{ categoryName(quiz) }}</span>
+<span class="active-label">Active</span>
+</div>
+<h2>{{ quiz.title }}</h2>
+<p class="quiz-description">{{ quiz.description || 'Test your understanding with this assessment.' }}</p>
+<div class="quiz-meta">
+<div class="quiz-meta-item">
+<strong>{{ quiz.numberOfQuestions }}</strong>
+<span>questions</span>
+</div>
+<div class="quiz-meta-item">
+<strong>{{ quiz.maxMarks }}</strong>
+<span>marks</span>
+</div>
+</div>
+<a class="take-button" [routerLink]="['/quizzes', quiz.id]">
+<span>Take assessment</span>
+<span class="take-arrow" aria-hidden="true">&#8594;</span>
+</a>
+</article>
+}
+</div>
+}
 </section>
