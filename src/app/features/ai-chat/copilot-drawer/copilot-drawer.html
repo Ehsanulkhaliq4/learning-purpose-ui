@@ -1,41 +1,189 @@
 <div class="drawer-backdrop" (click)="closeDrawer.emit()"></div>
 <aside class="copilot-drawer">
+  <!-- Drawer Header -->
   <div class="drawer-header">
-    <div class="header-title">
-      <div class="spark-badge">✨</div>
-      <div>
-        <h3>Gemini Academic Tutor</h3>
-        <p>Real-time token streaming assistant</p>
+    <div class="header-main">
+      <div class="spark-badge">
+        <span class="sparkle-icon">✨</span>
+        <span class="live-dot" title="AI Ready"></span>
+      </div>
+      <div class="header-info">
+        <div class="header-title-row">
+          <h3>Gemini Academic Copilot</h3>
+          <span class="version-tag">v3.8 Flash</span>
+        </div>
+        <p class="header-subtitle">Real-time intelligent learning & assessment assistant</p>
       </div>
     </div>
-    <button class="btn-close" (click)="closeDrawer.emit()">✕</button>
+    
+    <div class="header-actions">
+      <button 
+        type="button" 
+        class="icon-btn" 
+        (click)="clearChat()" 
+        title="Reset & Clear Conversation"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+      <button 
+        type="button" 
+        class="icon-btn btn-close" 
+        (click)="closeDrawer.emit()" 
+        title="Close Copilot"
+      >
+        ✕
+      </button>
+    </div>
   </div>
 
-  <div class="message-feed">
-    @for (msg of chatService.messages(); track $index) {
-      <div class="chat-bubble-row" [class.user]="msg.role === 'user'">
-        <div class="chat-bubble" [class.assistant]="msg.role === 'assistant'" [class.system]="msg.role === 'system'">
-          <div class="bubble-sender">{{ msg.role === 'user' ? 'You' : 'Gemini Tutor' }}</div>
-          <div class="bubble-content">{{ msg.content }}</div>
+  <!-- Focus Topic Selector -->
+  <div class="topic-bar">
+    <span class="topic-label">Mode:</span>
+    <div class="topic-pills">
+      @for (topic of chatService.topics; track topic.id) {
+        <button
+          type="button"
+          class="topic-pill"
+          [class.active]="chatService.selectedTopic().id === topic.id"
+          (click)="selectTopic(topic)"
+        >
+          <span class="topic-icon">{{ topic.icon }}</span>
+          <span>{{ topic.name }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Message Feed -->
+  <div class="message-feed" #messageFeed>
+    @for (msg of chatService.messages(); track msg.id) {
+      @if (msg.role === 'system') {
+        <div class="system-bubble">
+          <span class="system-icon">💡</span>
+          <span class="system-text">{{ msg.content }}</span>
+        </div>
+      } @else if (msg.role === 'user') {
+        <div class="chat-bubble-row user-row">
+          <div class="chat-bubble user-bubble">
+            <div class="bubble-header">
+              <span class="sender-name">You</span>
+              <span class="bubble-time">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+            <div class="bubble-content">{{ msg.content }}</div>
+          </div>
+        </div>
+      } @else {
+        <div class="chat-bubble-row assistant-row">
+          <div class="assistant-avatar">✨</div>
+          <div class="chat-bubble assistant-bubble">
+            <div class="bubble-header">
+              <span class="sender-name">Gemini Tutor</span>
+              <span class="bubble-time">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+
+            <div class="bubble-content">
+              @if (msg.content) {
+                {{ msg.content }}
+              } @else if (msg.status === 'streaming') {
+                <div class="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              }
+            </div>
+
+            @if (msg.content && msg.status !== 'streaming') {
+              <div class="bubble-actions">
+                <button 
+                  type="button" 
+                  class="action-btn" 
+                  (click)="copyMessage(msg.id, msg.content)"
+                  [title]="copiedMsgId() === msg.id ? 'Copied!' : 'Copy to clipboard'"
+                >
+                  @if (copiedMsgId() === msg.id) {
+                    <span class="copied-indicator">✓ Copied</span>
+                  } @else {
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  }
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+
+    <!-- Starter Prompts (Shown if message count is low) -->
+    @if (chatService.messages().length <= 2 && !chatService.isStreaming()) {
+      <div class="starter-section">
+        <div class="starter-title">✨ Recommended Prompts</div>
+        <div class="starter-grid">
+          @for (item of starterPrompts; track item.label) {
+            <button type="button" class="starter-card" (click)="sendPrompt(item.prompt)">
+              <span class="starter-card-icon">{{ item.icon }}</span>
+              <div class="starter-card-text">
+                <strong>{{ item.label }}</strong>
+                <span>{{ item.prompt }}</span>
+              </div>
+            </button>
+          }
         </div>
       </div>
     }
   </div>
 
+  <!-- Drawer Footer / Input -->
   <div class="drawer-footer">
+    @if (chatService.isStreaming()) {
+      <div class="streaming-status-bar">
+        <span class="status-pulse"></span>
+        <span>Gemini is generating response...</span>
+        <button type="button" class="btn-stop" (click)="stopGeneration()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+          </svg>
+          <span>Stop</span>
+        </button>
+      </div>
+    }
+
     <form (ngSubmit)="sendPrompt()" class="input-form">
-      <input 
-        type="text" 
-        [ngModel]="userInput()" 
-        (ngModelChange)="userInput.set($event)"
-        name="promptInput" 
-        placeholder="Ask a question about current assessments..." 
-        class="chat-input"
-        [disabled]="chatService.isStreaming()"
-      />
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!userInput().trim() || chatService.isStreaming()">
-        {{ chatService.isStreaming() ? 'Generating...' : 'Send' }}
-      </button>
+      <div class="input-wrapper">
+        <textarea
+          [ngModel]="userInput()" 
+          (ngModelChange)="userInput.set($event)"
+          (keydown)="handleKeyDown($event)"
+          name="promptInput" 
+          [placeholder]="'Ask ' + chatService.selectedTopic().name + ' anything...'" 
+          class="chat-textarea"
+          rows="2"
+          [disabled]="chatService.isStreaming()"
+        ></textarea>
+        
+        <div class="input-actions-bar">
+          <span class="keyboard-tip">Shift+↵ newline • ↵ send</span>
+          
+          <button 
+            type="submit" 
+            class="send-btn" 
+            [disabled]="!userInput().trim() || chatService.isStreaming()"
+            title="Send Message"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
     </form>
   </div>
 </aside>

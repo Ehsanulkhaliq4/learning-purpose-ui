@@ -21,8 +21,9 @@
 .book-meta { display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted); font-size: 0.7rem; margin-bottom: 1rem; }
 .user-initial { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: var(--sky-600); font-weight: 700; font-size: 0.65rem; }
 .author { font-weight: 600; color: var(--text-main); }
-.quiz-description { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; flex: 1; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-.post-actions { display: flex; gap: 0.5rem; border-top: 1px solid var(--surface-border); padding-top: 1rem; }
+.book-body { display: flex; flex-direction: column; flex: 1; }
+.quiz-description { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem; flex: 1; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; text-overflow: ellipsis; line-height: 1.5; word-break: break-word; }
+.post-actions { display: flex; gap: 0.5rem; border-top: 1px solid var(--surface-border); padding-top: 1rem; margin-top: auto; flex-wrap: wrap; }
 .delete-action { border: 1px solid var(--status-danger); color: var(--status-danger); background: transparent; padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.7rem; cursor: pointer; }
 .delete-action:hover { background: var(--status-danger); color: #fff; }
 .btn-sm { padding: 0.45rem 0.8rem; font-size: 0.72rem; }
