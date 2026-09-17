@@ -26,18 +26,15 @@
 		</div>
 		<p class="form-intro">Enter your details to open your learning workspace.</p>
 
+		@if (toast(); as notice) {
+			<div class="toast" [class.toast-error]="notice.type === 'error'" role="status"><span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span><span>{{ notice.message }}</span></div>
+		}
+
 		@if (isForgotMode()) {
 			<div class="reset-heading">
 				<h3>Reset your password</h3>
 				<p>Enter your account email and we will send a one-time password.</p>
 			</div>
-
-			@if (errorMessage()) {
-				<div class="alert-banner" role="alert">{{ errorMessage() }}</div>
-			}
-			@if (forgotMessage()) {
-				<div class="alert-banner success" role="status">{{ forgotMessage() }}</div>
-			}
 
 			<form [formGroup]="loginForm" (ngSubmit)="requestPasswordReset()" novalidate>
 				<div class="form-group">
@@ -53,10 +50,6 @@
 
 			<button type="button" class="back-link" (click)="showLogin()">← Back to sign in</button>
 		} @else {
-		@if (errorMessage()) {
-			<div class="alert-banner" role="alert">{{ errorMessage() }}</div>
-		}
-
 		<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 			<div class="form-group">
 				<label for="username">Username</label>

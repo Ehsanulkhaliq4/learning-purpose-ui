@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { PostService } from '../../../core/services/post.service';
 import { BlogPost, PostComment } from '../../../core/models/catalog.models';
@@ -17,6 +17,7 @@ export class PostDetail implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
   private readonly postService = inject(PostService);
+  private readonly router = inject(Router);
 
   readonly post = signal<BlogPost | null>(null);
   readonly isLoading = signal(true);
@@ -119,13 +120,23 @@ export class PostDetail implements OnInit {
     this.commentError.set(null);
     this.postService.deleteComment(comment.id).subscribe({
       next: () => {
-        this.comments.update((comments) => comments.filter((item) => item.id !== comment.id));
         this.deletingCommentId.set(null);
+        this.comments.update((comments) => comments.filter((c) => c.id !== comment.id));
+        this.commentSuccess.set('Comment deleted.');
       },
       error: (err) => {
         this.deletingCommentId.set(null);
-        this.commentError.set(err?.error?.message || 'Unable to delete this comment.');
-      },
+        this.commentError.set(err?.error?.message || 'Unable to delete comment.');
+      }
+    });
+
+  }
+
+  deletePost(post: BlogPost): void {
+    if (!confirm(`Delete "${post.name}"?`)) return;
+    this.postService.deletePost(post.id).subscribe({
+      next: () => this.router.navigate(['/blog']),
+      error: (err) => this.errorMessage.set(err?.error?.message || 'Unable to delete this post.'),
     });
   }
 }

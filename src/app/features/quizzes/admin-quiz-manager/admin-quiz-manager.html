@@ -58,7 +58,8 @@
               <h2>Add a question</h2><p class="card-copy">Make the correct answer one of the options below, exactly as written.</p>
               <label>Quiz<select formControlName="quizId"><option [ngValue]="0">Select quiz</option>@for (quiz of quizzes(); track quiz.id) {<option [ngValue]="quiz.id">{{ quiz.title }}</option>}</select></label>
               <label>Question prompt<textarea formControlName="content" rows="4" placeholder="Write a clear question"></textarea></label>
-              <label>Answer options <span>One per line</span><textarea formControlName="options" rows="5" placeholder="Option A&#10;Option B&#10;Option C"></textarea></label>
+              <div class="field-grid"><label>Option 1<input formControlName="option1" placeholder="First answer option" /></label><label>Option 2<input formControlName="option2" placeholder="Second answer option" /></label></div>
+              <div class="field-grid"><label>Option 3<input formControlName="option3" placeholder="Third answer option" /></label><label>Option 4<input formControlName="option4" placeholder="Fourth answer option" /></label></div>
               <label>Correct answer<input formControlName="answer" placeholder="Must match an option" /></label>
               <div class="field-grid"><label>Marks<input type="number" min="1" formControlName="marks" /></label><label>Image URL <span>Optional</span><input type="url" formControlName="imageUrl" /></label></div>
               <button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Adding...' : 'Add question' }} <span aria-hidden="true">-&gt;</span></button>

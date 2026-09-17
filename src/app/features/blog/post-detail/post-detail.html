@@ -5,7 +5,24 @@
   @else if (post(); as currentPost) {
     <article class="detail-card">
       @if (currentPost.imageUrl) { <img class="detail-image" [src]="currentPost.imageUrl" [alt]="currentPost.name" /> }
-      <div class="detail-content"><div class="detail-meta"><span>By {{ currentPost.postedBy }}</span><time>{{ currentPost.createdAt | date:'medium' }}</time></div><h1>{{ currentPost.name }}</h1><p class="detail-copy">{{ currentPost.content }}</p><div class="tag-row">@for (tag of currentPost.tags; track tag) { <span class="tag">#{{ tag }}</span> }</div><div class="detail-stats"><span>♡ {{ currentPost.likeCount }} likes</span><span>◌ {{ currentPost.commentCount }} comments</span><span>◉ {{ currentPost.viewCount }} views</span></div></div>
+      <div class="detail-content">
+        <div class="detail-meta">
+          <span class="user-initial">{{ currentPost.postedBy.charAt(0).toUpperCase() }}</span>
+          <span>By {{ currentPost.postedBy }}</span>
+          <time>{{ currentPost.createdAt | date:'medium' }}</time>
+          @if (authService.isAuthenticated() && (authService.isAdmin() || currentPost.postedBy === authService.currentUser()?.username)) {
+            <button type="button" class="delete-post-btn" (click)="deletePost(currentPost)">Delete post</button>
+          }
+        </div>
+        <h1>{{ currentPost.name }}</h1>
+        <p class="detail-copy">{{ currentPost.content }}</p>
+        <div class="tag-row">@for (tag of currentPost.tags; track tag) { <span class="tag">#{{ tag }}</span> }</div>
+        <div class="detail-stats">
+          <span class="stat-item"><span class="stat-icon">♡</span> {{ currentPost.likeCount }} likes</span>
+          <span class="stat-item"><span class="stat-icon">◌</span> {{ currentPost.commentCount }} comments</span>
+          <span class="stat-item"><span class="stat-icon">◉</span> {{ currentPost.viewCount }} views</span>
+        </div>
+      </div>
     </article>
     @if (authService.isAuthenticated()) { <button type="button" class="discussion-toggle" (click)="toggleDiscussion(currentPost.id)" [attr.aria-expanded]="isDiscussionOpen()" aria-controls="discussion-panel"><span class="discussion-toggle-icon" aria-hidden="true">◌</span><span>{{ isDiscussionOpen() ? 'Hide discussion' : 'View discussion' }}</span><strong>{{ currentPost.commentCount }} comments</strong><span class="toggle-chevron" aria-hidden="true">{{ isDiscussionOpen() ? '↑' : '↓' }}</span></button> }
     @if (authService.isAuthenticated() && isDiscussionOpen()) { <section class="discussion-section" id="discussion-panel" aria-labelledby="discussion-title">

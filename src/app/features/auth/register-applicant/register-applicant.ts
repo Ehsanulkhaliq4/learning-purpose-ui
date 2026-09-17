@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,14 +9,14 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './register-applicant.html',
   styleUrl: './register-applicant.css',
 })
-export class RegisterApplicant {
+export class RegisterApplicant implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal<boolean>(false);
-  readonly errorMessage = signal<string | null>(null);
-  readonly successMessage = signal<string | null>(null);
+  readonly toast = signal<{ type: 'success' | 'error'; message: string } | null>(null);
+  private toastTimer?: ReturnType<typeof setTimeout>;
 
   readonly registerForm = this.fb.nonNullable.group({
     firstName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -24,7 +24,7 @@ export class RegisterApplicant {
     username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(30)]],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]{7,15}$/)]],
-    password: ['', [Validators.required, Validators.minLength(8)]]
+    password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   isFieldInvalid(fieldName: keyof typeof this.registerForm.controls): boolean {
@@ -39,23 +39,30 @@ export class RegisterApplicant {
     }
 
     this.isSubmitting.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
 
     this.authService.registerApplicant(this.registerForm.getRawValue()).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.successMessage.set('Account created successfully. Opening your dashboard...');
+        this.showToast('success', 'Account created successfully. Opening your dashboard...');
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 1500);
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(
-          err?.error?.message || 'Registration failed. Please verify your details and try again.'
-        );
+        const errorMessage = err?.error?.error || err?.error?.message || 'Registration failed. Please verify your details and try again.';
+        this.showToast('error', errorMessage);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  private showToast(type: 'success' | 'error', message: string): void {
+    this.toast.set({ type, message });
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => this.toast.set(null), 4500);
   }
 }

@@ -1,21 +1,68 @@
-<section class="library-page">
-	<header class="page-header">
-		<div><p class="eyebrow">Academic library</p><h1>Find your next chapter.</h1><p class="intro">Browse books and learning material shared with the community.</p></div>
-		<a routerLink="/books/new" class="btn btn-primary">Add a book <span aria-hidden="true">+</span></a>
+<section class="quiz-page">
+	<header class="quiz-header">
+		<div>
+            <p class="eyebrow">Academic library</p>
+            <h1>Find your next chapter.</h1>
+            <p class="quiz-intro">Browse books and learning material shared with the community.</p>
+        </div>
+        <span class="quiz-count">&#9670; {{ books().length }} published</span>
 	</header>
+
 	<form class="search-bar" (submit)="$event.preventDefault(); search()">
 		<input type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" name="bookSearch" placeholder="Search books or authors..." aria-label="Search books" />
 		<button type="submit" class="btn btn-primary">Search</button>
 	</form>
-	@if (errorMessage()) { <div class="alert" role="alert">{{ errorMessage() }}</div> }
-	@if (isLoading()) { <div class="state">Loading books...</div> } @else if (books().length === 0) { <div class="state">No books found.</div> } @else {
-		<div class="book-grid">
+
+	@if (authService.isAuthenticated()) {
+      <a routerLink="/books/new" class="admin-entry">
+        <span class="admin-entry-mark">+</span>
+        <span>
+          <strong>Add a book</strong>
+          <small>Share a useful book or learning resource with the community.</small>
+        </span>
+        <span aria-hidden="true">&#8594;</span>
+      </a>
+	}
+	@if (errorMessage()) { <div class="alert-banner" role="alert">{{ errorMessage() }}</div> }
+	@if (isLoading()) { <div class="state-panel">Loading books...</div> } @else if (books().length === 0) { <div class="state-panel"><h2>No books found.</h2></div> } @else {
+		<div class="quiz-grid">
 			@for (book of books(); track book.id) {
-				<article class="book-card">
-					@if (book.coverImageUrl) { <img [src]="book.coverImageUrl" [alt]="book.title" /> } @else { <div class="cover-placeholder">LIBRARY</div> }
-					<div class="book-body"><p class="book-type">{{ book.contentType }}</p><h2>{{ book.title }}</h2><p class="author">By {{ book.author }}</p><p class="description">{{ book.description }}</p><div class="book-actions"><button type="button" class="btn btn-primary" (click)="download(book)">Download PDF</button><button type="button" class="delete-button" (click)="deleteBook(book)">Delete</button></div></div>
+				<article class="quiz-card">
+					<div class="book-cover-area">
+                        @if (book.coverImageUrl) { <img [src]="book.coverImageUrl" [alt]="book.title" /> } @else { <div class="cover-placeholder"><span>{{ book.title.substring(0, 1).toUpperCase() }}</span></div> }
+                    </div>
+					<div class="book-body">
+                        <div class="quiz-card-topline">
+                            <span class="category-label">{{ book.contentType }}</span>
+                        </div>
+                        <h2>{{ book.title }}</h2>
+                        <div class="book-meta">
+                            <span class="user-initial">{{ book.author.charAt(0).toUpperCase() }}</span>
+                            <span class="author">{{ book.author }}</span>
+                        </div>
+                        <p class="quiz-description">{{ book.description }}</p>
+                        <div class="post-actions">
+                            <button type="button" class="btn btn-sm btn-outline" (click)="viewDetails(book)">View details</button>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="download(book)">Download PDF</button>
+                            <button type="button" class="btn btn-sm delete-action" (click)="deleteBook(book)">Delete</button>
+                        </div>
+                    </div>
 				</article>
 			}
 		</div>
+    @if (selectedBook(); as book) {
+        <div class="dialog-overlay" (click)="closeDetails()">
+            <div class="dialog-content" (click)="$event.stopPropagation()">
+                @if (book.coverImageUrl) {
+                    <img [src]="book.coverImageUrl" [alt]="book.title" class="dialog-image" />
+                }
+                <h2>{{ book.title }}</h2>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Type:</strong> {{ book.contentType }}</p>
+                <p>{{ book.description }}</p>
+                <button (click)="closeDetails()" class="btn btn-primary dialog-close-btn">Close</button>
+            </div>
+        </div>
+    }
 	}
 </section>

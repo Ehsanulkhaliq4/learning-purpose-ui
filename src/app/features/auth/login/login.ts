@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -9,15 +9,15 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './login.css',
   templateUrl: './login.html',
 })
-export class Login {
+export class Login implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
   readonly showPassword = signal(false);
-  readonly errorMessage = signal<string | null>(null);
-  readonly forgotMessage = signal<string | null>(null);
+  readonly toast = signal<{ type: 'success' | 'error'; message: string } | null>(null);
+  private toastTimer?: ReturnType<typeof setTimeout>;
   readonly isForgotMode = signal(false);
 
   readonly loginForm = this.fb.nonNullable.group({
@@ -25,6 +25,16 @@ export class Login {
     password: ['', [Validators.required, Validators.minLength(6)]],
     email: ['', [Validators.required, Validators.email]],
   });
+
+  ngOnDestroy(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  private showToast(type: 'success' | 'error', message: string): void {
+    this.toast.set({ type, message });
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => this.toast.set(null), 4500);
+  }
 
   isInvalid(controlName: 'username' | 'password' | 'email'): boolean {
     const control = this.loginForm.get(controlName);
@@ -37,14 +47,10 @@ export class Login {
 
   showForgotPassword(): void {
     this.isForgotMode.set(true);
-    this.errorMessage.set(null);
-    this.forgotMessage.set(null);
   }
 
   showLogin(): void {
     this.isForgotMode.set(false);
-    this.errorMessage.set(null);
-    this.forgotMessage.set(null);
   }
 
   requestPasswordReset(): void {
@@ -55,8 +61,6 @@ export class Login {
     }
 
     this.isSubmitting.set(true);
-    this.errorMessage.set(null);
-    this.forgotMessage.set(null);
     this.authService.requestPasswordResetOtp(email).subscribe({
       next: () => {
         this.isSubmitting.set(false);
@@ -66,7 +70,7 @@ export class Login {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(err?.error?.message || 'Unable to send OTP. Check your email and try again.');
+        this.showToast('error', err?.error?.message || 'Unable to send OTP. Check your email and try again.');
       },
     });
   }
@@ -82,7 +86,6 @@ export class Login {
     }
 
     this.isSubmitting.set(true);
-    this.errorMessage.set(null);
 
     const { username, password } = this.loginForm.getRawValue();
     this.authService.login({ username, password }).subscribe({
@@ -92,9 +95,7 @@ export class Login {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.errorMessage.set(
-          err?.error?.message || 'Sign in failed. Check your username and password.'
-        );
+        this.showToast('error', err?.error?.message || 'Sign in failed. Check your username and password.');
       },
     });
   }

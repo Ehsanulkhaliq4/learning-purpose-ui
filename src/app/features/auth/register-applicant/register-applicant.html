@@ -27,16 +27,8 @@
     </div>
     <p class="form-intro">A few details are all you need to begin.</p>
 
-    @if (errorMessage()) {
-      <div class="alert-banner danger">
-        {{ errorMessage() }}
-      </div>
-    }
-
-    @if (successMessage()) {
-      <div class="alert-banner success">
-        {{ successMessage() }}
-      </div>
+    @if (toast(); as notice) {
+      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status"><span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span><span>{{ notice.message }}</span></div>
     }
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="register-form">
@@ -119,7 +111,7 @@
       </div>
 
       <div class="form-group">
-        <div class="label-row"><label for="password">Password</label><span>8+ characters</span></div>
+        <div class="label-row"><label for="password">Password</label><span>6+ characters</span></div>
         <input
           id="password"
           type="password"
@@ -130,7 +122,7 @@
           [class.input-error]="isFieldInvalid('password')"
         />
         @if (isFieldInvalid('password')) {
-          <span class="field-error">Password must be at least 8 characters</span>
+          <span class="field-error">Password must be at least 6 characters</span>
         }
       </div>
 

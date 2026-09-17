@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BookItem } from '../../../core/models/catalog.models';
 import { BookService } from '../../../core/services/book.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   imports: [FormsModule, RouterLink],
@@ -12,10 +13,12 @@ import { BookService } from '../../../core/services/book.service';
 })
 export class BookCatalog implements OnInit {
   private readonly bookService = inject(BookService);
+  readonly authService = inject(AuthService);
   readonly books = signal<BookItem[]>([]);
   readonly searchTerm = signal('');
   readonly isLoading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly selectedBook = signal<BookItem | null>(null);
 
   ngOnInit(): void { this.loadBooks(); }
 
@@ -58,5 +61,13 @@ export class BookCatalog implements OnInit {
       next: () => this.books.update((items) => items.filter((item) => item.id !== book.id)),
       error: (error) => this.errorMessage.set(error?.error?.message || 'Unable to delete this book.'),
     });
+  }
+
+  viewDetails(book: BookItem): void {
+    this.selectedBook.set(book);
+  }
+
+  closeDetails(): void {
+    this.selectedBook.set(null);
   }
 }

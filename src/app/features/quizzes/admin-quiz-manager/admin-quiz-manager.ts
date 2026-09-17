@@ -47,7 +47,10 @@ export class AdminQuizManager implements OnInit, OnDestroy {
   readonly questionForm = this.fb.nonNullable.group({
     content: ['', Validators.required],
     imageUrl: [''],
-    options: ['', Validators.required],
+    option1: ['', Validators.required],
+    option2: ['', Validators.required],
+    option3: ['', Validators.required],
+    option4: ['', Validators.required],
     answer: ['', Validators.required],
     marks: [1, [Validators.required, Validators.min(1)]],
     quizId: [0, [Validators.required, Validators.min(1)]],
@@ -108,11 +111,11 @@ export class AdminQuizManager implements OnInit, OnDestroy {
   submitQuestion(): void {
     if (this.questionForm.invalid || this.isSubmitting()) return this.questionForm.markAllAsTouched();
     const formValue = this.questionForm.getRawValue();
-    const options = formValue.options.split(/\r?\n/).map((option) => option.trim()).filter(Boolean);
-    if (options.length < 2) return this.showToast('error', 'Add at least two answer options, one per line.');
+    const options = [formValue.option1.trim(), formValue.option2.trim(), formValue.option3.trim(), formValue.option4.trim()];
+    if (new Set(options).size !== options.length) return this.showToast('error', 'Answer options must be different.');
     if (!options.includes(formValue.answer.trim())) return this.showToast('error', 'The correct answer must exactly match an option.');
     this.submit(() => this.quizService.createQuestion({ ...formValue, options, answer: formValue.answer.trim() }), () => {
-      this.questionForm.reset({ content: '', imageUrl: '', options: '', answer: '', marks: 1, quizId: this.selectedQuizId() });
+      this.questionForm.reset({ content: '', imageUrl: '', option1: '', option2: '', option3: '', option4: '', answer: '', marks: 1, quizId: this.selectedQuizId() });
       this.loadQuestions(this.selectedQuizId());
     }, 'Question added to the quiz.');
   }
