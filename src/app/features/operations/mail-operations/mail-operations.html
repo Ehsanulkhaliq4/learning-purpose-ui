@@ -1,0 +1,282 @@
+@if (!auth.isAdmin()) {
+  <section class="access-denied">
+    <span class="eyebrow">Restricted workspace</span>
+    <h1>Administrator access required</h1>
+    <p>Mail infrastructure tools are restricted to platform administrators.</p>
+  </section>
+} @else {
+  <section class="mail-page">
+    @if (toast(); as notice) {
+      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status">
+        <span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span>
+        <span>{{ notice.message }}</span>
+      </div>
+    }
+
+    <header class="mail-header">
+      <div>
+        <p class="eyebrow">Mail infrastructure</p>
+        <h1>Mail operations & broadcast</h1>
+        <p>Send diagnostic probes and broadcast platform announcements to registered users.</p>
+      </div>
+      <div class="header-actions">
+        <a routerLink="/admin/operations" class="btn btn-secondary">&larr; Back to operations</a>
+        <button class="btn btn-primary" type="button" (click)="probeConnection()" [disabled]="loading()">
+          {{ loading() ? 'Checking...' : 'Probe server' }}
+        </button>
+      </div>
+    </header>
+
+    <div class="mail-grid">
+      <!-- Diagnostics Panel -->
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Server diagnostics</p>
+            <h2>SMTP probe</h2>
+          </div>
+          <span class="status" [class.good]="mail()?.connected">
+            {{ mail()?.connected ? 'Online' : 'Offline' }}
+          </span>
+        </div>
+
+        <p class="diagnostic-copy">{{ mail()?.message || 'Probing mail server status...' }}</p>
+
+        <dl class="mail-details">
+          <div>
+            <dt>Host</dt>
+            <dd>{{ mail()?.host || '-' }}:{{ mail()?.port || '-' }}</dd>
+          </div>
+          <div>
+            <dt>Latency</dt>
+            <dd>{{ mail()?.latencyMs || 0 }} ms</dd>
+          </div>
+        </dl>
+
+        <div class="section-divider"></div>
+
+        <div class="panel-subheading">
+          <p class="eyebrow">Diagnostic test</p>
+          <h3>Send single test email</h3>
+        </div>
+        <div class="send-form">
+          <input
+            type="email"
+            [ngModel]="testRecipient()"
+            (ngModelChange)="testRecipient.set($event)"
+            placeholder="admin@example.com"
+            aria-label="Test email recipient"
+          />
+          <button
+            class="btn btn-primary"
+            type="button"
+            (click)="sendDiagnostic()"
+            [disabled]="testingProbe() || !testRecipient().trim()"
+          >
+            {{ testingProbe() ? 'Sending...' : 'Send probe' }}
+          </button>
+        </div>
+      </article>
+
+      <!-- Broadcast to All Users Panel -->
+      <article class="panel broadcast-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Mass distribution</p>
+            <h2>Broadcast to all users</h2>
+          </div>
+          <span class="badge">user_db</span>
+        </div>
+        <p class="panel-desc">Dispatches an email in batches to all active accounts recorded in <code>user_db</code>.</p>
+
+        <form class="broadcast-form" (submit)="$event.preventDefault(); sendBroadcast()">
+          <div class="form-group">
+            <label for="broadcastSubject">Email subject</label>
+            <input
+              id="broadcastSubject"
+              type="text"
+              [ngModel]="broadcastSubject()"
+              (ngModelChange)="broadcastSubject.set($event)"
+              name="subject"
+              placeholder="e.g. Important update regarding your LearningPurpose account"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="broadcastBatchSize">Batch size</label>
+              <input
+                id="broadcastBatchSize"
+                type="number"
+                min="1"
+                max="500"
+                [ngModel]="broadcastBatchSize()"
+                (ngModelChange)="broadcastBatchSize.set($event)"
+                name="batchSize"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="broadcastHtmlBody">HTML content</label>
+            <textarea
+              id="broadcastHtmlBody"
+              rows="5"
+              [ngModel]="broadcastHtmlBody()"
+              (ngModelChange)="broadcastHtmlBody.set($event)"
+              name="htmlBody"
+              placeholder="<p>Dear Learner,</p><p>We have released new courses...</p>"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              class="btn btn-primary btn-lg"
+              type="submit"
+              [disabled]="broadcasting() || !broadcastSubject().trim() || !broadcastHtmlBody().trim()"
+            >
+              {{ broadcasting() ? 'Sending broadcast...' : 'Broadcast to all users' }}
+            </button>
+          </div>
+        </form>
+
+        @if (broadcastResult()) {
+          <div class="broadcast-summary">
+            <h4>Broadcast report</h4>
+            <div class="summary-metrics">
+              <div>
+                <span>Total targeted</span>
+                <strong>{{ broadcastResult()?.totalRecipients ?? 0 }}</strong>
+              </div>
+              <div>
+                <span>Successful</span>
+                <strong class="text-success">{{ broadcastResult()?.successful ?? 0 }}</strong>
+              </div>
+              <div>
+                <span>Failed</span>
+                <strong class="text-danger">{{ broadcastResult()?.failed ?? 0 }}</strong>
+              </div>
+              <div>
+                <span>Duration</span>
+                <strong>{{ broadcastResult()?.executionTimeMs ?? 0 }} ms</strong>
+              </div>
+            </div>
+            @if (broadcastResult()?.message) {
+              <p class="summary-msg">{{ broadcastResult()?.message }}</p>
+            }
+          </div>
+        }
+      </article>
+    </div>
+
+    <!-- Mailpit Inbox Viewer Section -->
+    <section class="panel inbox-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Development mailbox</p>
+          <h2>Mailpit Inbox viewer</h2>
+        </div>
+        <div class="inbox-actions">
+          <button class="btn btn-secondary btn-sm" type="button" (click)="loadInbox()" [disabled]="inboxLoading()">
+            {{ inboxLoading() ? 'Refreshing...' : 'Refresh inbox' }}
+          </button>
+          <button class="btn btn-danger btn-sm" type="button" (click)="purgeInboxMessages()" [disabled]="purging() || inboxMessages().length === 0">
+            {{ purging() ? 'Purging...' : 'Purge inbox' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="inbox-layout">
+        <!-- Messages List -->
+        <div class="inbox-list-col">
+          <div class="inbox-list-header">
+            <span>{{ inboxTotal() }} total emails</span>
+            <div class="inbox-pagination">
+              <button class="btn-page" [disabled]="inboxPage() <= 1 || inboxLoading()" (click)="loadInbox(inboxPage() - 1)">&larr;</button>
+              <small>Page {{ inboxPage() }}</small>
+              <button class="btn-page" [disabled]="inboxMessages().length < inboxSize() || inboxLoading()" (click)="loadInbox(inboxPage() + 1)">&rarr;</button>
+            </div>
+          </div>
+
+          <div class="inbox-message-list">
+            @for (msg of inboxMessages(); track msg.id) {
+              <div
+                class="inbox-item"
+                [class.selected]="selectedMessage()?.id === msg.id"
+                (click)="selectMessage(msg)"
+              >
+                <div class="inbox-item-top">
+                  <strong class="inbox-from">{{ formatAddress(msg.from) }}</strong>
+                  <time>{{ (msg.created || msg.date) | date:'shortTime' }}</time>
+                </div>
+                <div class="inbox-subject">{{ msg.subject || '(No subject)' }}</div>
+                <div class="inbox-snippet">{{ msg.snippet || 'Click to preview message content...' }}</div>
+              </div>
+            } @empty {
+              <div class="empty-inbox">
+                <p>No messages sitting in Mailpit inbox.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Message Detail / Preview -->
+        <div class="inbox-preview-col">
+          @if (selectedMessage()) {
+            <div class="preview-header">
+              <div class="preview-meta">
+                <h3>{{ selectedMessage()?.subject || '(No subject)' }}</h3>
+                <div class="preview-details">
+                  <div><span>From:</span> <strong>{{ formatAddress(selectedMessage()?.from) }}</strong></div>
+                  <div><span>To:</span> <strong>{{ formatAddress(selectedMessage()?.to) }}</strong></div>
+                  <div><span>Date:</span> <small>{{ (selectedMessage()?.created || selectedMessage()?.date) | date:'medium' }}</small></div>
+                  <div><span>Size:</span> <small>{{ formatBytes(selectedMessage()?.size) }}</small></div>
+                </div>
+              </div>
+              <div class="preview-mode-switch">
+                <button
+                  type="button"
+                  class="mode-btn"
+                  [class.active]="viewBodyMode() === 'html'"
+                  (click)="viewBodyMode.set('html')"
+                >HTML</button>
+                <button
+                  type="button"
+                  class="mode-btn"
+                  [class.active]="viewBodyMode() === 'text'"
+                  (click)="viewBodyMode.set('text')"
+                >Text</button>
+                <button
+                  type="button"
+                  class="mode-btn"
+                  [class.active]="viewBodyMode() === 'raw'"
+                  (click)="viewBodyMode.set('raw')"
+                >Raw JSON</button>
+              </div>
+            </div>
+
+            <div class="preview-body">
+              @if (viewBodyMode() === 'html') {
+                @if (selectedMessageHtml()) {
+                  <iframe class="email-iframe" [srcdoc]="selectedMessageHtml()" sandbox="allow-same-origin" title="Email preview"></iframe>
+                } @else {
+                  <div class="empty-body">No HTML body content available.</div>
+                }
+              } @else if (viewBodyMode() === 'text') {
+                <pre class="email-text-body">{{ selectedMessageText() || 'No plain text body content.' }}</pre>
+              } @else {
+                <pre class="email-raw-json">{{ selectedMessage() | json }}</pre>
+              }
+            </div>
+          } @else {
+            <div class="empty-preview">
+              <p>Select an email from the list to preview headers and body content.</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  </section>
+}

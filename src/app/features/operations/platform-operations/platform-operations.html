@@ -1,17 +1,60 @@
 @if (!auth.isAdmin()) { <section class="access-denied"><span class="eyebrow">Restricted workspace</span><h1>Administrator access required</h1><p>Platform operations are available to administrators only.</p></section> } @else {
 <section class="ops-page">
+  @if (toast(); as notice) {
+    <div class="toast" [class.toast-error]="notice.type === 'error'" role="status">
+      <span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span>
+      <span>{{ notice.message }}</span>
+    </div>
+  }
   <header class="ops-header"><div><p class="eyebrow">Platform administration</p><h1>Operations console</h1><p>Monitor infrastructure health and inspect the services behind LearningPurpose.</p></div><button class="btn btn-secondary" type="button" (click)="refresh()" [disabled]="loading()">Refresh data</button></header>
-  @if (error()) { <p class="alert error">{{ error() }}</p> }
   <section class="health-grid" aria-label="Service health">
     <article class="health-card"><span class="health-icon kafka">K</span><div><span>Kafka</span><strong>{{ topics().length }} topics</strong></div></article><article class="health-card"><span class="health-icon database">D</span><div><span>Database</span><strong>{{ tables().length }} tables</strong></div></article><article class="health-card"><span class="health-icon storage">M</span><div><span>MinIO</span><strong>{{ buckets().length }} buckets</strong></div></article><article class="health-card"><span class="health-icon" [class.online]="mail()?.connected">@</span><div><span>Mail server</span><strong>{{ mail()?.connected ? 'Connected' : 'Unavailable' }}</strong></div></article>
   </section>
   <section class="ops-grid">
     <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Event streaming</p><h2>Kafka topics</h2></div><select [value]="selectedTopic()" (change)="selectTopic($any($event.target).value)">@for (topic of topics(); track topic) { <option [value]="topic">{{ topic }}</option> }</select></div><div class="table-wrap"><table><thead><tr><th>Offset</th><th>Partition</th><th>Key</th><th>Payload</th><th>Time</th></tr></thead><tbody>@for (message of messages(); track message.offset) {<tr><td>{{ message.offset }}</td><td>{{ message.partition }}</td><td>{{ message.key || '-' }}</td><td class="payload">{{ message.payload }}</td><td>{{ message.timestamp | date:'short' }}</td></tr>} @empty {<tr><td colspan="5" class="empty">No messages available.</td></tr>}</tbody></table></div></article>
-    <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Relational data</p><h2>Table schema</h2></div><select [value]="selectedTable()" (change)="selectTable($any($event.target).value)">@for (table of tables(); track table) { <option [value]="table">{{ table }}</option> }</select></div><div class="table-wrap"><table><thead><tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th></tr></thead><tbody>@for (column of schema(); track column.columnName) {<tr><td>{{ column.columnName }}</td><td>{{ column.dataType }}{{ column.maxLength ? ' (' + column.maxLength + ')' : '' }}</td><td>{{ column.nullable ? 'Yes' : 'No' }}</td><td>{{ column.defaultValue || '-' }}</td></tr>} @empty {<tr><td colspan="4" class="empty">Select a table to inspect it.</td></tr>}</tbody></table></div></article>
+    <article class="panel table-explorer">
+      <div class="panel-heading"><div><p class="eyebrow">Relational data</p><h2>Table browser</h2></div><select [value]="selectedDatabase()" (change)="selectDatabase($any($event.target).value)">@for (database of databases(); track database) { <option [value]="database">{{ database }}</option> }</select></div>
+      <div class="panel-heading nested-heading"><div><span class="eyebrow">Selected table</span></div><select [value]="selectedTable()" (change)="selectTable($any($event.target).value)" [disabled]="!tables().length">@for (table of tables(); track table) { <option [value]="table">{{ table }}</option> }</select></div>
+      
+      <div class="schema-tabs"><span class="eyebrow">Table structure</span></div>
+      <div class="table-wrap schema-wrap"><table><thead><tr><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th></tr></thead><tbody>@for (column of schema(); track column.columnName) {<tr><td>{{ column.columnName }}</td><td>{{ column.dataType }}{{ column.maxLength ? ' (' + column.maxLength + ')' : '' }}</td><td>{{ column.nullable ? 'Yes' : 'No' }}</td><td>{{ column.defaultValue || '-' }}</td></tr>} @empty {<tr><td colspan="4" class="empty">Select a table to inspect it.</td></tr>}</tbody></table></div>
+
+      <div class="schema-tabs row-data-header"><span class="eyebrow">Table rows</span>
+        @if (getTotalPagesCount() > 1) {
+          <div class="pagination">
+            <button type="button" [disabled]="getCurrentPageNumber() === 0 || tableDataLoading()" (click)="loadTableData(getCurrentPageNumber() - 1)">&larr;</button>
+            <small>Page {{ getCurrentPageNumber() + 1 }} of {{ getTotalPagesCount() }}</small>
+            <button type="button" [disabled]="getCurrentPageNumber() >= getTotalPagesCount() - 1 || tableDataLoading()" (click)="loadTableData(getCurrentPageNumber() + 1)">&rarr;</button>
+          </div>
+        }
+      </div>
+      <div class="table-wrap data-wrap" [class.loading]="tableDataLoading()">
+        @if (getTableRowItems().length) {
+          <table>
+            <thead><tr>@for (col of getTableColumns(); track col) { <th>{{ col }}</th> }</tr></thead>
+            <tbody>
+              @for (row of getTableRowItems(); track $index) {
+                <tr>@for (col of getTableColumns(); track col) { <td>{{ row[col] ?? '-' }}</td> }</tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <div class="empty-data">{{ tableDataLoading() ? 'Loading rows...' : 'No rows available in this table.' }}</div>
+        }
+      </div>
+    </article>
   </section>
   <section class="ops-grid lower-grid">
     <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Object storage</p><h2>Bucket telemetry</h2></div><select [value]="selectedBucket()" (change)="selectBucket($any($event.target).value)">@for (bucket of buckets(); track bucket.bucketName) { <option [value]="bucket.bucketName">{{ bucket.bucketName }}</option> }</select></div><div class="bucket-summary">@for (bucket of buckets(); track bucket.bucketName) { @if (bucket.bucketName === selectedBucket()) { <strong>{{ bucket.totalSizeMb | number:'1.0-2' }} MB</strong><span>{{ bucket.totalObjects }} objects - created {{ bucket.createdAt | date:'mediumDate' }}</span> } }</div><div class="object-list">@for (object of objects(); track object.objectName) {<div><span>{{ object.objectName }}</span><small>{{ formatBytes(object.sizeBytes) }} - {{ object.lastModified | date:'short' }}</small></div>} @empty {<p class="empty">No objects in this bucket.</p>}</div></article>
-    <article class="panel"><div class="panel-heading"><div><p class="eyebrow">Diagnostics</p><h2>Mail probe</h2></div><span class="status" [class.good]="mail()?.connected">{{ mail()?.connected ? 'Online' : 'Offline' }}</span></div><p class="diagnostic-copy">{{ mail()?.message || 'Checking mail server...' }}</p><dl class="mail-details"><div><dt>Host</dt><dd>{{ mail()?.host || '-' }}:{{ mail()?.port || '-' }}</dd></div><div><dt>Latency</dt><dd>{{ mail()?.latencyMs || 0 }} ms</dd></div></dl><div class="send-form"><input type="email" [value]="recipient()" (input)="recipient.set($any($event.target).value)" placeholder="admin@example.com" aria-label="Test email recipient"><button class="btn btn-primary" type="button" (click)="sendMail()">Send test</button></div></article>
+    <article class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">Diagnostics</p><h2>Mail probe</h2></div><span class="status" [class.good]="mail()?.connected">{{ mail()?.connected ? 'Online' : 'Offline' }}</span></div>
+      <p class="diagnostic-copy">{{ mail()?.message || 'Checking mail server...' }}</p>
+      <dl class="mail-details"><div><dt>Host</dt><dd>{{ mail()?.host || '-' }}:{{ mail()?.port || '-' }}</dd></div><div><dt>Latency</dt><dd>{{ mail()?.latencyMs || 0 }} ms</dd></div></dl>
+      <div class="send-form"><input type="email" [value]="recipient()" (input)="recipient.set($any($event.target).value)" placeholder="admin@example.com" aria-label="Test email recipient"><button class="btn btn-primary" type="button" (click)="sendMail()">Send test</button></div>
+      <div class="panel-footer-action">
+        <a routerLink="/admin/mail" class="btn btn-sm btn-outline">Open Mail Manager &rarr;</a>
+      </div>
+    </article>
   </section>
   <section class="panel ddl-panel"><div class="panel-heading"><div><p class="eyebrow">Controlled migration</p><h2>Execute DDL</h2></div><span class="warning-label">Review before running</span></div><textarea [value]="ddl()" (input)="ddl.set($any($event.target).value)" placeholder="ALTER TABLE ..." aria-label="DDL statement"></textarea><div class="ddl-footer"><span>{{ ddlResult()?.message || 'Only approved statements should be executed here.' }}</span><button class="btn btn-primary" type="button" (click)="runDdl()" [disabled]="!ddl().trim()">Run statement</button></div></section>
 </section> }

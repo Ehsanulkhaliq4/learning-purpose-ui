@@ -108,6 +108,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/mail',
+        loadComponent: () =>
+          import('./features/operations/mail-operations/mail-operations').then(
+            (m) => m.MailOperations
+          )
+      },
+      {
         path: 'quizzes/:id',
         loadComponent: () =>
           import('./features/quizzes/quiz-take/quiz-take').then(
