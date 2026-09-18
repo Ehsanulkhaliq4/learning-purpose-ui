@@ -101,6 +101,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/operations',
+        loadComponent: () =>
+          import('./features/operations/platform-operations/platform-operations').then(
+            (m) => m.PlatformOperations
+          )
+      },
+      {
         path: 'quizzes/:id',
         loadComponent: () =>
           import('./features/quizzes/quiz-take/quiz-take').then(
