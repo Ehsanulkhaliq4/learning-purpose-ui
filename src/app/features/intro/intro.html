@@ -1,56 +1,155 @@
 <section class="intro-section">
   <div class="intro-copy-column">
-    <p class="eyebrow">A clearer way to learn</p>
+    <p class="eyebrow">All-in-One Learning Platform</p>
     <h1>Build knowledge that moves with you.</h1>
-    <p class="intro-copy">Learn with focused courses, practical assessments, and guidance designed around your progress.</p>
+    <p class="intro-copy">Learn with interactive video streaming, test your mastery in the exam portal, explore deep-dive blogs, and get 24/7 help from the AI Copilot.</p>
     <div class="intro-actions">
-      <a routerLink="/auth/login" class="btn btn-primary">Login</a>
-      <a routerLink="/auth/register" class="btn btn-secondary">Register</a>
+      <a routerLink="/auth/login" class="btn btn-primary">Login to Learn</a>
+      <a routerLink="/auth/register" class="btn btn-secondary">Create Account</a>
     </div>
     <div class="trust-line">
       <span class="trust-dot"></span>
-      <span>Designed for consistent, confident progress</span>
+      <span>Live Video Classroom • Exam Portal • Tech Blog • AI Assistant</span>
     </div>
   </div>
 
-  <div class="learning-visual">
-    <img
-      src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1100&q=85"
-      alt="Students learning together around a table"
-    />
-    <div class="visual-label">Learning in motion <span></span></div>
-    <div class="progress-card">
-      <div class="progress-heading">
-        <span>Weekly progress</span>
-        <strong>78%</strong>
+  <div class="learning-visual" aria-label="Interactive learning platform collage showing video streaming, exam portal, blogs, and AI chatbot">
+    <!-- 1. Floating AI Chatbot Badge (Top-Left) -->
+    <div class="visual-floating-ai">
+      <div class="ai-orb">
+        <span class="sparkle-icon">✨</span>
+        <span class="ai-pulse-dot"></span>
       </div>
-      <div class="progress-track"><span></span></div>
-      <p>12 lessons completed this week</p>
+      <div class="ai-bubble">
+        <span class="ai-label">AI Copilot</span>
+        <small class="ai-hint">"Exam question explained!"</small>
+      </div>
     </div>
-    <div class="focus-card">
-      <span class="focus-icon">↗</span>
-      <span><strong>Next focus</strong><small>Data structures</small></span>
+
+    <!-- 2. Back-Left Card (Technical Blog & Knowledge Hub) -->
+    <div class="visual-card visual-card-back">
+      <img
+        src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=85"
+        alt="Technical blog and notes setup"
+        class="card-img"
+      />
+      <div class="card-badge-glass" title="Blog Article">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+      </div>
+      <div class="blog-preview-tag">
+        <span>Blog • 5m read</span>
+      </div>
+    </div>
+
+    <!-- 3. Main Center-Right Card (Live Video Streaming & Classroom) -->
+    <div class="visual-card visual-card-main">
+      <img
+        src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&w=800&q=85"
+        alt="Student learning via live classroom stream"
+        class="card-img video-stream-img"
+      />
+      <!-- Top Video Progress Bar -->
+      <div class="story-progress-bar">
+        <span class="story-progress-fill"></span>
+      </div>
+      <!-- Top Right Video/Stream Time Badge -->
+      <div class="story-time-badge">
+        <span class="live-dot-indicator"></span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>18:45</span>
+      </div>
+      <!-- Video Lecture Banner -->
+      <div class="video-lecture-tag">
+        <small>Classroom Stream</small>
+        <strong>Algorithms & Data Structures</strong>
+      </div>
+      <!-- Bottom Video Player Controls -->
+      <div class="story-bottom-controls">
+        <div class="story-pill-track">
+          <span class="track-progress"></span>
+          <span class="track-thumb"></span>
+        </div>
+        <div class="story-bubble-dot" title="Speed">1.5x</div>
+        <div class="story-bubble-dot" title="Audio">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Floating Exam Score / Reaction Badge (Right) -->
+    <div class="visual-floating-heart" title="98% Exam Mastery">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </svg>
+    </div>
+
+    <!-- 5. Foreground Card (Exam Portal & Quiz Assessment) -->
+    <div class="visual-card visual-card-front">
+      <div class="front-card-media">
+        <img
+          src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=600&q=85"
+          alt="Online examination assessment"
+          class="front-media-img"
+        />
+        <div class="front-card-badge" title="Exam Portal">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+        </div>
+        <div class="exam-score-chip">
+          <span>Score: 98%</span>
+        </div>
+      </div>
+      <!-- Quiz Option Preview Bars -->
+      <div class="front-card-quiz-preview">
+        <div class="quiz-option-row is-correct">
+          <span class="quiz-radio"></span>
+          <span class="quiz-skeleton quiz-long"></span>
+        </div>
+        <div class="quiz-option-row">
+          <span class="quiz-radio"></span>
+          <span class="quiz-skeleton quiz-short"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Floating Profile Avatar with Online Status (Bottom) -->
+    <div class="visual-floating-avatar">
+      <img
+        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=85"
+        alt="Active student online"
+        class="avatar-img"
+      />
+      <span class="avatar-online-dot"></span>
     </div>
   </div>
 </section>
 
-<section class="metric-strip" aria-label="LearningPurpose overview">
-  <div><strong>24/7</strong><span>guided learning</span></div>
-  <div><strong>92%</strong><span>weekly completion</span></div>
-  <div><strong>1 place</strong><span>for every next step</span></div>
+<section class="metric-strip" aria-label="LearningPurpose platform features">
+  <div><strong>Video Stream</strong><span>HD Classroom Lessons</span></div>
+  <div><strong>Exam Portal</strong><span>Timed Assessments & Quizzes</span></div>
+  <div><strong>AI Copilot</strong><span>Instant Academic Support</span></div>
 </section>
 
-<section class="feature-strip" aria-label="Learning features">
+<section class="feature-strip" aria-label="Platform pillars">
   <article class="feature-item">
     <span class="feature-number">01</span>
-    <div><h2>Learn with direction</h2><p>Clear paths that turn curiosity into momentum.</p></div>
+    <div><h2>Stream & Learn</h2><p>High-quality video lectures with bookmarking and playback speed control.</p></div>
   </article>
   <article class="feature-item">
     <span class="feature-number">02</span>
-    <div><h2>Practice what matters</h2><p>Assessments that make your next step obvious.</p></div>
+    <div><h2>Exams & Quizzes</h2><p>Instant scoring, timed evaluations, and deep accuracy analytics.</p></div>
   </article>
   <article class="feature-item">
     <span class="feature-number">03</span>
-    <div><h2>Keep your rhythm</h2><p>A calm workspace built for meaningful progress.</p></div>
+    <div><h2>Blog & AI Chatbot</h2><p>Read curated guides and ask the AI Copilot to break down difficult concepts.</p></div>
   </article>
 </section>
