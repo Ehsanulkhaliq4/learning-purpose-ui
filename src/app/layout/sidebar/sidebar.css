@@ -1,5 +1,6 @@
 .sidebar-wrapper {
   width: 260px;
+  flex: 0 0 260px;
   height: 100vh;
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--sidebar-border);
