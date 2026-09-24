@@ -1,5 +1,85 @@
 <section class="classroom-page">
-	<header class="page-header"><div><p class="eyebrow">Classroom media</p><h1>Learn beyond the page.</h1><p class="intro">Video lessons and recorded classroom sessions for focused study.</p></div><a routerLink="/books" class="text-link">Browse academic library</a></header>
-	<section class="upload-panel"><div><p class="eyebrow">Publish a lesson</p><h2>Add classroom video</h2></div><form [formGroup]="uploadForm" (ngSubmit)="upload()"><label>Title <input formControlName="title" placeholder="e.g. Introduction to algebra" /></label><label>Description <textarea formControlName="description" rows="2" placeholder="What will students learn?"></textarea></label><label class="file-picker">Video file <input type="file" accept="video/*" (change)="onFileSelected($event)" /><span>{{ selectedFile()?.name || 'Choose an MP4 or other video file' }}</span></label><button class="btn btn-primary" type="submit" [disabled]="isSubmitting()">{{ isSubmitting() ? 'Uploading...' : 'Upload video' }}</button></form></section>
-	@if (errorMessage()) { <p class="message error">{{ errorMessage() }}</p> } @if (successMessage()) { <p class="message success">{{ successMessage() }}</p> } @if (isLoading()) { <p class="loading">Loading classroom videos...</p> } @else if (!videos().length) { <section class="empty-classroom"><div class="media-mark">PLAY</div><p class="eyebrow">Your classroom library</p><h2>No videos have been published yet.</h2><p>Upload the first lesson above and it will be ready for students to stream here.</p></section> } @else { <section class="video-grid" aria-label="Classroom videos">@for (video of videos(); track video.id) { <article class="video-card"><video controls preload="metadata" [src]="streamUrl(video)" (play)="recordView(video)"></video><div class="video-content"><div class="video-heading"><h2>{{ video.title }}</h2><button class="delete-button" type="button" (click)="deleteVideo(video)" aria-label="Delete video">Delete</button></div><p>{{ video.description || 'A classroom recording from the Learning Purpose library.' }}</p><div class="video-meta"><span>{{ video.viewCount }} views</span><span>{{ video.createdAt | date:'mediumDate' }}</span><button class="like-button" type="button" [class.liked]="isLiked(video)" (click)="toggleLike(video)">{{ isLiked(video) ? 'Liked' : 'Like' }} · {{ video.likeCount }}</button></div></div></article> } </section> }
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Classroom media</p>
+      <h1>Learn beyond the page.</h1>
+      <p class="intro">Video lessons and recorded classroom sessions for focused study.</p>
+    </div>
+    <span class="count-badge">◆ {{ videos().length }} published</span>
+  </header>
+
+  <form class="search-bar" (submit)="$event.preventDefault()">
+    <input
+      type="search"
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+      name="videoSearch"
+      placeholder="Search videos by title or description..."
+      aria-label="Search videos"
+    />
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <a routerLink="/media/new" class="admin-entry">
+    <span class="admin-entry-mark">+</span>
+    <span>
+      <strong>Add classroom video</strong>
+      <small>Publish a new lesson or recorded classroom session for students.</small>
+    </span>
+    <span aria-hidden="true">&#8594;</span>
+  </a>
+
+  @if (errorMessage()) {
+    <div class="alert-banner" role="alert">{{ errorMessage() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="state-panel">Loading classroom videos...</div>
+  } @else if (filteredVideos().length === 0) {
+    <div class="state-panel">
+      <h2>No classroom videos found.</h2>
+      <p>Try searching for a different keyword or upload a new lesson video.</p>
+    </div>
+  } @else {
+    <section class="video-grid" aria-label="Classroom videos">
+      @for (video of filteredVideos(); track video.id) {
+        <article class="video-card">
+          <div class="video-media-wrapper">
+            <video
+              controls
+              preload="metadata"
+              [src]="streamUrl(video)"
+              (play)="recordView(video)"
+            ></video>
+          </div>
+          <div class="video-content">
+            <div class="video-heading">
+              <h2>{{ video.title }}</h2>
+              <button
+                class="delete-button"
+                type="button"
+                (click)="deleteVideo(video)"
+                aria-label="Delete video"
+              >
+                Delete
+              </button>
+            </div>
+            <p>{{ video.description || 'A classroom recording from the Learning Purpose library.' }}</p>
+            <div class="video-meta">
+              <span>{{ video.viewCount }} views</span>
+              <span>{{ video.createdAt | date:'mediumDate' }}</span>
+              <button
+                class="like-button"
+                type="button"
+                [class.liked]="isLiked(video)"
+                (click)="toggleLike(video)"
+              >
+                {{ isLiked(video) ? 'Liked' : 'Like' }} · {{ video.likeCount }}
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </section>
+  }
 </section>

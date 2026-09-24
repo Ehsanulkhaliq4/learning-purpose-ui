@@ -1,0 +1,37 @@
+<section class="classroom-page">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Classroom library</p>
+            <h1>Your classroom videos</h1>
+        </div>
+        <a routerLink="/media" class="btn btn-secondary">Back to upload</a>
+    </header>
+
+    <form class="search-bar" (submit)="$event.preventDefault()">
+        <input type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" name="videoSearch" placeholder="Search videos by title or description..." />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    @if (errorMessage()) { <p class="message error">{{ errorMessage() }}</p> }
+    @if (isLoading()) { <p class="loading">Loading classroom videos...</p> } @else {
+        <section class="video-grid" aria-label="Classroom videos">
+            @for (video of filteredVideos(); track video.id) {
+                <article class="video-card">
+                    <video controls preload="metadata" [src]="streamUrl(video)" (play)="recordView(video)"></video>
+                    <div class="video-content">
+                        <div class="video-heading">
+                            <h2>{{ video.title }}</h2>
+                            <button class="delete-button" type="button" (click)="deleteVideo(video)" aria-label="Delete video">Delete</button>
+                        </div>
+                        <p>{{ video.description || 'A classroom recording from the Learning Purpose library.' }}</p>
+                        <div class="video-meta">
+                            <span>{{ video.viewCount }} views</span>
+                            <span>{{ video.createdAt | date:'mediumDate' }}</span>
+                            <button class="like-button" type="button" [class.liked]="isLiked(video)" (click)="toggleLike(video)">{{ isLiked(video) ? 'Liked' : 'Like' }} · {{ video.likeCount }}</button>
+                        </div>
+                    </div>
+                </article>
+            }
+        </section>
+    }
+</section>

@@ -137,6 +137,16 @@ export const routes: Routes = [
           import('./features/media/video-classroom/video-classroom').then((m) => m.VideoClassroom)
       },
       {
+        path: 'media/new',
+        loadComponent: () =>
+          import('./features/media/video-create/video-create').then((m) => m.VideoCreate)
+      },
+      {
+        path: 'videos',
+        redirectTo: 'media',
+        pathMatch: 'full'
+      },
+      {
         path: 'blog',
         loadComponent: () =>
           import('./features/blog/post-feed/post-feed').then((m) => m.PostFeed)

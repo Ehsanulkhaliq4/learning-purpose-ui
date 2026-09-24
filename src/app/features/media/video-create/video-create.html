@@ -1,0 +1,81 @@
+<section class="create-page">
+  <div class="top-nav">
+    <a routerLink="/media" class="back-link">← Back to classroom library</a>
+  </div>
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Classroom media</p>
+      <h1>Add classroom video</h1>
+      <p class="intro">Publish a video lesson or recorded session for your students.</p>
+    </div>
+  </header>
+
+  <article class="composer-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Publish a lesson</p>
+        <h2>Lesson video details</h2>
+      </div>
+      <span class="panel-mark">+</span>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-banner danger" role="alert">{{ errorMessage() }}</div>
+    }
+
+    <form [formGroup]="videoForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-group">
+        <label for="video-title">Video title</label>
+        <input
+          id="video-title"
+          type="text"
+          formControlName="title"
+          class="form-control"
+          placeholder="e.g. Introduction to algebra"
+          [class.input-error]="isInvalid('title')"
+        />
+        @if (isInvalid('title')) {
+          <span class="field-error">Video title is required</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="video-description">Description <span>optional</span></label>
+        <textarea
+          id="video-description"
+          rows="5"
+          formControlName="description"
+          placeholder="What will students learn from this lesson?"
+          class="form-control"
+        ></textarea>
+      </div>
+
+      <div class="image-picker">
+        <label for="video-file" class="image-label">
+          <span class="upload-icon">+</span>
+          <span>
+            <strong>{{ selectedFile()?.name || 'Add a video file' }}</strong>
+            <small>{{ selectedFile() ? 'File ready to upload' : 'Choose an MP4 or other video file' }}</small>
+          </span>
+        </label>
+        <input
+          id="video-file"
+          type="file"
+          accept="video/*"
+          (change)="onFileSelected($event)"
+        />
+        @if (selectedFile()) {
+          <button type="button" class="remove-btn" (click)="removeFile()">Remove</button>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/media" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Uploading...' : 'Upload video' }}
+          @if (!isSubmitting()) { <span aria-hidden="true">→</span> }
+        </button>
+      </div>
+    </form>
+  </article>
+</section>
