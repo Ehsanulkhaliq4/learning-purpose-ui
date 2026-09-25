@@ -1,5 +1,5 @@
 <div class="dashboard-layout">
-  <app-sidebar />
+  <app-sidebar (toggleAiDrawer)="toggleDrawer()" />
   <div class="main-canvas">
     <app-topbar (toggleAiDrawer)="toggleDrawer()" />
     <main class="viewport-workspace">

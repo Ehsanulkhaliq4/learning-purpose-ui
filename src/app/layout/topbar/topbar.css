@@ -153,8 +153,7 @@
   }
 
   .topbar-actions {
-    width: 100%;
-    justify-content: flex-end;
+    display: none;
   }
 
   .logout-btn {

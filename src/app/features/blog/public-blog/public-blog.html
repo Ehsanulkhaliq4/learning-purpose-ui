@@ -1,0 +1,55 @@
+<section class="explore-page">
+  @if (selectedPost(); as post) {
+    <a routerLink="/explore" class="back-link">&#8592; Back to explore</a>
+    <article class="story-detail">
+      <p class="eyebrow">Learning story</p>
+      <h1>{{ post.name }}</h1>
+      <div class="story-meta"><span>By {{ post.postedBy }}</span><span>{{ post.createdAt | date:'mediumDate' }}</span><span>{{ post.viewCount }} views</span></div>
+      <p class="story-content">{{ post.content }}</p>
+      <div class="tag-row">@for (tag of post.tags; track tag) { <span class="tag">#{{ tag }}</span> }</div>
+    </article>
+  } @else {
+    <header class="explore-header">
+      <div><p class="eyebrow">The LearningPurpose journal</p><h1>Ideas to keep you moving.</h1><p class="intro">Fresh perspectives from our learning community, plus the latest ways to learn with us.</p></div>
+      <span class="header-mark" aria-hidden="true">LP</span>
+    </header>
+    <div class="explore-layout">
+      <aside class="side-column left-column" aria-label="Learning shortcuts">
+        <div class="side-card quiz-promo">
+          <span class="side-icon" aria-hidden="true">?</span>
+          <p class="eyebrow">Test yourself</p>
+          <h2>Ready for a quick quiz?</h2>
+          <p>Turn what you read into practice with a quiz made for curious minds.</p>
+          <a routerLink="/quizzes" class="side-action">Explore quizzes <span aria-hidden="true">&#8594;</span></a>
+        </div>
+        <div class="quote-card">
+          <span aria-hidden="true">“</span>
+          <p>Small steps every day add up to remarkable progress.</p>
+        </div>
+      </aside>
+
+      <section class="stories-section" aria-labelledby="stories-title">
+        <div class="section-heading"><div><p class="eyebrow">From the community</p><h2 id="stories-title">Latest stories</h2></div><span>{{ posts().length }} published</span></div>
+        @if (errorMessage()) { <div class="state-panel error" role="alert">{{ errorMessage() }}</div> }
+        @if (isLoading()) { <div class="state-panel">Loading the latest stories...</div> }
+        @else if (posts().length === 0 && !errorMessage()) { <div class="state-panel">No stories have been published yet.</div> }
+        @else { <div class="story-grid">@for (post of posts(); track post.id) { <article class="story-card"><div class="card-topline"><span>{{ post.tags[0] || 'Learning' }}</span><span>{{ post.createdAt | date:'mediumDate' }}</span></div><h3>{{ post.name }}</h3><p>{{ post.content }}</p><div class="card-footer"><span>By {{ post.postedBy }}</span><a [routerLink]="authService.isAuthenticated() ? ['/explore', post.id] : null" (click)="handleRead($event, post.id)" aria-label="Read {{ post.name }}">Read story <span aria-hidden="true">&#8594;</span></a></div></article> }</div> }
+      </section>
+
+      <aside class="side-column right-column" aria-label="Learning resources">
+        <div class="side-card book-promo">
+          <span class="book-icon" aria-hidden="true">&#128214;</span>
+          <p class="eyebrow">Go deeper</p>
+          <h2>Find your next great book.</h2>
+          <p>Build a reading list that keeps your learning momentum going.</p>
+          <a routerLink="/books" class="side-action">Browse the library <span aria-hidden="true">&#8594;</span></a>
+        </div>
+        <div class="join-card">
+          <p class="eyebrow">Your learning space</p>
+          <h2>Make every idea count.</h2>
+          <a routerLink="/auth/register" class="join-action">Join the community</a>
+        </div>
+      </aside>
+    </div>
+  }
+</section>

@@ -130,6 +130,63 @@ html, body {
   width: 100%;
 }
 
+/* ── Learning prompt ── */
+.lp-swal-confirm,
+.lp-swal-cancel {
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.lp-swal-confirm {
+  color: #ffffff;
+  background: var(--sky-600);
+}
+
+.lp-swal-confirm:hover {
+  background: var(--sky-700);
+  transform: translateY(-1px);
+}
+
+.lp-swal-cancel {
+  color: var(--text-secondary);
+  background: var(--surface-subtle);
+  border: 1px solid var(--surface-border);
+}
+
+.lp-swal-cancel:hover {
+  color: var(--text-main);
+  background: var(--sky-100);
+  border-color: var(--sky-200);
+}
+
+.lp-swal-danger {
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  color: #ffffff;
+  background: var(--status-danger);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.lp-swal-danger:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.swal2-actions {
+  gap: 0.65rem;
+}
+
 /* ── Global Toast ── */
 .toast {
   position: fixed;

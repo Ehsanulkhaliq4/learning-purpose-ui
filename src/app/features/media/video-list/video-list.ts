@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MediaService } from '../../../core/services/media.service';
 import { Video } from '../../../core/models/media.models';
+import Swal from 'sweetalert2';
 
 @Component({
   imports: [DatePipe, FormsModule, RouterLink],
@@ -58,9 +59,21 @@ export class VideoList implements OnInit {
   }
 
   deleteVideo(video: Video): void {
-    if (!confirm(`Delete "${video.title}"?`)) return;
-    this.mediaService.deleteVideo(video.id).subscribe({
-      next: () => this.videos.update((videos) => videos.filter((item) => item.id !== video.id)),
+    void Swal.fire({
+      title: 'Delete this video?',
+      text: `"${video.title}" will be permanently removed.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete video',
+      cancelButtonText: 'Keep video',
+      reverseButtons: true,
+      buttonsStyling: true,
+      customClass: { confirmButton: 'lp-swal-danger', cancelButton: 'lp-swal-cancel' },
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      this.mediaService.deleteVideo(video.id).subscribe({
+        next: () => this.videos.update((videos) => videos.filter((item) => item.id !== video.id)),
+      });
     });
   }
 

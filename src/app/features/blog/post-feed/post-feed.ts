@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { PostService } from '../../../core/services/post.service';
 import { BlogPost } from '../../../core/models/catalog.models';
+import Swal from 'sweetalert2';
 
 @Component({ selector: 'app-post-feed', imports: [DatePipe, RouterLink], styleUrl: './post-feed.css', templateUrl: './post-feed.html' })
 export class PostFeed implements OnInit {
@@ -51,13 +52,25 @@ export class PostFeed implements OnInit {
   }
 
   deletePost(post: BlogPost): void {
-    if (!confirm(`Delete "${post.name}"?`)) return;
-    this.postService.deletePost(post.id).subscribe({
-      next: () => {
-        this.allPosts.update((posts) => posts.filter((item) => item.id !== post.id));
-        this.posts.update((posts) => posts.filter((item) => item.id !== post.id));
-      },
-      error: (err) => this.errorMessage.set(err?.error?.message || 'Unable to delete this post.'),
+    void Swal.fire({
+      title: 'Delete this post?',
+      text: `"${post.name}" will be permanently removed.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete post',
+      cancelButtonText: 'Keep post',
+      reverseButtons: true,
+      buttonsStyling: false,
+      customClass: { confirmButton: 'lp-swal-danger', cancelButton: 'lp-swal-cancel' },
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      this.postService.deletePost(post.id).subscribe({
+        next: () => {
+          this.allPosts.update((posts) => posts.filter((item) => item.id !== post.id));
+          this.posts.update((posts) => posts.filter((item) => item.id !== post.id));
+        },
+        error: (err) => this.errorMessage.set(err?.error?.message || 'Unable to delete this post.'),
+      });
     });
   }
 }

@@ -44,12 +44,13 @@ export interface BlogPost {
   content: string;
   postedBy: string;
   imageUrl?: string;
+  imageStorageKey?: string;
   viewCount: number;
   likeCount: number;
   tags: string[];
   createdAt: string;
   updatedAt: string;
-  commentCount: number;
+  commentCount?: number;
 }
 
 export interface PostRequest {

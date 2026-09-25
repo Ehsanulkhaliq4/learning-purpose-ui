@@ -1,4 +1,4 @@
-<aside class="sidebar-wrapper" [class.collapsed]="isCollapsed()">
+<aside class="sidebar-wrapper" [class.collapsed]="isCollapsed()" [class.mobile-menu-open]="isMobileMenuOpen()">
   <div class="sidebar-header">
     <div class="brand-monogram">
       <div class="spark-icon"></div>
@@ -7,38 +7,62 @@
       <span class="brand-title">LearningPurpose</span>
       <span class="brand-badge">Norde AI Edition</span>
     </div>
+    <button
+      type="button"
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      aria-controls="mobile-navigation"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="menu-button-label">Menu</span><span class="menu-chevron">⌄</span>
+    </button>
   </div>
 
-  <div class="nav-section-title">CORE PLATFORM</div>
+  <div id="mobile-navigation" class="mobile-navigation">
+    <div class="nav-section-title">CORE PLATFORM</div>
 
-  <nav class="nav-stack">
-    @for (item of navItems; track item.route) {
-      <a [routerLink]="item.route" routerLinkActive="active-route" class="nav-link">
-        <span class="nav-indicator"></span>
-        <span class="nav-label">{{ item.label }}</span>
-        <span class="nav-pill">{{ item.badge || 'Active' }}</span>
-      </a>
-    }
-  </nav>
-
-  @if (auth.isAdmin()) {
-    <div class="nav-section-title admin-nav-title">ADMINISTRATION</div>
-    <nav class="nav-stack admin-nav-stack">
-      <a routerLink="/admin/quiz/categories" routerLinkActive="active-route" class="nav-link">
-        <span class="nav-indicator"></span><span class="nav-label">Assessment Studio</span><span class="nav-pill">Active</span>
-      </a>
-      <a routerLink="/admin/operations" routerLinkActive="active-route" class="nav-link">
-        <span class="nav-indicator"></span><span class="nav-label">Operations Console</span><span class="nav-pill">Live</span>
-      </a>
+    <nav class="nav-stack">
+      @for (item of navItems; track item.route) {
+        <a [routerLink]="item.route" routerLinkActive="active-route" class="nav-link">
+          <span class="nav-indicator"></span>
+          <span class="nav-label">{{ item.label }}</span>
+          <span class="nav-pill">{{ item.badge || 'Active' }}</span>
+        </a>
+      }
     </nav>
-  }
 
-  <div class="sidebar-footer">
-    <div class="ai-status-card">
-      <div class="ai-pulse-dot"></div>
-      <div class="ai-status-text">
-        <span class="ai-title">Gemini Tutor Core</span>
-        <span class="ai-sub">Online & Ready</span>
+    @if (auth.isAdmin()) {
+      <div class="nav-section-title admin-nav-title">ADMINISTRATION</div>
+      <nav class="nav-stack admin-nav-stack">
+        <a routerLink="/admin/quiz/categories" routerLinkActive="active-route" class="nav-link">
+          <span class="nav-indicator"></span><span class="nav-label">Assessment Studio</span><span class="nav-pill">Active</span>
+        </a>
+        <a routerLink="/admin/operations" routerLinkActive="active-route" class="nav-link">
+          <span class="nav-indicator"></span><span class="nav-label">Operations Console</span><span class="nav-pill">Live</span>
+        </a>
+      </nav>
+    }
+
+    <div class="sidebar-footer">
+      <div class="mobile-menu-controls">
+        <button type="button" class="mobile-menu-action ai-menu-action" (click)="toggleAiDrawer.emit()">
+          <span>✨</span><span>Gemini Copilot</span>
+        </button>
+        <div class="mobile-menu-user">
+          <div class="avatar-ring">{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</div>
+          <span>{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
+        </div>
+        <button type="button" class="mobile-menu-action logout-menu-action" (click)="auth.logout()">
+          <span aria-hidden="true">↪</span><span>Logout</span>
+        </button>
+      </div>
+      <div class="ai-status-card">
+        <div class="ai-pulse-dot"></div>
+        <div class="ai-status-text">
+          <span class="ai-title">Gemini Tutor Core</span>
+          <span class="ai-sub">Online & Ready</span>
+        </div>
       </div>
     </div>
   </div>

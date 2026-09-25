@@ -5,6 +5,7 @@ import { DatePipe, JsonPipe } from '@angular/common';
 import { PlatformOpsService } from '../../../core/services/platform-ops.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { BatchMailReport, MailpitMessageSummary, MailStatusReport } from '../../../core/models/ops.models';
+import Swal from 'sweetalert2';
 
 @Component({
   imports: [RouterLink, FormsModule, DatePipe, JsonPipe],
@@ -174,21 +175,31 @@ export class MailOperations implements OnInit, OnDestroy {
   }
 
   purgeInboxMessages(): void {
-    if (!confirm('Are you sure you want to purge all emails from the Mailpit inbox?')) {
-      return;
-    }
-    this.purging.set(true);
-    this.ops.purgeInbox().subscribe({
-      next: () => {
-        this.inboxMessages.set([]);
-        this.selectedMessage.set(null);
-        this.selectedMessageHtml.set('');
-        this.selectedMessageText.set('');
-        this.inboxTotal.set(0);
-        this.showToast('success', 'Mailpit inbox purged successfully.');
-      },
-      error: () => this.showToast('error', 'Failed to purge Mailpit inbox.'),
-      complete: () => this.purging.set(false)
+    void Swal.fire({
+      title: 'Purge Mailpit inbox?',
+      text: 'All messages will be permanently removed.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Purge inbox',
+      cancelButtonText: 'Keep messages',
+      reverseButtons: true,
+      buttonsStyling: true,
+      customClass: { confirmButton: 'lp-swal-danger', cancelButton: 'lp-swal-cancel' },
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      this.purging.set(true);
+      this.ops.purgeInbox().subscribe({
+        next: () => {
+          this.inboxMessages.set([]);
+          this.selectedMessage.set(null);
+          this.selectedMessageHtml.set('');
+          this.selectedMessageText.set('');
+          this.inboxTotal.set(0);
+          this.showToast('success', 'Mailpit inbox purged successfully.');
+        },
+        error: () => this.showToast('error', 'Failed to purge Mailpit inbox.'),
+        complete: () => this.purging.set(false)
+      });
     });
   }
 

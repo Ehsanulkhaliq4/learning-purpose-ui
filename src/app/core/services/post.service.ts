@@ -30,6 +30,14 @@ export class PostService {
     return this.http.get<BlogPost>(`${this.API_URL}/${id}`);
   }
 
+  getPublicPosts(page = 0, size = 10): Observable<PostPage> {
+    return this.http.get<PostPage>('http://localhost:8080/api/v1/public/post', { params: { page, size } });
+  }
+
+  getPublicPostById(id: number): Observable<BlogPost> {
+    return this.http.get<BlogPost>(`http://localhost:8080/api/v1/public/post/${id}`);
+  }
+
   searchPosts(query: string): Observable<BlogPost[]> {
     return this.http.get<BlogPost[]>(`${this.API_URL}/search`, { params: { query } });
   }

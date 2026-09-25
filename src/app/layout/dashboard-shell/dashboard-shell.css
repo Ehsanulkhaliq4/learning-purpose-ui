@@ -21,3 +21,23 @@
   min-width: 0;
   padding: 2rem;
 }
+
+@media (max-width: 700px) {
+  .dashboard-layout {
+    display: block;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .main-canvas {
+    min-height: calc(100vh - 58px);
+    height: auto;
+    overflow: visible;
+    margin-top: 58px;
+  }
+
+  .viewport-workspace {
+    padding: 1.25rem 0.9rem 2rem;
+  }
+}

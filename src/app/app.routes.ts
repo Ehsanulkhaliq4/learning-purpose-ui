@@ -50,6 +50,20 @@ export const routes: Routes = [
           import('./features/blog/post-feed/post-feed').then((m) => m.PostFeed)
       },
       {
+        path: 'explore',
+        loadComponent: () =>
+          import('./features/blog/public-blog/public-blog').then(
+            (m) => m.PublicBlog
+          )
+      },
+      {
+        path: 'explore/:id',
+        loadComponent: () =>
+          import('./features/blog/public-blog/public-blog').then(
+            (m) => m.PublicBlog
+          )
+      },
+      {
         path: 'blog/:id',
         loadComponent: () =>
           import('./features/blog/post-detail/post-detail').then((m) => m.PostDetail)

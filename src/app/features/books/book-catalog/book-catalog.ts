@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { BookItem } from '../../../core/models/catalog.models';
 import { BookService } from '../../../core/services/book.service';
 import { AuthService } from '../../../core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   imports: [FormsModule, RouterLink],
@@ -56,10 +57,22 @@ export class BookCatalog implements OnInit {
   }
 
   deleteBook(book: BookItem): void {
-    if (!confirm(`Delete "${book.title}"?`)) return;
-    this.bookService.deleteBook(book.id).subscribe({
-      next: () => this.books.update((items) => items.filter((item) => item.id !== book.id)),
-      error: (error) => this.errorMessage.set(error?.error?.message || 'Unable to delete this book.'),
+    void Swal.fire({
+      title: 'Delete this book?',
+      text: `"${book.title}" will be permanently removed.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete book',
+      cancelButtonText: 'Keep book',
+      reverseButtons: true,
+      buttonsStyling: true,
+      customClass: { confirmButton: 'lp-swal-danger', cancelButton: 'lp-swal-cancel' },
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      this.bookService.deleteBook(book.id).subscribe({
+        next: () => this.books.update((items) => items.filter((item) => item.id !== book.id)),
+        error: (error) => this.errorMessage.set(error?.error?.message || 'Unable to delete this book.'),
+      });
     });
   }
 
