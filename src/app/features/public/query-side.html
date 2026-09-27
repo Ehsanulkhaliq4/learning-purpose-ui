@@ -10,7 +10,7 @@
     </article>
   } @else {
     <header class="explore-header">
-      <div><p class="eyebrow">The LearningPurpose journal</p><h1>Ideas to keep you moving.</h1><p class="intro">Fresh perspectives from our learning community, plus the latest ways to learn with us.</p></div>
+      <div><p class="eyebrow feed-eyebrow"><span class="feed-dot" aria-hidden="true"></span>Community feed</p><h1>Ideas worth <span class="headline-accent">sharing.</span></h1><p class="intro">Explore lessons, questions, and insights from the learning community.</p></div>
       <span class="header-mark" aria-hidden="true">LP</span>
     </header>
     <div class="explore-layout">
@@ -22,6 +22,49 @@
           <p>Turn what you read into practice with a quiz made for curious minds.</p>
           <a routerLink="/quizzes" class="side-action">Explore quizzes <span aria-hidden="true">&#8594;</span></a>
         </div>
+        <section class="recent-learning" aria-labelledby="recent-learning-title">
+          <header class="recent-learning-header">
+            <span class="recent-learning-icon" aria-hidden="true">Q</span>
+            <div><p class="eyebrow">Just added</p><h2 id="recent-learning-title">New ways to learn</h2></div>
+          </header>
+          @if (isLoadingPromotions()) {
+            <p class="recent-learning-state">Finding the latest learning picks...</p>
+          } @else if (promotionError()) {
+            <p class="recent-learning-state" role="status">{{ promotionError() }}</p>
+          } @else {
+            <div class="recent-group">
+              <div class="recent-group-heading"><h3>New categories</h3><span>01-03</span></div>
+              @if (recentCategories().length === 0) {
+                <p class="recent-learning-state">No categories yet.</p>
+              } @else {
+                <ol class="category-list">
+                  @for (category of recentCategories(); track category.id; let index = $index) {
+                    <li class="category-row">
+                      <span class="category-number">0{{ index + 1 }}</span>
+                      <span class="category-copy"><strong>{{ category.title }}</strong><time>{{ category.createdAt | date:'MMM d' }}</time></span>
+                    </li>
+                  }
+                </ol>
+              }
+            </div>
+            <div class="recent-group quiz-group">
+              <div class="recent-group-heading"><h3>Fresh quizzes</h3><a routerLink="/quizzes" aria-label="Browse all quizzes">All <span aria-hidden="true">&#8594;</span></a></div>
+              @if (recentQuizzes().length === 0) {
+                <p class="recent-learning-state">No active quizzes yet.</p>
+              } @else {
+                <div class="recent-quiz-list">
+                  @for (quiz of recentQuizzes(); track quiz.id) {
+                    <a [routerLink]="['/quizzes', quiz.id]" class="recent-quiz">
+                      <span class="recent-quiz-category">{{ categoryTitle(quiz.categoryId) }}</span>
+                      <strong>{{ quiz.title }}</strong>
+                      <span class="recent-quiz-meta">{{ quiz.numberOfQuestions }} questions <span aria-hidden="true">·</span> {{ quiz.maxMarks }} points</span>
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </section>
         <div class="quote-card">
           <span aria-hidden="true">“</span>
           <p>Small steps every day add up to remarkable progress.</p>

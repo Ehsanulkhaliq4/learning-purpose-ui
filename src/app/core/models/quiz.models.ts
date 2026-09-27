@@ -4,6 +4,13 @@ export interface Category {
   description: string;
 }
 
+export interface PublicExamCategory {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: string;
+}
+
 export type CategoryDto = Category;
 
 export interface CategoryRequest {
@@ -54,6 +61,17 @@ export interface Quiz {
   active: boolean;
   categoryId: number;
   category?: Category;
+}
+
+export interface PublicExamQuiz {
+  id: number;
+  categoryId: number;
+  title: string;
+  description: string;
+  maxMarks: number;
+  numberOfQuestions: number;
+  active: boolean;
+  createdAt: string;
 }
 
 export interface QuizEvaluationResult {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CategoryDto, CategoryRequest, ExamSubmission, Question, QuestionRequest, Quiz, QuizEvaluationResult, QuizRequest } from '../models/quiz.models';
+import { CategoryDto, CategoryRequest, ExamSubmission, PublicExamCategory, PublicExamQuiz, Question, QuestionRequest, Quiz, QuizEvaluationResult, QuizRequest } from '../models/quiz.models';
 
 @Injectable({ providedIn: 'root' })
 export class QuizService {
@@ -14,6 +14,14 @@ export class QuizService {
 
   getCategories(): Observable<CategoryDto[]> {
     return this.http.get<CategoryDto[]>(`${this.GATEWAY_URL}/categories`);
+  }
+
+  getPublicExamCategories(): Observable<PublicExamCategory[]> {
+    return this.http.get<PublicExamCategory[]>(`${this.GATEWAY_URL}/public/exams/categories`);
+  }
+
+  getPublicActiveExams(): Observable<PublicExamQuiz[]> {
+    return this.http.get<PublicExamQuiz[]>(`${this.GATEWAY_URL}/public/exams/quizzes/active`);
   }
 
   createCategory(request: CategoryRequest): Observable<CategoryDto> {

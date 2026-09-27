@@ -52,15 +52,15 @@ export const routes: Routes = [
       {
         path: 'explore',
         loadComponent: () =>
-          import('./features/blog/public-blog/public-blog').then(
-            (m) => m.PublicBlog
+          import('./features/public/query-side').then(
+            (m) => m.QuerySide
           )
       },
       {
         path: 'explore/:id',
         loadComponent: () =>
-          import('./features/blog/public-blog/public-blog').then(
-            (m) => m.PublicBlog
+          import('./features/public/query-side').then(
+            (m) => m.QuerySide
           )
       },
       {
