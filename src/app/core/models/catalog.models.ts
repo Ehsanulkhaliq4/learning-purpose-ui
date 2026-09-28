@@ -38,6 +38,17 @@ export interface BookRequest {
   description: string;
 }
 
+export interface PublicBook {
+  id: number;
+  bookTitle: string;
+  bookAuthorName: string;
+  postedDate: string;
+  contentType: string;
+  bookDescription: string;
+  coverImageKey: string;
+  pdfStorageKey: string;
+}
+
 export interface BlogPost {
   id: number;
   name: string;

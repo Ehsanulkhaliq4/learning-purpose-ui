@@ -87,6 +87,57 @@
           <p>Build a reading list that keeps your learning momentum going.</p>
           <a routerLink="/books" class="side-action">Browse the library <span aria-hidden="true">&#8594;</span></a>
         </div>
+
+        <!-- NEW: live book shelf from /api/v1/public/books -->
+        <section class="book-shelf" aria-labelledby="book-shelf-title">
+          <header class="book-shelf-header">
+            <span class="shelf-icon" aria-hidden="true">&#128218;</span>
+            <div>
+              <p class="eyebrow">On the shelf</p>
+              <h3 id="book-shelf-title">Fresh reads</h3>
+            </div>
+          </header>
+
+          @if (isLoadingBooks()) {
+            <div class="book-skeleton-list" aria-hidden="true">
+              <span class="book-skeleton"></span>
+              <span class="book-skeleton"></span>
+              <span class="book-skeleton"></span>
+            </div>
+          } @else if (booksError()) {
+            <p class="book-shelf-state" role="status">{{ booksError() }}</p>
+          } @else if (books().length === 0) {
+            <p class="book-shelf-state">The shelf is empty for now.</p>
+          } @else {
+            <ul class="book-list">
+              @for (book of books(); track book.id) {
+                <li class="book-item">
+                  <a routerLink="/books" class="book-link" [attr.aria-label]="'Open ' + book.bookTitle">
+                    <span class="book-cover" aria-hidden="true">
+                      @if (coverUrl(book); as cover) {
+                        <img [src]="cover" [alt]="book.bookTitle" loading="lazy" />
+                      } @else {
+                        <span class="book-cover-fallback" [style.background]="coverGradient(book)">
+                          {{ initials(book.bookTitle) }}
+                        </span>
+                      }
+                    </span>
+                    <span class="book-copy">
+                      <strong>{{ book.bookTitle }}</strong>
+                      <span class="book-author">{{ book.bookAuthorName }}</span>
+                      <span class="book-meta">
+                        <span class="book-chip">{{ book.contentType || 'Read' }}</span>
+                        <time>{{ book.postedDate | date:'MMM d' }}</time>
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              }
+            </ul>
+            <a routerLink="/books" class="book-shelf-all">All books <span aria-hidden="true">&#8594;</span></a>
+          }
+        </section>
+
         <div class="join-card">
           <p class="eyebrow">Your learning space</p>
           <h2>Make every idea count.</h2>

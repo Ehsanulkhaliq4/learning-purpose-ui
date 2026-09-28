@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BookItem, BookPage, BookRequest } from '../models/catalog.models';
+import { BookItem, BookPage, BookRequest, PublicBook } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
   private readonly http = inject(HttpClient);
   private readonly API_URL = 'http://localhost:8080/api/v1/books';
+  private readonly PUBLIC_URL = 'http://localhost:8080/api/v1/public/books';
 
   getAllBooks(page = 0, size = 10): Observable<BookPage> {
     return this.http.get<BookPage>(this.API_URL, { params: { page, size } });
@@ -42,5 +43,15 @@ export class BookService {
     if (coverImage) formData.append('coverImage', coverImage, coverImage.name);
     if (pdfFile) formData.append('pdfFile', pdfFile, pdfFile.name);
     return formData;
+  }
+
+  //Public Endpoints
+
+  getAllPublicBooks(): Observable<PublicBook[]> {
+    return this.http.get<PublicBook[]>(this.PUBLIC_URL);
+  }
+
+  getPublicBook(id: number): Observable<PublicBook> {
+    return this.http.get<PublicBook>(`${this.PUBLIC_URL}/${id}`);
   }
 }
