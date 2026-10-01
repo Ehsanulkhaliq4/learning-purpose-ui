@@ -1,0 +1,111 @@
+<section class="conference-page">
+  <header class="meeting-header">
+    <div>
+      <p class="eyebrow">Team meeting</p>
+      <h1>{{ roomTitle() }}</h1>
+    </div>
+    <div class="meeting-meta">
+      <span class="meeting-pill live">● Live</span>
+      <button type="button" class="join-button" (click)="isJoined() ? createTransport() : joinRoom()">
+        {{ isJoined() ? 'Connected' : 'Join meeting' }}
+      </button>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert-banner" role="alert">{{ errorMessage() }}</div>
+  }
+
+  <div class="room-setup">
+    <div class="setup-card">
+      <label>
+        Room ID
+        <input [(ngModel)]="roomId" name="roomId" type="text" />
+      </label>
+      <label>
+        Your name
+        <input [value]="userId()" readonly name="userId" type="text" />
+      </label>
+      <div class="setup-actions">
+        <button type="button" class="primary-btn" (click)="createRoom()">Create room</button>
+        <button type="button" class="secondary-btn" (click)="joinRoom()">Join room</button>
+      </div>
+    </div>
+    <div class="share-card">
+      <h3>Invite</h3>
+      <p>After creating a room, a copyable invite popup will appear with the room ID for your friend.</p>
+      <div class="share-box">Ready to call</div>
+    </div>
+  </div>
+
+  <div class="meeting-layout">
+    <main class="stage-panel">
+      <div class="speaker-stage" [class.screen-sharing]="isScreenSharing()">
+        <div class="speaker-badge">Presenting</div>
+
+        @if (localStream()) {
+          <video [srcObject]="localStream()" autoplay muted playsinline class="local-video"></video>
+        } @else {
+          <div class="speaker-card">
+            <div class="speaker-avatar">Y</div>
+            <div>
+              <h2>You</h2>
+              <p>{{ isMuted() ? 'Muted' : 'Speaking' }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="participant-grid">
+        @for (person of participants(); track person.id) {
+          <article class="participant-tile" [class.speaking]="person.speaking">
+            <div class="participant-avatar" [class.video-off]="!person.videoOn">{{ person.avatar }}</div>
+            <div class="participant-footer">
+              <span>{{ person.name }}</span>
+              <small>{{ person.role }}</small>
+              <em>{{ person.muted ? 'Muted' : 'Audio on' }}</em>
+            </div>
+          </article>
+        }
+      </div>
+    </main>
+
+    <aside class="sidebar-panel">
+      <div class="panel-section">
+        <h3>Meeting details</h3>
+        <ul>
+          <li><span>Host</span><strong>You</strong></li>
+          <li><span>Participants</span><strong>{{ participants().length }}</strong></li>
+          <li><span>Recording</span><strong>On</strong></li>
+          <li><span>Security</span><strong>Encrypted</strong></li>
+        </ul>
+      </div>
+
+      <div class="panel-section">
+        <h3>In the room</h3>
+        <div class="people-list">
+          @for (person of participants(); track person.id) {
+            <div class="person-row">
+              <span class="presence-dot" [class.active]="person.speaking"></span>
+              <span>{{ person.name }}</span>
+              <small>{{ person.muted ? 'Muted' : 'On mic' }}</small>
+            </div>
+          }
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="control-bar">
+    <button type="button" class="control-btn" [class.active]="isMuted()" (click)="toggleMute()">
+      {{ isMuted() ? 'Unmute' : 'Mute' }}
+    </button>
+    <button type="button" class="control-btn" [class.active]="isVideoOn()" (click)="toggleVideo()">
+      {{ isVideoOn() ? 'Stop video' : 'Start video' }}
+    </button>
+    <button type="button" class="control-btn" [class.active]="isScreenSharing()" (click)="toggleScreenShare()">
+      {{ isScreenSharing() ? 'Stop sharing' : 'Share screen' }}
+    </button>
+    <button type="button" class="control-btn danger" (click)="leaveCall()">Leave</button>
+  </div>
+</section>

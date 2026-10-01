@@ -151,6 +151,11 @@ export const routes: Routes = [
           import('./features/media/video-classroom/video-classroom').then((m) => m.VideoClassroom)
       },
       {
+        path: 'conference',
+        loadComponent: () =>
+          import('./features/media/conference/conference').then((m) => m.ConferenceRoomPage)
+      },
+      {
         path: 'media/new',
         loadComponent: () =>
           import('./features/media/video-create/video-create').then((m) => m.VideoCreate)

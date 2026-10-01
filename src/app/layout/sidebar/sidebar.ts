@@ -24,6 +24,7 @@ export class Sidebar {
     { label: 'Overview', route: '/dashboard' },
     { label: 'Assessments', route: '/quizzes', badge: 'Active' },
     { label: 'Classroom Media', route: '/media' },
+    { label: 'Live Conference', route: '/conference', badge: 'Live' },
     { label: 'Academic Library', route: '/books' },
     { label: 'Community Feed', route: '/blog' }
   ];

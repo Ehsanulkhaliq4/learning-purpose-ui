@@ -24,16 +24,13 @@ export const authGuard: CanActivateFn = async (_route, state) => {
     text: 'Please sign in to access this learning space.',
     icon: 'info',
     confirmButtonText: 'Go to login',
-    showCancelButton: true,
-    cancelButtonText: 'Stay here',
-    reverseButtons: true,
+    showCancelButton: false,
     buttonsStyling: true,
     customClass: {
       popup: 'lp-swal-popup',
       title: 'lp-swal-title',
       htmlContainer: 'lp-swal-text',
       confirmButton: 'lp-swal-confirm',
-      cancelButton: 'lp-swal-cancel',
     },
   });
 

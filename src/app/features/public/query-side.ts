@@ -10,7 +10,6 @@ import { QuizService } from '../../core/services/quiz.service';
 import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 
-/* ---------- Public Book DTO ---------- */
 export interface BookDocument {
   id: number;
   bookTitle: string;
@@ -95,7 +94,7 @@ export class QuerySide implements OnInit {
 
     this.postService.getPublicPosts().subscribe({
       next: (page) => { this.posts.set(page.content); this.isLoading.set(false); },
-      error: (err) => { this.errorMessage.set(err?.error?.message || 'Unable to load the latest stories.'); this.isLoading.set(false); },
+      error: (err) => { this.errorMessage.set(err?.error?.message || 'Unable to load the latest stories.'); this.posts.set([]); this.isLoading.set(false); },
     });
   }
 
@@ -104,11 +103,8 @@ export class QuerySide implements OnInit {
       ?? 'Learning';
   }
 
-  /* ---------- Book shelf helpers ---------- */
   coverUrl(book: BookDocument): string | null {
-    // If your backend serves cover images, build the URL here.
-    // Example: return `http://localhost:8080/api/v1/public/books/cover/${book.coverImageKey}`;
-    return null; // fallback to gradient + initials
+    return null; 
   }
 
   initials(title: string): string {
@@ -144,6 +140,7 @@ export class QuerySide implements OnInit {
       },
       error: () => {
         this.booksError.set('Could not load the book shelf right now.');
+        this.books.set([]);
         this.isLoadingBooks.set(false);
       },
     });
@@ -163,15 +160,21 @@ export class QuerySide implements OnInit {
       },
       error: () => {
         this.promotionError.set('New learning picks are unavailable right now.');
+        this.allCategories.set([]);
+        this.recentCategories.set([]);
+        this.recentQuizzes.set([]);
         this.isLoadingPromotions.set(false);
       },
     });
   }
 
   private newestFirst<T extends { createdAt: string }>(items: T[]): T[] {
+    if (!Array.isArray(items) || items.length === 0) {
+      return [];
+    }
     return [...items].sort((left, right) => {
-      const rightDate = Date.parse(right.createdAt) || 0;
-      const leftDate = Date.parse(left.createdAt) || 0;
+      const rightDate = Date.parse(right?.createdAt) || 0;
+      const leftDate = Date.parse(left?.createdAt) || 0;
       return rightDate - leftDate;
     });
   }
