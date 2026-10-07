@@ -15,6 +15,8 @@ export class PlatformOperations implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
   private readonly ops = inject(PlatformOpsService);
 
+  readonly messagePageSize = 7;
+  readonly messagePage = signal(0);
   readonly toast = signal<{ type: 'success' | 'error'; message: string } | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
@@ -85,9 +87,19 @@ export class PlatformOperations implements OnInit, OnDestroy {
 
   selectTopic(topic: string): void {
     this.selectedTopic.set(topic);
+    this.messagePage.set(0);
     this.ops.tailKafkaTopic(topic).subscribe({
       next: value => this.messages.set(value || [])
     });
+  }
+
+  getVisibleMessages(): KafkaMessageRecord[] {
+    const start = this.messagePage() * this.messagePageSize;
+    return this.messages().slice(start, start + this.messagePageSize);
+  }
+
+  getMessagePageCount(): number {
+    return Math.ceil(this.messages().length / this.messagePageSize);
   }
 
   selectDatabase(database: string): void {

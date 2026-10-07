@@ -9,6 +9,7 @@
 .health-card,.panel { background: var(--surface-white); border: 1px solid var(--surface-border); border-radius: var(--radius-md); box-shadow: var(--shadow-subtle); }.health-card { display: flex; align-items: center; gap: .75rem; padding: 1rem; }.health-card div { display: flex; flex-direction: column; gap: .2rem; }.health-card span:not(.health-icon) { color: var(--text-secondary); font-size: .68rem; }.health-card strong { font-size: .88rem; }.health-icon { display: grid; place-items: center; width: 32px; height: 32px; color: white; background: var(--sky-600); border-radius: 50%; font-weight: 800; }.health-icon.database { background: #0f766e; }.health-icon.storage { background: #b45309; }.health-icon.online { background: var(--status-success); }
 .panel { padding: 1.25rem; }.panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; min-width: 0; margin-bottom: 1rem; }.panel-heading > div { min-width: 0; }.panel-heading h2 { margin-top: .3rem; font-size: 1rem; }.panel select { width: min(48%, 18rem); min-width: 0; padding: .45rem .6rem; border: 1px solid var(--surface-border); border-radius: var(--radius-sm); color: var(--text-secondary); background: var(--surface-subtle); font: inherit; font-size: .7rem; }
 .table-wrap { width: 100%; max-width: 100%; overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-size: .68rem; } th { color: var(--text-muted); font-size: .6rem; text-align: left; text-transform: uppercase; } th,td { padding: .6rem .4rem; border-bottom: 1px solid var(--surface-border); white-space: nowrap; } td { color: var(--text-secondary); }.payload { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }.empty { padding: 1rem 0; color: var(--text-muted); font-size: .7rem; }
+.log-detail-link { color: var(--sky-700); font-size: .65rem; font-weight: 700; text-decoration: none; }.log-detail-link:hover { text-decoration: underline; }
 .table-wrap th {
   top: 0;
   z-index: 2;
@@ -65,6 +66,28 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+.message-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+.message-pagination button {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: var(--surface-white);
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+.message-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.message-pagination small { color: var(--text-muted); font-size: 0.65rem; }
 .empty-data {
   padding: 2rem;
   text-align: center;

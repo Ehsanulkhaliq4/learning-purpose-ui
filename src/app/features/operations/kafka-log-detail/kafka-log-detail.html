@@ -1,0 +1,55 @@
+@if (!auth.isAdmin()) {
+  <section class="log-state access-denied">
+    <p class="eyebrow">Restricted workspace</p>
+    <h1>Administrator access required</h1>
+    <p>Kafka log details are available to administrators only.</p>
+  </section>
+} @else {
+  <main class="log-detail-page">
+    <a class="back-link" routerLink="/admin/operations">&larr; Back to operations</a>
+
+    @if (message(); as log) {
+      <header class="log-header">
+        <p class="eyebrow">Kafka event detail</p>
+        <h1>{{ log.topic }}</h1>
+        <p>Complete message information for this event.</p>
+      </header>
+
+      <section class="detail-section" aria-labelledby="event-metadata-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Event record</p>
+            <h2 id="event-metadata-heading">Message metadata</h2>
+          </div>
+        </div>
+        <dl class="metadata-grid">
+          <div><dt>Topic</dt><dd>{{ log.topic }}</dd></div>
+          <div><dt>Partition</dt><dd>{{ log.partition }}</dd></div>
+          <div><dt>Offset</dt><dd>{{ log.offset }}</dd></div>
+          <div><dt>Message key</dt><dd>{{ log.key || 'No key' }}</dd></div>
+          <div><dt>Timestamp</dt><dd>{{ log.timestamp | date:'medium' }}</dd></div>
+          <div><dt>Payload size</dt><dd>{{ log.payload.length }} characters</dd></div>
+        </dl>
+      </section>
+
+      <section class="detail-section payload-section" aria-labelledby="event-payload-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Full event content</p>
+            <h2 id="event-payload-heading">Payload</h2>
+          </div>
+          <span class="payload-format">{{ getPayloadFormat() }}</span>
+        </div>
+        <pre><code>{{ formatPayload(log.payload) }}</code></pre>
+      </section>
+    } @else if (loading()) {
+      <section class="log-state" role="status">Loading log details...</section>
+    } @else {
+      <section class="log-state" role="status">
+        <p class="eyebrow">Log details unavailable</p>
+        <h1>Could not find this event</h1>
+        <p>{{ error() }}</p>
+      </section>
+    }
+  </main>
+}

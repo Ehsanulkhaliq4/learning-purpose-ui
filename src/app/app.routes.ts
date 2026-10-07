@@ -122,6 +122,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/operations/logs',
+        loadComponent: () =>
+          import('./features/operations/kafka-log-detail/kafka-log-detail').then(
+            (m) => m.KafkaLogDetail
+          )
+      },
+      {
         path: 'admin/mail',
         loadComponent: () =>
           import('./features/operations/mail-operations/mail-operations').then(
