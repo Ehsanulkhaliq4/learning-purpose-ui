@@ -10,8 +10,6 @@
 .search-bar input { width: min(360px, 100%); height: 40px; padding: .7rem .9rem; border: 1px solid var(--surface-border); border-radius: var(--radius-md); outline: none; font: .78rem var(--font-sans); }
 
 .state-panel { padding: 2rem; text-align: center; color: var(--text-secondary); background: var(--surface-white); border: 1px solid var(--surface-border); border-radius: var(--radius-md); font-size: 0.85rem; }
-.alert-banner { margin-bottom: 1rem; padding: 0.7rem 0.85rem; border-radius: var(--radius-md); font-size: 0.74rem; color: var(--status-danger); background: #fff7f7; border: 1px solid #fecaca; }
-
 .quiz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
 .quiz-card { padding: 1.5rem; background: var(--surface-white); border: 1px solid var(--surface-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-subtle); transition: transform 0.2s ease, box-shadow 0.2s ease; display: flex; flex-direction: column; }
 .quiz-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }

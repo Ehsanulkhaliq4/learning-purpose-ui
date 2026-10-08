@@ -183,16 +183,6 @@
   transform: translateX(4px);
 }
 
-.alert-banner { 
-  margin-bottom: 1.5rem; 
-  padding: 0.85rem 1.1rem; 
-  border-radius: var(--radius-md); 
-  font-size: 0.8rem; 
-  color: var(--status-danger); 
-  background: #fff7f7; 
-  border: 1px solid #fecaca; 
-}
-
 .state-panel { 
   padding: 3rem 2rem; 
   text-align: center; 

@@ -1,3 +1,150 @@
+.conference-promo {
+  overflow: hidden;
+  color: var(--text-main);
+  background: #fff;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-subtle);
+  animation: conferencePromoEnter .55s cubic-bezier(.2, .75, .25, 1) both;
+}
+.conference-promo-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .75rem .9rem;
+  color: #fff;
+  background: linear-gradient(120deg, #0f766e, #075985);
+}
+.conference-promo-label {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  color: #0f766e;
+  font-size: .58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.conference-avatars { display: flex; align-items: center; padding-left: .35rem; }
+.conference-avatars span {
+  display: grid;
+  width: 1.55rem;
+  height: 1.55rem;
+  place-items: center;
+  margin-left: -.35rem;
+  color: #075985;
+  background: #e0f2fe;
+  border: 2px solid #0f766e;
+  border-radius: 50%;
+  font-size: .55rem;
+  font-weight: 900;
+}
+.conference-avatars span + span { color: #0f766e; background: #ccfbf1; }
+.conference-live-dot {
+  width: 7px;
+  height: 7px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, .14);
+  animation: conferenceLivePulse 1.8s ease-out infinite;
+}
+.conference-promo-content { display: grid; gap: .65rem; padding: .9rem; }
+.conference-promo h2 { font-size: 1rem; line-height: 1.25; }
+.conference-promo-content > p { color: var(--text-secondary); font-size: .68rem; line-height: 1.5; }
+.conference-features { display: grid; gap: .4rem; margin: 0; padding: .15rem 0; list-style: none; }
+.conference-features li { display: flex; align-items: center; gap: .5rem; color: var(--text-secondary); font-size: .64rem; }
+.conference-feature-mark {
+  display: grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #0369a1;
+  background: #e0f2fe;
+  border-radius: 4px;
+  font-size: .47rem;
+  font-weight: 900;
+}
+.conference-promo-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .45rem;
+  padding: .65rem .7rem;
+  color: #fff;
+  background: #0f766e;
+  border-radius: 6px;
+  font-size: .66rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background .18s ease, transform .18s ease;
+}
+.conference-promo-action:hover { background: #115e59; transform: translateY(-1px); }
+.conference-promo-action:focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+@keyframes conferencePromoEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes conferenceLivePulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, .32); }
+  70%, 100% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conference-promo, .conference-live-dot { animation: none; }
+  .conference-promo-action { transition: none; }
+}
+/* Shared card motion and depth across the explore page. */
+.quiz-promo,
+.recent-learning,
+.quote-card,
+.book-promo,
+.join-card,
+.story-card {
+  animation: exploreBoxEnter .48s cubic-bezier(.2, .75, .25, 1) backwards;
+}
+.side-card,
+.recent-learning,
+.quote-card,
+.book-shelf,
+.join-card,
+.conference-promo,
+.story-card {
+  transition: box-shadow .22s ease, border-color .22s ease;
+}
+.side-card:hover,
+.recent-learning:hover,
+.quote-card:hover,
+.book-shelf:hover,
+.join-card:hover,
+.conference-promo:hover,
+.story-card:hover {
+  border-color: rgba(14, 165, 233, .38);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, .1);
+}
+.left-column > :nth-child(1) { animation-delay: .04s; }
+.left-column > :nth-child(2) { animation-delay: .1s; }
+.left-column > :nth-child(3) { animation-delay: .16s; }
+.right-column > :nth-child(1) { animation-delay: .06s; }
+.right-column > :nth-child(2) { animation-delay: .12s; }
+.right-column > :nth-child(3) { animation-delay: .18s; }
+.right-column > :nth-child(4) { animation-delay: .24s; }
+.story-card:nth-child(2) { animation-delay: .08s; }
+.story-card:nth-child(3) { animation-delay: .14s; }
+.story-card:nth-child(4) { animation-delay: .2s; }
+@keyframes exploreBoxEnter {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quiz-promo,
+  .recent-learning,
+  .quote-card,
+  .book-promo,
+  .join-card,
+  .story-card {
+    animation: none;
+  }
+}
 .explore-page { width: min(100% - 2rem, 1320px); margin: 0 auto; padding: 4.5rem 0 5rem; }
 .recent-learning { padding: 1rem; color: var(--text-main); background: #fff; border: 1px solid var(--surface-border); border-top: 3px solid #0f766e; border-radius: 8px; box-shadow: var(--shadow-subtle); }
 .recent-learning-header { display: flex; align-items: center; justify-content: space-between; gap: .65rem; padding-bottom: .85rem; border-bottom: 1px solid var(--surface-border); }

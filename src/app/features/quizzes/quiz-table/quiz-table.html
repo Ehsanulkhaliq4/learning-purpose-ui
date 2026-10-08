@@ -25,7 +25,7 @@
 <p>Loading assessments...</p>
 </div>
 } @else if (errorMessage()) {
-<div class="state-panel error-panel">
+<div class="error-state" role="alert">
 <p>{{ errorMessage() }}</p>
 <button type="button" class="retry-button" (click)="loadQuizzes()">&#8635; Try again</button>
 </div>
