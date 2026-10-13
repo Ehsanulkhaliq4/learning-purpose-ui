@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <rect width="200" height="200" rx="24" fill="#00BF63"/>
+  <!-- VIRTUAL -->
+  <text x="22" y="98" fill="#000000" font-family="'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" letter-spacing="-0.5px">VIRTUAL</text>
+  <!-- SOCIETY -->
+  <text x="78" y="128" fill="#000000" font-family="'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="32" letter-spacing="-0.5px">SOCIETY</text>
+  <!-- byehsanulkhaliq -->
+  <text x="100" y="156" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="16" letter-spacing="-0.3px">byehsanulkhaliq</text>
+</svg>

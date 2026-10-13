@@ -144,48 +144,44 @@
   border-top: 1px solid var(--sidebar-border);
 }
 
-/* ── User profile card (desktop sidebar + mobile menu) ── */
-.user-profile-card {
+/* Company branding in the desktop sidebar and mobile menu */
+.company-brand-card {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.7rem 0.75rem;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
   border-radius: var(--radius-md);
   background: var(--sidebar-surface);
-  border: 1px solid var(--sidebar-border);
-  transition: background 0.15s;
+  border: 1px solid rgba(0, 191, 99, 0.2);
+  transition: all 0.2s ease;
 }
 
-.user-avatar-wrap {
-  position: relative;
-  flex: 0 0 auto;
+.company-brand-card:hover {
+  background: rgba(0, 191, 99, 0.05);
+  border-color: rgba(0, 191, 99, 0.35);
 }
 
-.user-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--sky-400) 0%, var(--sky-600) 100%);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.85rem;
+.company-brand-mark {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 191, 99, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #00bf63;
 }
 
-.user-online-dot {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--status-success);
-  border: 2px solid var(--sidebar-bg);
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
-.user-info {
+.company-brand-info {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -193,41 +189,32 @@
   gap: 0.1rem;
 }
 
-.user-display-name {
-  font-size: 0.75rem;
-  font-weight: 600;
+.company-brand-name {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.brand-word-virtual {
   color: var(--sidebar-text-bright);
+}
+
+.brand-word-society {
+  color: #00bf63;
+}
+
+.company-brand-author {
+  font-size: 0.62rem;
+  color: var(--sidebar-text-muted);
+  font-weight: 600;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.user-role-label {
-  font-size: 0.6rem;
-  color: var(--sidebar-text-muted);
-  letter-spacing: 0.02em;
-}
-
-.logout-icon-btn {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-md);
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--sidebar-text-muted);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.logout-icon-btn:hover {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.25);
-  color: #ef4444;
 }
 
 @media (max-width: 700px) {
@@ -386,52 +373,33 @@
     border-top: 1px solid var(--surface-border);
   }
 
-  /* User profile card inside mobile dropdown */
-  .mobile-menu-open .user-profile-card {
+  /* Company branding inside the mobile dropdown */
+  .mobile-menu-open .company-brand-card {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     padding: 0.6rem 0.65rem;
     border-radius: 10px;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid var(--sky-200);
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
   }
 
-  .mobile-menu-open .user-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
+  .mobile-menu-open .company-brand-mark {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
   }
 
-  .mobile-menu-open .user-online-dot {
-    border-color: #e0f2fe;
-  }
-
-  .mobile-menu-open .user-display-name {
+  .mobile-menu-open .brand-word-virtual {
     color: var(--text-main);
-    font-size: 0.72rem;
   }
 
-  .mobile-menu-open .user-role-label {
-    color: var(--sky-600);
-    font-size: 0.58rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  .mobile-menu-open .brand-word-society {
+    color: #16a34a;
   }
 
-  .mobile-menu-open .logout-icon-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: #fff;
-    border: 1px solid #fecaca;
-    color: #ef4444;
-    font-size: 0.95rem;
-  }
-
-  .mobile-menu-open .logout-icon-btn:hover {
-    background: #fef2f2;
+  .mobile-menu-open .company-brand-author {
+    color: #15803d;
   }
 
   .mobile-menu-open .admin-nav-title,

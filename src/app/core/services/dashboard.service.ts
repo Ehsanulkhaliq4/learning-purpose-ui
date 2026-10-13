@@ -8,7 +8,7 @@ export class DashboardService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/api/v1/users/dashboard';
 
-  getDashboard(): Observable<DashboardResponse> {
-    return this.http.get<DashboardResponse>(this.apiUrl);
+  getDashboard(userId: number | string): Observable<DashboardResponse> {
+    return this.http.get<DashboardResponse>(`${this.apiUrl}/${userId}`);
   }
 }

@@ -1,8 +1,5 @@
 <header class="topbar-container">
-  <div class="topbar-search">
-    <input type="text" placeholder="Search assessments, library texts, classroom streams..." class="search-input" />
-    <a routerLink="/auth/login" class="search-button">Search</a>
-  </div>
+ 
 
   <div class="topbar-actions">
     <button class="btn btn-secondary btn-sm ai-toggle-btn" (click)="toggleAiDrawer.emit()">
@@ -10,19 +7,139 @@
       <span>Gemini Copilot</span>
     </button>
 
-    <div class="stat-pill">
-      <span class="stat-icon">⚡</span>
-      <span class="stat-value">98.4% Accuracy</span>
-    </div>
+    <div class="user-profile-wrapper">
+      <button
+        type="button"
+        class="user-profile-menu"
+        (click)="toggleDropdown()"
+        [attr.aria-expanded]="isDropdownOpen()"
+        aria-haspopup="true"
+        title="View user details"
+      >
+        <div class="avatar-ring">
+          <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
+          <span class="user-role">{{ auth.isAdmin() ? 'Administrator' : 'Student Candidate' }}</span>
+        </div>
+        <svg
+          class="dropdown-chevron"
+          [class.rotated]="isDropdownOpen()"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          width="16"
+          height="16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
 
-    <div class="user-profile-menu">
-      <div class="avatar-ring">
-        <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
-      </div>
-      <div class="user-details">
-        <span class="user-name">{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
-        <span class="user-role">{{ auth.isAdmin() ? 'Administrator' : 'Student Candidate' }}</span>
-      </div>
+      @if (isDropdownOpen()) {
+        <div class="user-dropdown-card" role="menu">
+          <div class="dropdown-header">
+            <div class="dropdown-avatar">
+              <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+            </div>
+            <div class="dropdown-identity">
+              <span class="dropdown-fullname">
+                {{ auth.currentUser()?.firstName || '' }} {{ auth.currentUser()?.lastName || '' }}
+                @if (!auth.currentUser()?.firstName && !auth.currentUser()?.lastName) {
+                  {{ auth.currentUser()?.username || 'User' }}
+                }
+              </span>
+              <span class="dropdown-username">&#64;{{ auth.currentUser()?.username || 'user' }}</span>
+              <span class="dropdown-badge" [class.badge-admin]="auth.isAdmin()">
+                {{ auth.isAdmin() ? 'Administrator' : 'Student' }}
+              </span>
+            </div>
+          </div>
+
+          <div class="dropdown-body">
+            <div class="detail-item">
+              <div class="detail-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Email Address</span>
+                <span class="detail-value">{{ auth.currentUser()?.email || 'Not specified' }}</span>
+              </div>
+            </div>
+
+            @if (auth.currentUser()?.id) {
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <rect x="3" y="4" width="18" height="16" rx="2"/>
+                    <line x1="7" y1="8" x2="17" y2="8"/>
+                    <line x1="7" y1="12" x2="13" y2="12"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <span class="detail-label">User ID</span>
+                  <span class="detail-value">#{{ auth.currentUser()?.id }}</span>
+                </div>
+              </div>
+            }
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Assigned Roles</span>
+                <div class="roles-chips">
+                  @for (role of (auth.currentUser()?.roles || []); track role) {
+                    <span class="role-chip">{{ role.replace('ROLE_', '') }}</span>
+                  }
+                  @empty {
+                    <span class="role-chip">USER</span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <div class="detail-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="detail-content">
+                <span class="detail-label">Account Status</span>
+                <span class="status-indicator">
+                  <span class="status-dot"></span> Active & Verified
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dropdown-footer">
+            <a routerLink="/dashboard" (click)="closeDropdown()" class="dropdown-link">
+              <span>View Dashboard</span>
+              <span aria-hidden="true">&#8594;</span>
+            </a>
+            <button type="button" class="dropdown-logout-btn" (click)="auth.logout(); closeDropdown()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      }
     </div>
 
     <button class="btn btn-secondary btn-sm logout-btn" type="button" (click)="auth.logout()">

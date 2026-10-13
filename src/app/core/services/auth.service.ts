@@ -65,6 +65,7 @@ export class AuthService {
 
   private setAuthenticatedSession(res: AuthResponse): void {
     const identity: UserIdentity = {
+      id: res.id,
       username: res.username,
       email: res.email,
       roles: res.roles,

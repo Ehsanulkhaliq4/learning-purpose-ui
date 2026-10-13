@@ -19,19 +19,16 @@
 </a>
 }
 
+@if (errorMessage()) { <div class="alert-banner danger" role="alert">{{ errorMessage() }}</div> }
+
 @if (isLoading()) {
 <div class="state-panel">
 <span class="state-spinner"></span>
 <p>Loading assessments...</p>
 </div>
-} @else if (errorMessage()) {
-<div class="error-state" role="alert">
-<p>{{ errorMessage() }}</p>
-<button type="button" class="retry-button" (click)="loadQuizzes()">&#8635; Try again</button>
-</div>
 } @else if (quizzes().length === 0) {
 <div class="state-panel">
-<h2>No assessments available</h2>
+<h2>No assessments found yet.</h2>
 <p>Active quizzes will appear here when they are published.</p>
 </div>
 } @else {

@@ -3,7 +3,7 @@
     <div class="brand-monogram"><div class="spark-icon"></div></div>
     <div class="brand-info">
       <span class="brand-title">LearningPurpose</span>
-      <span class="brand-badge">Norde AI Edition</span>
+      <span class="brand-badge">By Virtual Society</span>
     </div>
     <button type="button" class="mobile-menu-toggle" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-navigation" aria-label="Toggle navigation menu">
       <span class="menu-button-label">Menu</span><span class="menu-chevron">&#8964;</span>
@@ -32,18 +32,17 @@
     }
 
     <div class="sidebar-footer">
-      <div class="user-profile-card">
-        <div class="user-avatar-wrap">
-          <div class="user-avatar">{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</div>
-          <span class="user-online-dot"></span>
+      <div class="company-brand-card">
+        <div class="company-brand-mark">
+          <img src="/virtual-society-logo.svg" alt="Virtual Society" class="brand-logo-img" />
         </div>
-        <div class="user-info">
-          <span class="user-display-name">{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
-          <span class="user-role-label">{{ auth.isAdmin() ? 'Administrator' : 'Student Candidate' }}</span>
+        <div class="company-brand-info">
+          <div class="company-brand-name">
+            <span class="brand-word-virtual">VIRTUAL</span>
+            <span class="brand-word-society">SOCIETY</span>
+          </div>
+          <span class="company-brand-author">byehsanulkhaliq</span>
         </div>
-        <button type="button" class="logout-icon-btn" (click)="auth.logout()" title="Sign out">
-          <span class="logout-arrow" aria-hidden="true">&#8618;</span>
-        </button>
       </div>
     </div>
   </div>

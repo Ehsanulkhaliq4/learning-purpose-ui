@@ -14,8 +14,6 @@
   <!-- LOBBY / PRE-MEETING VIEW -->
   @if (!isJoined()) {
     <div class="lobby-container">
-      <div class="lobby-backdrop-glow"></div>
-
       <header class="lobby-header">
         <div class="brand-pill">
           <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -124,14 +122,23 @@
 
           <div class="preview-meters">
             <div class="mic-level-wrapper">
-              <span class="meter-label">Mic check</span>
-              <div class="mic-wave-bars">
-                <span class="wave-bar bar-1"></span>
-                <span class="wave-bar bar-2"></span>
-                <span class="wave-bar bar-3"></span>
-                <span class="wave-bar bar-4"></span>
-                <span class="wave-bar bar-5"></span>
+              <span class="meter-label">{{ isMicCheckActive() ? 'Listening' : 'Mic check' }}</span>
+              <button
+                type="button"
+                class="mic-test-btn"
+                [class.active]="isMicCheckActive()"
+                [disabled]="isMicCheckStarting()"
+                (click)="toggleMicCheck()"
+                [attr.aria-label]="isMicCheckActive() ? 'Stop microphone test' : 'Test microphone'"
+              >
+                {{ isMicCheckStarting() ? 'Starting...' : isMicCheckActive() ? 'Stop test' : 'Test mic' }}
+              </button>
+              <div class="mic-wave-bars" [class.is-active]="isMicCheckActive()" aria-label="Microphone input level">
+                @for (bar of micBars; track bar) {
+                  <span class="wave-bar" [style.height.px]="isMicCheckActive() ? micBarHeight(bar) : 4"></span>
+                }
               </div>
+              @if (micCheckMessage()) { <span class="mic-check-message" aria-live="polite">{{ micCheckMessage() }}</span> }
             </div>
             <div class="preview-quality-tag">
               <span class="dot-hd"></span> 1080p Ultra HD Audio/Video

@@ -74,7 +74,15 @@ export class ConferenceRoomPage implements OnInit, OnDestroy {
   // Streams & Audio
   readonly localStream = signal<MediaStream | null>(null);
   readonly screenStream = signal<MediaStream | null>(null);
-  readonly audioLevel = signal(65);
+  readonly audioLevel = signal(0);
+  readonly isMicCheckActive = signal(false);
+  readonly isMicCheckStarting = signal(false);
+  readonly micCheckMessage = signal('');
+  readonly micBars = [0, 1, 2, 3, 4];
+  private micCheckStream: MediaStream | null = null;
+  private micCheckAudioContext: AudioContext | null = null;
+  private micCheckAnalyser: AnalyserNode | null = null;
+  private micCheckAnimationFrame = 0;
 
   // Timer
   readonly elapsedSeconds = signal(342); // starts at ~5:42
@@ -231,7 +239,83 @@ export class ConferenceRoomPage implements OnInit, OnDestroy {
     this.stopTimer();
     this.stopCaptions();
     if (this.speakingInterval) clearInterval(this.speakingInterval);
+    this.stopMicCheck();
     this.stopAllMediaTracks();
+  }
+
+  micBarHeight(index: number): number {
+    const maximumHeights = [7, 12, 16, 10, 6];
+    return Math.max(4, Math.round((maximumHeights[index] ?? 8) * this.audioLevel() / 100));
+  }
+
+  async toggleMicCheck(): Promise<void> {
+    if (this.isMicCheckActive()) {
+      this.stopMicCheck();
+      return;
+    }
+    if (this.isMicCheckStarting()) return;
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof AudioContext === 'undefined') {
+      this.micCheckMessage.set('Live microphone testing is not supported in this browser.');
+      return;
+    }
+
+    this.isMicCheckStarting.set(true);
+    this.micCheckMessage.set('Allow microphone access to begin the test.');
+    let stream: MediaStream | null = null;
+    let audioContext: AudioContext | null = null;
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      audioContext.createMediaStreamSource(stream).connect(analyser);
+      await audioContext.resume();
+
+      this.micCheckStream = stream;
+      this.micCheckAudioContext = audioContext;
+      this.micCheckAnalyser = analyser;
+      this.isMicCheckActive.set(true);
+      this.micCheckMessage.set('Speak to test your microphone.');
+      this.updateMicLevel();
+    } catch {
+      stream?.getTracks().forEach((track) => track.stop());
+      if (audioContext && audioContext.state !== 'closed') void audioContext.close();
+      this.micCheckMessage.set('Microphone access is blocked or unavailable.');
+    } finally {
+      this.isMicCheckStarting.set(false);
+    }
+  }
+
+  private updateMicLevel(): void {
+    const analyser = this.micCheckAnalyser;
+    if (!analyser || !this.isMicCheckActive()) return;
+
+    const samples = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(samples);
+    const squaredTotal = samples.reduce((total, sample) => {
+      const amplitude = (sample - 128) / 128;
+      return total + amplitude * amplitude;
+    }, 0);
+    const rootMeanSquare = Math.sqrt(squaredTotal / samples.length);
+    this.audioLevel.set(Math.min(100, Math.round(rootMeanSquare * 800)));
+    this.micCheckAnimationFrame = requestAnimationFrame(() => this.updateMicLevel());
+  }
+
+  private stopMicCheck(): void {
+    if (this.micCheckAnimationFrame) cancelAnimationFrame(this.micCheckAnimationFrame);
+    this.micCheckAnimationFrame = 0;
+    this.isMicCheckActive.set(false);
+    this.audioLevel.set(0);
+    this.micCheckMessage.set('Microphone test stopped.');
+    this.micCheckAnalyser = null;
+    this.micCheckStream?.getTracks().forEach((track) => track.stop());
+    this.micCheckStream = null;
+    if (this.micCheckAudioContext && this.micCheckAudioContext.state !== 'closed') {
+      void this.micCheckAudioContext.close();
+    }
+    this.micCheckAudioContext = null;
   }
 
   private startTimer(): void {
