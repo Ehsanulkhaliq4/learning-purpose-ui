@@ -185,15 +185,14 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
+  align-items: center;
 }
 
 .company-brand-name {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.78rem;
+  gap: 0.35rem;
+  font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   line-height: 1.2;
@@ -205,16 +204,6 @@
 
 .brand-word-society {
   color: #00bf63;
-}
-
-.company-brand-author {
-  font-size: 0.62rem;
-  color: var(--sidebar-text-muted);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 @media (max-width: 700px) {
@@ -396,10 +385,6 @@
 
   .mobile-menu-open .brand-word-society {
     color: #16a34a;
-  }
-
-  .mobile-menu-open .company-brand-author {
-    color: #15803d;
   }
 
   .mobile-menu-open .admin-nav-title,
