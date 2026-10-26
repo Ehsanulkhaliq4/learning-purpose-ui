@@ -129,6 +129,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/operations/application-logs',
+        loadComponent: () =>
+          import('./features/operations/application-logs/application-logs').then(
+            (m) => m.ApplicationLogs
+          )
+      },
+      {
         path: 'admin/mail',
         loadComponent: () =>
           import('./features/operations/mail-operations/mail-operations').then(

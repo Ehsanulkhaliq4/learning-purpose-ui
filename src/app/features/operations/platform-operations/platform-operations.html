@@ -6,7 +6,7 @@
       <span>{{ notice.message }}</span>
     </div>
   }
-  <header class="ops-header"><div><p class="eyebrow">Platform administration</p><h1>Operations console</h1><p>Monitor infrastructure health and inspect the services behind LearningPurpose.</p></div><button class="btn btn-secondary" type="button" (click)="refresh()" [disabled]="loading()">Refresh data</button></header>
+  <header class="ops-header"><div><p class="eyebrow">Platform administration</p><h1>Operations console</h1><p>Monitor infrastructure health and inspect the services behind LearningPurpose.</p></div><div class="ops-header-actions"><a class="btn btn-secondary" routerLink="/admin/operations/application-logs">Application logs</a><button class="btn btn-secondary" type="button" (click)="refresh()" [disabled]="loading()">Refresh data</button></div></header>
   <section class="health-grid" aria-label="Service health">
     <article class="health-card"><span class="health-icon kafka">K</span><div><span>Kafka</span><strong>{{ topics().length }} topics</strong></div></article><article class="health-card"><span class="health-icon database">D</span><div><span>Database</span><strong>{{ tables().length }} tables</strong></div></article><article class="health-card"><span class="health-icon storage">M</span><div><span>MinIO</span><strong>{{ buckets().length }} buckets</strong></div></article><article class="health-card"><span class="health-icon" [class.online]="mail()?.connected">@</span><div><span>Mail server</span><strong>{{ mail()?.connected ? 'Connected' : 'Unavailable' }}</strong></div></article>
   </section>
