@@ -29,7 +29,7 @@
 			@for (book of books(); track book.id) {
 				<article class="quiz-card">
 					<div class="book-cover-area">
-                        @if (book.coverImageUrl) { <img [src]="book.coverImageUrl" [alt]="book.title" /> } @else { <div class="cover-placeholder"><span>{{ book.title.substring(0, 1).toUpperCase() }}</span></div> }
+                        @if (book.coverImageUrl) { <img [src]="getCoverImageUrl(book.coverImageUrl)" [alt]="book.title" /> } @else { <div class="cover-placeholder"><span>{{ book.title.substring(0, 1).toUpperCase() }}</span></div> }
                     </div>
 					<div class="book-body">
                         <div class="quiz-card-topline">
@@ -54,7 +54,7 @@
         <div class="dialog-overlay" (click)="closeDetails()">
             <div class="dialog-content" (click)="$event.stopPropagation()">
                 @if (book.coverImageUrl) {
-                    <img [src]="book.coverImageUrl" [alt]="book.title" class="dialog-image" />
+                    <img [src]="getCoverImageUrl(book.coverImageUrl)" [alt]="book.title" class="dialog-image" />
                 }
                 <h2>{{ book.title }}</h2>
                 <p><strong>Author:</strong> {{ book.author }}</p>

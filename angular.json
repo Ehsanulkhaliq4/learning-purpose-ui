@@ -73,7 +73,8 @@
               "buildTarget": "learning-purpose-ui:build:production"
             },
             "development": {
-              "buildTarget": "learning-purpose-ui:build:development"
+              "buildTarget": "learning-purpose-ui:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

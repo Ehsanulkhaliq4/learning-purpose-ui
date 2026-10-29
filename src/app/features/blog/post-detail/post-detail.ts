@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { PostService } from '../../../core/services/post.service';
 import { BlogPost, PostComment } from '../../../core/models/catalog.models';
+import { getBrowserStorageUrl } from '../../../core/utils/storage-url';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -46,6 +47,10 @@ export class PostDetail implements OnInit {
       next: (post) => { this.post.set(post); this.isLoading.set(false); },
       error: (err) => { this.errorMessage.set(err?.error?.message || 'Unable to load this post.'); this.isLoading.set(false); },
     });
+  }
+
+  getPostImageUrl(imageUrl: string): string {
+    return getBrowserStorageUrl(imageUrl);
   }
 
   toggleDiscussion(postId: number): void {

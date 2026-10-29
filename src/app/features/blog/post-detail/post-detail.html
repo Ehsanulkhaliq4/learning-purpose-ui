@@ -4,7 +4,7 @@
   @else if (errorMessage()) { <div class="detail-state error">{{ errorMessage() }}</div> }
   @else if (post(); as currentPost) {
     <article class="detail-card">
-      @if (currentPost.imageUrl) { <img class="detail-image" [src]="currentPost.imageUrl" [alt]="currentPost.name" /> }
+      @if (currentPost.imageUrl) { <img class="detail-image" [src]="getPostImageUrl(currentPost.imageUrl)" [alt]="currentPost.name" /> }
       <div class="detail-content">
         <div class="detail-meta">
           <span class="user-initial">{{ currentPost.postedBy.charAt(0).toUpperCase() }}</span>

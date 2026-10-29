@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { BookItem } from '../../../core/models/catalog.models';
 import { BookService } from '../../../core/services/book.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { getBrowserStorageUrl } from '../../../core/utils/storage-url';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -78,6 +79,10 @@ export class BookCatalog implements OnInit {
 
   viewDetails(book: BookItem): void {
     this.selectedBook.set(book);
+  }
+
+  getCoverImageUrl(imageUrl: string): string {
+    return getBrowserStorageUrl(imageUrl);
   }
 
   closeDetails(): void {
