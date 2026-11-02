@@ -5,8 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { QuizService } from '../../../core/services/quiz.service';
 import { ExamSubmission, Question, QuizEvaluationResult } from '../../../core/models/quiz.models';
-import * as ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
+import type * as ExcelJS from 'exceljs';
 
 @Component({
   imports: [DecimalPipe, RouterLink],
@@ -148,8 +147,16 @@ export class QuizTake {
         return `LP-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
     })();
 
+    // ─────────────── Dynamically load heavy export libraries ───────────────
+    const [excelJsModule, fileSaverModule] = await Promise.all([
+      import('exceljs'),
+      import('file-saver'),
+    ]);
+    const ExcelJSClass: any = (excelJsModule as any).Workbook ? excelJsModule : (excelJsModule as any).default;
+    const saveAs: any = (fileSaverModule as any).saveAs || (fileSaverModule as any).default;
+
     // ─────────────── Build workbook ───────────────
-    const wb = new ExcelJS.Workbook();
+    const wb = new ExcelJSClass.Workbook();
     wb.creator = 'LearningPurpose';
     wb.created = new Date();
 

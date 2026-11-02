@@ -5,7 +5,19 @@
 			<h1>Welcome back, {{ authService.currentUser()?.firstName || authService.currentUser()?.username || 'scholar' }}.</h1>
 			<p class="overview-intro">A clear view of your progress and what to focus on next.</p>
 		</div>
-		<div class="date-chip"><span class="date-mark" aria-hidden="true"></span><span>This week</span><strong>{{ weekLabel }}</strong></div>
+		<div class="header-actions">
+			@if (actionMessage(); as msg) {
+				<div class="action-feedback-toast" role="status">{{ msg }}</div>
+			}
+			<button type="button" class="quick-study-btn" (click)="logQuickStudyTime(0.5)" [disabled]="refreshing()" title="Log 30 minutes of study time">
+				<span>&#43;</span> 30m Study
+			</button>
+			<button type="button" class="refresh-chip" (click)="loadDashboard(true)" [disabled]="refreshing()" title="Refresh live data">
+				<span class="live-dot" [class.spinning]="refreshing()" aria-hidden="true"></span>
+				<span>{{ refreshing() ? 'Syncing...' : 'Live' }}</span>
+			</button>
+			<div class="date-chip"><span class="date-mark" aria-hidden="true"></span><span>This week</span><strong>{{ weekLabel }}</strong></div>
+		</div>
 	</header>
 
 	@if (loading()) {

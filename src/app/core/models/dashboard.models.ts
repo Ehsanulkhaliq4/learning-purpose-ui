@@ -71,3 +71,26 @@ export interface NextMilestone {
   currentProgress: number;
   maxProgress: number;
 }
+
+export interface CreateActivityRequest {
+  title: string;
+  subtitle?: string | null;
+  actionType?: string | null;
+  statusColor?: string | null;
+}
+
+export interface LogStudyTimeRequest {
+  hours: number;
+  studyDate?: string | null;
+}
+
+export interface UpdateResumeItemRequest {
+  itemType: string;
+  referenceId?: number | null;
+  title: string;
+  description?: string | null;
+  progressPercentage: number;
+  status?: string | null;
+  actionText?: string | null;
+  actionUrl?: string | null;
+}

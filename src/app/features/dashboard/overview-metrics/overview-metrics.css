@@ -28,6 +28,16 @@
 .overview-header .eyebrow::before { display: inline-block; width: 6px; height: 6px; background: var(--sky-400); border-radius: 50%; box-shadow: 0 0 6px var(--sky-400); content: ''; }
 .overview-header h1 { margin-top: 0.4rem; font-size: clamp(1.6rem, 3.5vw, 2.2rem); letter-spacing: -0.04em; background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .overview-intro { margin-top: 0.45rem; color: var(--text-secondary); font-size: 0.78rem; }
+.header-actions { display: flex; align-items: center; gap: 0.65rem; }
+.action-feedback-toast { padding: 0.45rem 0.75rem; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; border-radius: var(--radius-md); font-size: 0.64rem; font-weight: 700; animation: dashboard-enter 200ms ease; }
+.quick-study-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.52rem 0.8rem; background: var(--sky-50); color: var(--sky-700); border: 1px solid var(--sky-200); border-radius: var(--radius-md); font-size: 0.66rem; font-weight: 700; cursor: pointer; transition: background 150ms ease, transform 150ms ease; }
+.quick-study-btn:hover:not(:disabled) { background: var(--sky-100); transform: translateY(-1px); }
+.quick-study-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.refresh-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.52rem 0.75rem; background: var(--surface-white); color: var(--text-secondary); border: 1px solid var(--surface-border); border-radius: var(--radius-md); font-size: 0.66rem; font-weight: 700; cursor: pointer; transition: background 150ms ease; }
+.refresh-chip:hover:not(:disabled) { background: var(--surface-subtle); color: var(--text-main); }
+.refresh-chip:disabled { opacity: 0.6; cursor: not-allowed; }
+.live-dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 3px #d1fae5; }
+.live-dot.spinning { width: 9px; height: 9px; background: transparent; border: 2px solid var(--sky-200); border-top-color: var(--sky-600); border-radius: 50%; box-shadow: none; animation: spin 600ms linear infinite; }
 .date-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.58rem 0.78rem; color: var(--text-muted); background: var(--surface-white); border: 1px solid var(--surface-border); border-radius: var(--radius-md); font-size: 0.66rem; white-space: nowrap; }
 .date-chip strong { color: var(--text-secondary); }
 .date-mark { width: 7px; height: 7px; background: var(--sky-500); border-radius: 50%; box-shadow: 0 0 0 3px var(--sky-100); }
