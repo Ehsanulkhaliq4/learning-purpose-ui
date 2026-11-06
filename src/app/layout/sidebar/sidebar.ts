@@ -22,6 +22,7 @@ export class Sidebar {
 
   readonly navItems: NavItem[] = [
     { label: 'Overview', route: '/dashboard' },
+    { label: 'Messages', route: '/chat', badge: 'New' },
     { label: 'Assessments', route: '/quizzes', badge: 'Active' },
     { label: 'Classroom Media', route: '/media' },
     { label: 'Live Conference', route: '/conference', badge: 'Live' },

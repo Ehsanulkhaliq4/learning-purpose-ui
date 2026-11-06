@@ -3,7 +3,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, of, tap, throwError } from 'rxjs';
 import { AuthResponse, UserIdentity, RegisterApplicantRequest, RegisterApplicantResponse, ForgotPasswordResponse, ResetPasswordRequest } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
@@ -23,6 +23,49 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this.tokenSignal());
   readonly currentUser = computed(() => this.userSignal());
   readonly isAdmin = computed(() => this.userSignal()?.roles.includes('ROLE_ADMIN') ?? false);
+
+  ensureCurrentUserId(): Observable<number> {
+    const user = this.userSignal();
+    if (!user?.username) {
+      return throwError(() => new Error('Your signed-in account does not include a username.'));
+    }
+
+    const userId = user.id;
+    if (userId !== undefined && Number.isSafeInteger(userId) && userId > 0) {
+      return of(userId);
+    }
+
+    return this.http
+      .get<{
+        id: number;
+        username: string;
+        firstName?: string;
+        lastName?: string;
+        roles?: Array<string | { roleName?: string; authority?: string }>;
+      }>(`http://localhost:8080/api/v1/users/${encodeURIComponent(user.username)}`)
+      .pipe(
+        map((profile) => {
+          if (!Number.isSafeInteger(profile.id) || profile.id <= 0) {
+            throw new Error('The user profile did not include a valid numeric ID.');
+          }
+
+          const identity: UserIdentity = {
+            ...user,
+            id: profile.id,
+            firstName: profile.firstName ?? user.firstName,
+            lastName: profile.lastName ?? user.lastName,
+            roles: profile.roles?.map((role) =>
+              typeof role === 'string' ? role : role.authority ?? role.roleName ?? '',
+            ).filter(Boolean) ?? user.roles,
+          };
+          this.userSignal.set(identity);
+          if (this.isBrowser) {
+            localStorage.setItem('auth_user', JSON.stringify(identity));
+          }
+          return profile.id;
+        }),
+      );
+  }
 
   registerApplicant(payload: RegisterApplicantRequest): Observable<RegisterApplicantResponse> {
     return this.http.post<RegisterApplicantResponse>(`${this.API_URL}/register`, payload).pipe(
