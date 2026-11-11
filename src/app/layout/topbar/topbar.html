@@ -2,6 +2,22 @@
  
 
   <div class="topbar-actions">
+    <a
+      class="notification-bell"
+      routerLink="/chat"
+      [class.bell-ringing]="messaging.isNotificationRinging()"
+      [attr.aria-label]="messaging.unreadMessageCount() + ' unread messages'"
+      [attr.title]="messaging.notificationError() || (messaging.unreadMessageCount() ? messaging.unreadMessageCount() + ' unread messages' : 'Messages')"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+        <path d="M10 21h4" />
+      </svg>
+      @if (messaging.unreadMessageCount()) {
+        <span class="notification-count">{{ messaging.unreadMessageCount() > 99 ? '99+' : messaging.unreadMessageCount() }}</span>
+      }
+    </a>
+
     <button class="btn btn-secondary btn-sm ai-toggle-btn" (click)="toggleAiDrawer.emit()">
       <span class="sparkle-symbol">✨</span>
       <span>Gemini Copilot</span>

@@ -17,6 +17,71 @@
   gap: 1.25rem;
 }
 
+.notification-bell {
+  position: relative;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--sky-200);
+  border-radius: 50%;
+  color: var(--sky-700);
+  background: var(--sky-50);
+  text-decoration: none;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.notification-bell:hover {
+  border-color: var(--sky-400);
+  background: var(--sky-100);
+}
+
+.notification-bell svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  transform-origin: 50% 12%;
+}
+
+.notification-bell.bell-ringing svg {
+  animation: bell-ring 0.8s ease-in-out infinite;
+}
+
+.notification-count {
+  position: absolute;
+  top: -0.3rem;
+  right: -0.35rem;
+  display: grid;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  place-items: center;
+  padding: 0 0.2rem;
+  border: 2px solid var(--surface-white);
+  border-radius: 999px;
+  color: #fff;
+  background: #e5484d;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+@keyframes bell-ring {
+  0%, 100% { transform: rotate(0); }
+  15%, 45%, 75% { transform: rotate(12deg); }
+  30%, 60%, 90% { transform: rotate(-12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-bell.bell-ringing svg {
+    animation: none;
+  }
+}
+
 .ai-toggle-btn {
   background-color: var(--sky-50);
   color: var(--sky-700);
@@ -346,12 +411,13 @@
 @media (max-width: 620px) {
   .topbar-search,
   .user-details,
-  .logout-btn > span:last-child {
+  .logout-btn > span:last-child,
+  .ai-toggle-btn {
     display: none;
   }
 
   .topbar-actions {
-    display: none;
+    gap: 0.5rem;
   }
 
   .logout-btn {

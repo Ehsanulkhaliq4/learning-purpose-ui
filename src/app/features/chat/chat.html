@@ -1,9 +1,9 @@
 <section class="messaging-page" aria-label="Messaging">
   <header class="page-heading">
     <div>
-      <p class="eyebrow">YOUR COMMUNITY</p>
+      <p class="eyebrow">YOUR SPACE</p>
       <h1>Messages</h1>
-      <p class="page-subtitle">A little closer, one conversation at a time.</p>
+      <p class="page-subtitle">A quieter place to keep every conversation moving.</p>
     </div>
     <div class="heading-profile" aria-label="Your profile">
       <span class="profile-avatar">{{ initials(currentUser()?.username || 'You') }}</span>
@@ -24,7 +24,7 @@
       <div class="inbox-heading">
         <div>
           <h2>Inbox</h2>
-          <span class="inbox-caption">Keep the conversation going</span>
+          <span class="inbox-caption">Your recent conversations</span>
         </div>
         <span class="inbox-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2 1-4.1A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/></svg>
@@ -37,15 +37,10 @@
           type="search"
           [value]="searchTerm()"
           (input)="updateSearchTerm($any($event.target).value)"
-          (keydown.enter)="activeTab() === 'contacts' && findUser()"
-          [placeholder]="activeTab() === 'chats' ? 'Search conversations' : 'Search by exact username'"
-          [attr.aria-label]="activeTab() === 'chats' ? 'Search conversations' : 'Look up an exact username'"
+          [placeholder]="activeTab() === 'chats' ? 'Search conversations' : 'Search usernames'"
+          [attr.aria-label]="activeTab() === 'chats' ? 'Search conversations' : 'Search usernames'"
         />
-        @if (activeTab() === 'chats') {
-          <kbd>⌘ K</kbd>
-        } @else {
-          <button type="button" class="search-submit" (click)="findUser()">Find</button>
-        }
+        @if (activeTab() === 'chats') { <kbd>⌘ K</kbd> }
       </div>
 
       <div class="inbox-tabs" role="tablist" aria-label="Inbox views">
@@ -83,7 +78,7 @@
                 <span class="avatar conversation-avatar">{{ initials(conversationName(item.conversation)) }}</span>
                 <span class="conversation-copy">
                   <span class="conversation-title">{{ conversationName(item.conversation) }}</span>
-                  <span class="conversation-preview">{{ item.conversation.type === 'GROUP' ? 'Group conversation' : 'Tap to open conversation' }}</span>
+                  <span class="conversation-preview">{{ item.conversation.type.toLowerCase() === 'group' ? 'Group conversation' : 'Tap to open conversation' }}</span>
                 </span>
                 <span class="conversation-meta">
                   @if (item.unreadCount) { <span class="unread-count">{{ item.unreadCount }}</span> }
@@ -100,15 +95,17 @@
           } @else if (usersError()) {
             <div class="list-state list-state-error">
               <span>{{ usersError() }}</span>
-              @if (searchTerm().trim()) {
-                <button type="button" (click)="findUser()">Try again</button>
-              }
             </div>
           } @else if (!filteredUsers().length) {
             <div class="empty-list compact-empty">
               <span class="empty-list-icon" aria-hidden="true">⌕</span>
-              <strong>Find someone to message</strong>
-              <span>Enter their exact username to look them up.</span>
+              @if (searchTerm().trim().length < 2) {
+                <strong>Find someone to message</strong>
+                <span>Type at least 2 characters to search usernames.</span>
+              } @else {
+                <strong>No matching usernames</strong>
+                <span>Try a different username.</span>
+              }
             </div>
           } @else {
             @for (user of filteredUsers(); track trackById($index, user)) {
@@ -148,31 +145,63 @@
             <span class="avatar active-avatar">{{ initials(conversationName(conversation)) }}</span>
             <div>
               <h2>{{ conversationName(conversation) }}</h2>
-              <span class="connection-state"><span class="connection-dot"></span>Realtime connection unavailable</span>
+              <span class="connection-state">
+                <span class="connection-dot" [class.connected]="!realtimeUnavailable()"></span>
+                {{ realtimeUnavailable() ? 'Connecting to live messaging…' : 'Live messaging connected' }}
+              </span>
             </div>
           </div>
           <div class="header-actions">
-            <button type="button" class="icon-button" aria-label="Search in conversation" title="Search in conversation">
+            <button
+              type="button"
+              class="icon-button"
+              aria-label="Search in conversation"
+              title="Search in conversation"
+              [attr.aria-expanded]="messageSearchOpen()"
+              (click)="toggleMessageSearch()"
+            >
               <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
             </button>
-            <button type="button" class="icon-button" aria-label="More conversation options" title="More options">
+            <button
+              type="button"
+              class="icon-button"
+              aria-label="More conversation options"
+              title="More options"
+              [attr.aria-expanded]="conversationMenuOpen()"
+              (click)="toggleConversationMenu()"
+            >
               <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
             </button>
+            @if (conversationMenuOpen()) {
+              <div class="conversation-menu" role="menu" aria-label="Conversation options">
+                <button type="button" role="menuitem" (click)="refreshConversation()">Refresh messages</button>
+                <button type="button" role="menuitem" (click)="closeConversation()">Back to inbox</button>
+              </div>
+            }
           </div>
         </header>
 
         <div class="message-area">
-          <div class="conversation-intro">
-            <span class="intro-avatar">{{ initials(conversationName(conversation)) }}</span>
-            <strong>{{ conversationName(conversation) }}</strong>
-            <span>This is the beginning of your conversation.</span>
-          </div>
-
+          @if (messageSearchOpen()) {
+            <label class="message-search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+              <input
+                type="search"
+                placeholder="Search messages"
+                aria-label="Search messages in this conversation"
+                [ngModel]="messageSearchTerm()"
+                (ngModelChange)="messageSearchTerm.set($event)"
+              />
+              @if (messageSearchTerm()) {
+                <button type="button" aria-label="Clear message search" (click)="messageSearchTerm.set('')">×</button>
+              }
+            </label>
+          }
           @if (isLoadingMessages()) {
             <div class="message-loading"><span class="loader"></span>Loading message history…</div>
-          } @else if (messages().length) {
+          } @else if (filteredMessages().length) {
             <div class="message-list">
-              @for (message of messages(); track trackByMessage($index, message)) {
+              @for (message of filteredMessages(); track trackByMessage($index, message)) {
                 <article class="message" [class.message-outgoing]="message.senderId === currentUserId()">
                   @if (message.senderId !== currentUserId()) {
                     <span class="message-avatar">{{ initials(conversationName(conversation)) }}</span>
@@ -184,8 +213,14 @@
                 </article>
               }
             </div>
+          } @else if (messageSearchTerm().trim()) {
+            <div class="no-messages">No messages match “{{ messageSearchTerm() }}”.</div>
           } @else if (!isLoadingMessages()) {
-            <div class="no-messages">No messages here yet. Start a conversation when live messaging is connected.</div>
+            <div class="conversation-intro">
+              <span class="intro-avatar">{{ initials(conversationName(conversation)) }}</span>
+              <strong>Your conversation starts here</strong>
+              <span>Send a message to {{ conversationName(conversation) }} whenever you’re ready.</span>
+            </div>
           }
         </div>
 
@@ -209,7 +244,7 @@
           </button>
         </form>
         @if (realtimeUnavailable()) {
-          <p class="composer-note">Connect your WebSocket endpoint to send and receive messages live.</p>
+          <p class="composer-note">Connecting to live messaging. Sending is available when connected.</p>
         }
       } @else {
         <div class="welcome-state">
