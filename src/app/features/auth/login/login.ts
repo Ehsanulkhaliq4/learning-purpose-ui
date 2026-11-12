@@ -1,7 +1,8 @@
-import { Component, OnDestroy, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthDialogService } from '../../../core/services/auth-dialog.service';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -10,8 +11,12 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './login.html',
 })
 export class Login implements OnDestroy {
+  @Input() dialogMode = false;
+  @Output() dialogModeChange = new EventEmitter<'login' | 'register'>();
+
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly authDialogService = inject(AuthDialogService);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal(false);
@@ -64,6 +69,7 @@ export class Login implements OnDestroy {
     this.authService.requestPasswordResetOtp(email).subscribe({
       next: () => {
         this.isSubmitting.set(false);
+        this.authDialogService.close();
         this.router.navigate(['/auth/reset-password'], {
           queryParams: { email },
         });
@@ -91,6 +97,7 @@ export class Login implements OnDestroy {
     this.authService.login({ username, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
+        this.authDialogService.close();
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

@@ -167,6 +167,9 @@ form { display: flex; flex-direction: column; gap: 1.2rem; }
 .register-prompt { margin-top: 1.5rem; text-align: center; color: var(--text-secondary); font-size: 0.75rem; }
 .register-prompt a { color: var(--sky-700); font-weight: 700; text-decoration: none; }
 .register-prompt a:hover { text-decoration: underline; }
+.auth-switch-button { padding: 0; border: 0; color: var(--sky-700); background: transparent; font: inherit; font-weight: 700; cursor: pointer; }
+.auth-switch-button:hover { text-decoration: underline; }
+.auth-switch-button:focus-visible { outline: 3px solid rgba(56, 189, 248, .55); outline-offset: 3px; }
 
 @media (max-width: 700px) {
 	.login-card {

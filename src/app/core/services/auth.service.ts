@@ -142,7 +142,7 @@ export class AuthService {
     }
     this.tokenSignal.set(null);
     this.userSignal.set(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/'], { replaceUrl: true });
   }
 
   getToken(): string | null {

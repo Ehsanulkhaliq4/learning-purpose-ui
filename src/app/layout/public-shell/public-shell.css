@@ -50,15 +50,22 @@
   gap: 1.25rem;
 }
 
-.public-nav a {
+.public-nav a,
+.public-nav button {
+  padding: 0;
+  border: 0;
   color: var(--text-secondary);
+  background: transparent;
   text-decoration: none;
   font-size: 0.8125rem;
   font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .public-nav a:hover,
-.public-nav a.active {
+.public-nav a.active,
+.public-nav button:hover {
   color: var(--sky-700);
 }
 
@@ -73,6 +80,62 @@
 .public-nav .register-link.active {
   color: #fff;
   background: var(--sky-700);
+}
+
+.auth-dialog {
+  position: relative;
+  inset: 0;
+  width: min(760px, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(820px, calc(100dvh - 2rem));
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--text-main);
+}
+
+.auth-dialog::backdrop {
+  background: rgba(8, 24, 39, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.auth-dialog app-login,
+.auth-dialog app-register-applicant {
+  display: block;
+}
+
+.auth-dialog .login-card,
+.auth-dialog .register-card {
+  width: 100%;
+  margin: 0;
+}
+
+.auth-dialog-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 3;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  color: #075985;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.auth-dialog-close:focus-visible,
+.public-nav button:focus-visible {
+  outline: 3px solid rgba(56, 189, 248, 0.65);
+  outline-offset: 3px;
 }
 
 .public-content {
@@ -90,6 +153,15 @@
 
   .public-nav {
     gap: 0.75rem;
+  }
+
+  .public-nav a,
+  .public-nav button {
+    font-size: 0.75rem;
+  }
+
+  .public-nav .register-link {
+    padding: 0.5rem 0.65rem;
   }
 
   .public-content {

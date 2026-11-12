@@ -31,9 +31,9 @@
   height: 1.55rem;
   padding: 0 .45rem;
   place-items: center;
-  color: #78350f;
-  background: #fef3c7;
-  border: 2px solid #fcd34d;
+  color: #065f46;
+  background: #d1fae5;
+  border: 2px solid #6ee7b7;
   border-radius: 999px;
   font-size: .5rem;
   font-weight: 900;
@@ -42,19 +42,38 @@
 .friend-chat-dot {
   width: 7px;
   height: 7px;
-  background: #fcd34d;
+  background: #6ee7b7;
   border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(252, 211, 77, .2);
+  box-shadow: 0 0 0 3px rgba(110, 231, 183, .2);
 }
 .friend-chat-content { display: grid; gap: .65rem; padding: .9rem; }
 .friend-chat-content .eyebrow { color: #0f766e; font-size: .58rem; }
 .friend-chat-promo h2 { font-size: 1rem; line-height: 1.25; }
 .friend-chat-content > p:not(.eyebrow) { color: var(--text-secondary); font-size: .68rem; line-height: 1.5; }
-.friend-chat-notice { padding: .6rem .65rem; color: #115e59 !important; background: #f0fdfa; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: .62rem !important; font-weight: 700; }
+.friend-chat-notice { padding: .6rem .65rem; color: #115e59 !important; background: #f0fdfa; border-left: 3px solid #f59e0b; border-radius: 4px; font-size: .62rem !important; }
+.friend-chat-notice strong { margin-right: .2rem; color: #92400e; }
+.friend-chat-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .65rem .7rem;
+  color: #fff;
+  background: #0f766e;
+  border-radius: 6px;
+  font-size: .66rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background .18s ease, transform .18s ease;
+}
+.friend-chat-action:hover { background: #115e59; transform: translateY(-1px); }
+.friend-chat-action:focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+.join-action { width: 100%; padding: 0; border: 0; background: transparent; font-family: inherit; cursor: pointer; text-align: left; }
+.join-action:focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
 .friend-chat-promo { transition: box-shadow .22s ease, border-color .22s ease; }
 .friend-chat-promo:hover { border-color: #2dd4bf; box-shadow: 0 12px 28px rgba(15, 23, 42, .1); }
 @media (prefers-reduced-motion: reduce) {
-  .friend-chat-promo { animation: none; transition: none; }
+  .friend-chat-promo, .friend-chat-action { animation: none; transition: none; }
 }
 .conference-promo {
   overflow: hidden;

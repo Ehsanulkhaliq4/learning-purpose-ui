@@ -7,12 +7,21 @@
 
     <nav class="public-nav" aria-label="Account navigation">
       <a routerLink="/explore" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Explore</a>
-      <a routerLink="/auth/login" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Sign In</a>
-      <a routerLink="/auth/register" routerLinkActive="active" class="register-link">Register</a>
+      <button type="button" class="signin-link" (click)="authDialogService.open('login')">Sign In</button>
+      <button type="button" class="register-link" (click)="authDialogService.open('register')">Register</button>
     </nav>
   </header>
 
   <main class="public-content">
     <router-outlet />
   </main>
+
+  <dialog #authDialog class="auth-dialog" (click)="closeOnBackdrop($event)" (close)="closeAuthDialog()">
+    <button type="button" class="auth-dialog-close" aria-label="Close dialog" (click)="closeAuthDialog()">×</button>
+    @if (authDialogService.mode() === 'login') {
+      <app-login [dialogMode]="true" (dialogModeChange)="authDialogService.open($event)" />
+    } @else if (authDialogService.mode() === 'register') {
+      <app-register-applicant [dialogMode]="true" (dialogModeChange)="authDialogService.open($event)" />
+    }
+  </dialog>
 </div>

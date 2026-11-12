@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { AuthDialogService } from '../../core/services/auth-dialog.service';
 
 @Component({
   selector: 'app-intro',
-  imports: [RouterLink],
   templateUrl: './intro.html',
   styleUrl: './intro.css',
 })
-export class Intro {}
+export class Intro {
+  constructor(readonly authDialogService: AuthDialogService) {}
+}

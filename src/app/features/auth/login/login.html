@@ -97,7 +97,14 @@
 			</button>
 		</form>
 
-		<p class="register-prompt">New to LearningPurpose? <a routerLink="/auth/register">Create an account</a></p>
+		<p class="register-prompt">
+			New to LearningPurpose?
+			@if (dialogMode) {
+				<button type="button" class="auth-switch-button" (click)="dialogModeChange.emit('register')">Create an account</button>
+			} @else {
+				<a routerLink="/auth/register">Create an account</a>
+			}
+		</p>
 		}
 	</div>
 </section>

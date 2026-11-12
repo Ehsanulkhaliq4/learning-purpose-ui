@@ -1,7 +1,8 @@
-import { Component, OnDestroy, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthDialogService } from '../../../core/services/auth-dialog.service';
 
 @Component({
   selector: 'app-register-applicant',
@@ -10,8 +11,12 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './register-applicant.css',
 })
 export class RegisterApplicant implements OnDestroy {
+  @Input() dialogMode = false;
+  @Output() dialogModeChange = new EventEmitter<'login' | 'register'>();
+
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly authDialogService = inject(AuthDialogService);
   private readonly router = inject(Router);
 
   readonly isSubmitting = signal<boolean>(false);
@@ -45,6 +50,7 @@ export class RegisterApplicant implements OnDestroy {
         this.isSubmitting.set(false);
         this.showToast('success', 'Account created successfully. Opening your dashboard...');
         setTimeout(() => {
+          this.authDialogService.close();
           this.router.navigate(['/dashboard']);
         }, 1500);
       },

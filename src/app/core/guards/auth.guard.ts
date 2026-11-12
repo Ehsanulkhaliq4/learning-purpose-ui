@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = async (_route, state) => {
     return true;
   }
 
-  const loginUrl = router.createUrlTree(['/auth/login']);
+  const loginUrl = router.createUrlTree(['/']);
   if (!isPlatformBrowser(platformId)) {
     return loginUrl;
   }

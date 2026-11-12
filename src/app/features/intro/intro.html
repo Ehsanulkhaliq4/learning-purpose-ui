@@ -4,8 +4,8 @@
     <h1>Build knowledge that moves with you.</h1>
     <p class="intro-copy">Learn with interactive video streaming, test your mastery in the exam portal, explore deep-dive blogs, and get 24/7 help from the AI Copilot.</p>
     <div class="intro-actions">
-      <a routerLink="/auth/login" class="btn btn-primary">Login to Learn</a>
-      <a routerLink="/auth/register" class="btn btn-secondary">Create Account</a>
+      <button type="button" class="btn btn-primary" (click)="authDialogService.open('login')">Login to Learn</button>
+      <button type="button" class="btn btn-secondary" (click)="authDialogService.open('register')">Create Account</button>
     </div>
     <div class="trust-line">
       <span class="trust-dot"></span>

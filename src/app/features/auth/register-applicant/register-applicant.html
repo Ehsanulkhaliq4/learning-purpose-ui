@@ -140,7 +140,14 @@
         @if (!isSubmitting()) { <span aria-hidden="true">→</span> }
       </button>
 
-      <p class="form-footer">Already have an account? <a routerLink="/auth/login" class="link-action">Sign in</a></p>
+      <p class="form-footer">
+        Already have an account?
+        @if (dialogMode) {
+          <button type="button" class="link-action auth-switch-button" (click)="dialogModeChange.emit('login')">Sign in</button>
+        } @else {
+          <a routerLink="/auth/login" class="link-action">Sign in</a>
+        }
+      </p>
     </form>
   </div>
 </section>

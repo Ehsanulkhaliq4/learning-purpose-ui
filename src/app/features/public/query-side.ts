@@ -7,6 +7,7 @@ import { BlogPost } from '../../core/models/catalog.models';
 import { PublicExamCategory, PublicExamQuiz } from '../../core/models/quiz.models';
 import { AuthService } from '../../core/services/auth.service';
 import { QuizService } from '../../core/services/quiz.service';
+import { AuthDialogService } from '../../core/services/auth-dialog.service';
 import { forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -33,6 +34,7 @@ export class QuerySide implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
   readonly authService = inject(AuthService);
+  readonly authDialogService = inject(AuthDialogService);
 
   readonly posts = signal<BlogPost[]>([]);
   private readonly allCategories = signal<PublicExamCategory[]>([]);
