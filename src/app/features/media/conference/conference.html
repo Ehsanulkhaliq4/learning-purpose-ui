@@ -43,7 +43,8 @@
 
       <div class="lobby-grid">
         <!-- Live Preview Stage -->
-        <div class="preview-stage-card">
+        <div class="preview-column">
+          <div class="preview-stage-card">
           <div class="camera-viewport">
             @if (localStream()) {
               <video [srcObject]="localStream()" autoplay muted playsinline class="preview-video"></video>
@@ -143,6 +144,26 @@
             <div class="preview-quality-tag">
               <span class="dot-hd"></span> 1080p Ultra HD Audio/Video
             </div>
+          </div>
+        </div>
+          <div class="lobby-bottom-note">
+            <span class="lobby-note-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" />
+                <path d="m19 14 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14Z" />
+              </svg>
+            </span>
+            <span class="lobby-note-copy">
+              <span class="lobby-note-eyebrow">YOUR SPACE, YOUR PACE</span>
+              <span class="lobby-bottom-message">Learning feels better together</span>
+              <span class="lobby-bottom-details">A little space for big ideas, questions, and progress.</span>
+            </span>
+            <span class="lobby-note-art" aria-hidden="true">
+              <span class="lobby-note-orbit lobby-note-orbit-outer"></span>
+              <span class="lobby-note-orbit lobby-note-orbit-inner"></span>
+              <span class="lobby-note-art-dot"></span>
+              <span class="lobby-note-tag">HD READY</span>
+            </span>
           </div>
         </div>
 
@@ -287,6 +308,7 @@
           </div>
         </div>
       </div>
+
     </div>
   }
 
@@ -1168,4 +1190,3 @@
     </div>
   }
 </section>
-

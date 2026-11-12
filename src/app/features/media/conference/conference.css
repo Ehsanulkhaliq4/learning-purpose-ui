@@ -670,6 +670,200 @@
   flex-shrink: 0;
 }
 
+.conference-root:not(.is-in-meeting) {
+  background:
+    radial-gradient(ellipse 40% 32% at 8% 12%, rgba(56, 189, 248, 0.13), transparent 75%),
+    radial-gradient(ellipse 32% 28% at 94% 80%, rgba(14, 165, 233, 0.09), transparent 75%),
+    var(--canvas-bg);
+  color: var(--text-main);
+}
+
+.conference-root:not(.is-in-meeting) .lobby-container::before {
+  background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3) 40%, rgba(14, 165, 233, 0.3) 60%, transparent);
+}
+
+.conference-root:not(.is-in-meeting) .lobby-header {
+  border-bottom-color: var(--surface-border);
+}
+
+.conference-root:not(.is-in-meeting) .brand-pill {
+  color: var(--text-main);
+}
+
+.conference-root:not(.is-in-meeting) .brand-icon {
+  box-sizing: content-box;
+  padding: 0.45rem;
+  border: 1px solid var(--sky-200);
+  border-radius: 10px;
+  color: var(--sky-600);
+  background: linear-gradient(145deg, #ffffff, var(--sky-50));
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+}
+
+.conference-root:not(.is-in-meeting) .lobby-alert {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.conference-root:not(.is-in-meeting) .preview-stage-card,
+.conference-root:not(.is-in-meeting) .setup-panel-card {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(14, 165, 233, 0.18);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.07), 0 3px 8px rgba(2, 132, 199, 0.04);
+  color: var(--text-main);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.conference-root:not(.is-in-meeting) .preview-stage-card {
+  background: linear-gradient(145deg, #ffffff 35%, #f0f9ff 100%);
+}
+
+.conference-root:not(.is-in-meeting) .setup-panel-card {
+  background: linear-gradient(155deg, #ffffff 0%, #f8fbff 68%, #eff8ff 100%);
+}
+
+.conference-root:not(.is-in-meeting) .preview-stage-card::before,
+.conference-root:not(.is-in-meeting) .setup-panel-card::before {
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 3px;
+  border-radius: 0 0 999px 999px;
+  background: linear-gradient(90deg, var(--sky-400), var(--sky-700), #2dd4bf);
+  content: '';
+}
+
+.conference-root:not(.is-in-meeting) .preview-stage-card:hover,
+.conference-root:not(.is-in-meeting) .setup-panel-card:hover {
+  border-color: rgba(14, 165, 233, 0.34);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.1), 0 5px 14px rgba(2, 132, 199, 0.08);
+  transform: translateY(-2px);
+}
+
+.conference-root:not(.is-in-meeting) .meter-label,
+.conference-root:not(.is-in-meeting) .preview-quality-tag {
+  color: var(--text-secondary);
+}
+
+.conference-root:not(.is-in-meeting) .wave-bar {
+  background: var(--sky-200);
+}
+
+.conference-root:not(.is-in-meeting) .setup-tabs {
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border-color: var(--sky-100);
+}
+
+.conference-root:not(.is-in-meeting) .tab-btn {
+  color: var(--text-secondary);
+}
+
+.conference-root:not(.is-in-meeting) .tab-btn:hover:not(.active) {
+  color: var(--text-main);
+  background: var(--sky-50);
+}
+
+.conference-root:not(.is-in-meeting) .tab-btn.active {
+  background: linear-gradient(135deg, var(--sky-600), var(--sky-700));
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 5px 14px rgba(2, 132, 199, 0.22);
+}
+
+.conference-root:not(.is-in-meeting) .form-group label {
+  color: var(--text-secondary);
+}
+
+.conference-root:not(.is-in-meeting) .input-icon {
+  color: var(--text-muted);
+}
+
+.conference-root:not(.is-in-meeting) .form-group input {
+  background: var(--surface-white);
+  border-color: #d7e4f0;
+  color: var(--text-main);
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.025);
+}
+
+.conference-root:not(.is-in-meeting) .form-group input:hover {
+  border-color: var(--sky-200);
+}
+
+.conference-root:not(.is-in-meeting) .form-group input:focus {
+  border-color: var(--sky-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+}
+
+.conference-root:not(.is-in-meeting) .action-btn {
+  background: var(--sky-50);
+  border-color: var(--sky-200);
+  color: var(--sky-700);
+}
+
+.conference-root:not(.is-in-meeting) .action-btn:hover {
+  background: var(--sky-100);
+  color: var(--sky-700);
+}
+
+.conference-root:not(.is-in-meeting) .quick-settings-summary {
+  background: linear-gradient(110deg, #f0fdf9, #f0f9ff);
+  border-color: #cceee5;
+}
+
+.conference-root:not(.is-in-meeting) .setting-chip,
+.conference-root:not(.is-in-meeting) .security-bullet {
+  color: var(--text-secondary);
+}
+
+.conference-root:not(.is-in-meeting) .setting-chip:first-child .chip-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.conference-root:not(.is-in-meeting) .setting-chip:last-child .chip-dot {
+  background: var(--sky-500);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+}
+
+.conference-root:not(.is-in-meeting) .btn-launch-meeting {
+  border-color: rgba(3, 105, 161, 0.2);
+  background: linear-gradient(110deg, #0ea5e9 0%, #0284c7 48%, #0369a1 100%);
+  box-shadow: 0 12px 24px rgba(2, 132, 199, 0.25), 0 3px 8px rgba(3, 105, 161, 0.12);
+}
+
+.conference-root:not(.is-in-meeting) .btn-launch-meeting .btn-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+.conference-root:not(.is-in-meeting) .form-actions {
+  min-width: 0;
+}
+
+.conference-root:not(.is-in-meeting) .btn-launch-meeting:hover {
+  background: linear-gradient(110deg, #38bdf8 0%, #0284c7 48%, #075985 100%);
+  box-shadow: 0 16px 30px rgba(2, 132, 199, 0.32), 0 4px 10px rgba(3, 105, 161, 0.15);
+}
+
+.conference-root:not(.is-in-meeting) .mic-test-btn {
+  color: var(--sky-700);
+  background: var(--sky-50);
+  border-color: var(--sky-200);
+}
+
+.conference-root:not(.is-in-meeting) .mic-test-btn:hover:not(:disabled),
+.conference-root:not(.is-in-meeting) .mic-test-btn.active {
+  color: #ffffff;
+  background: var(--sky-600);
+  border-color: var(--sky-600);
+}
+
 /* ==========================================================================
    IN-MEETING PRO STAGE (ZOOM / MEET PRO EXPERIENCE)
    ========================================================================== */
@@ -2421,6 +2615,62 @@
 }
 
 @media (max-width: 768px) {
+  .conference-root:not(.is-in-meeting) .lobby-container {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .lobby-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .lobby-grid {
+    gap: 1rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .preview-stage-card {
+    padding: 0.9rem;
+    border-radius: 18px;
+  }
+
+  .conference-root:not(.is-in-meeting) .camera-viewport {
+    border-radius: 13px;
+  }
+
+  .conference-root:not(.is-in-meeting) .preview-meters {
+    margin-top: 0.6rem;
+    padding: 0.35rem 0.2rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .setup-panel-card {
+    padding: 1.2rem;
+    border-radius: 18px;
+  }
+
+  .conference-root:not(.is-in-meeting) .setup-tabs {
+    margin-bottom: 1rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .form-content {
+    gap: 0.8rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .form-group input {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    font-size: 0.88rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .btn-launch-meeting {
+    min-height: 56px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .conference-root:not(.is-in-meeting) .lobby-footer-notes {
+    gap: 0.25rem;
+  }
+
   .dock-btn {
     min-width: 44px;
     height: 46px;
@@ -2440,3 +2690,195 @@
   }
 }
 
+.conference-root:not(.is-in-meeting)::after {
+  content: '';
+  position: absolute;
+  right: clamp(1.25rem, 3vw, 3rem);
+  bottom: 1.25rem;
+  width: 7rem;
+  aspect-ratio: 1;
+  border: 1px solid rgba(14, 165, 233, 0.12);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 76% 23%, #2dd4bf 0 3px, transparent 4px),
+    radial-gradient(circle at 18% 68%, #38bdf8 0 2px, transparent 3px),
+    radial-gradient(circle at center, rgba(56, 189, 248, 0.12) 0 15%, transparent 16%),
+    radial-gradient(circle at center, transparent 42%, rgba(14, 165, 233, 0.16) 43% 44%, transparent 45%),
+    radial-gradient(circle at center, transparent 64%, rgba(45, 212, 191, 0.14) 65% 66%, transparent 67%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 992px) {
+  .conference-root:not(.is-in-meeting)::after {
+    display: none;
+  }
+}
+
+.preview-column {
+  position: relative;
+  min-width: 0;
+}
+
+.lobby-bottom-note {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 6rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(14, 165, 233, 0.16);
+  border-radius: 1.1rem;
+  background:
+    radial-gradient(ellipse at 12% 0, rgba(56, 189, 248, 0.12), transparent 45%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.97), rgba(240, 249, 255, 0.92));
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.045), 0 2px 6px rgba(2, 132, 199, 0.035);
+  color: var(--text-secondary);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.lobby-note-icon {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 2.65rem;
+  place-items: center;
+  border: 1px solid rgba(14, 165, 233, 0.14);
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, #ffffff, #eaf8ff);
+  color: var(--sky-600);
+  box-shadow: 0 5px 12px rgba(2, 132, 199, 0.08);
+}
+
+.lobby-note-icon svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.lobby-note-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.lobby-note-eyebrow {
+  color: var(--sky-700);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.lobby-bottom-message {
+  display: block;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.lobby-bottom-details {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.lobby-note-art {
+  position: relative;
+  display: grid;
+  width: 6.5rem;
+  height: 4.2rem;
+  flex: 0 0 6.5rem;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0.85rem;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.1), transparent 58%),
+    linear-gradient(135deg, rgba(224, 242, 254, 0.7), rgba(240, 253, 250, 0.7));
+}
+
+.lobby-note-orbit {
+  position: absolute;
+  aspect-ratio: 1;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 50%;
+}
+
+.lobby-note-orbit-outer {
+  width: 3.2rem;
+}
+
+.lobby-note-orbit-inner {
+  width: 2rem;
+  border-color: rgba(45, 212, 191, 0.32);
+}
+
+.lobby-note-art-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #2dd4bf);
+  box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.1), 0 0 15px rgba(14, 165, 233, 0.32);
+}
+
+.lobby-note-tag {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.3rem;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid rgba(14, 165, 233, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--sky-700);
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 992px) {
+  .preview-column {
+    margin-bottom: 6.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .lobby-bottom-note {
+    min-height: 5.5rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .lobby-note-art {
+    width: 5rem;
+    flex-basis: 5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .lobby-bottom-note {
+    gap: 0.65rem;
+  }
+
+  .lobby-note-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-basis: 2.25rem;
+  }
+
+  .lobby-note-art {
+    display: none;
+  }
+
+  .lobby-bottom-message {
+    font-size: 0.82rem;
+  }
+
+  .lobby-bottom-details {
+    font-size: 0.64rem;
+  }
+}
