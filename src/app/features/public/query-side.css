@@ -58,12 +58,17 @@
   justify-content: space-between;
   gap: .5rem;
   padding: .65rem .7rem;
+  width: 100%;
+  border: 0;
   color: #fff;
   background: #0f766e;
   border-radius: 6px;
   font-size: .66rem;
   font-weight: 800;
+  font-family: inherit;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
   transition: background .18s ease, transform .18s ease;
 }
 .friend-chat-action:hover { background: #115e59; transform: translateY(-1px); }

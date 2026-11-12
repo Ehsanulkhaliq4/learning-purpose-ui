@@ -3,8 +3,9 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AuthDialogService } from '../services/auth-dialog.service';
 
-export const authGuard: CanActivateFn = async (_route, state) => {
+export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const platformId = inject(PLATFORM_ID);
@@ -13,28 +14,23 @@ export const authGuard: CanActivateFn = async (_route, state) => {
     return true;
   }
 
-  const loginUrl = router.createUrlTree(['/']);
-  if (!isPlatformBrowser(platformId)) {
-    return loginUrl;
+  if (isPlatformBrowser(platformId)) {
+    inject(AuthDialogService).openLoginAtHome();
+    return false;
   }
 
-  const { default: Swal } = await import('sweetalert2');
-  const result = await Swal.fire({
-    title: 'Sign in to continue',
-    text: 'Please sign in to access this learning space.',
-    icon: 'info',
-    confirmButtonText: 'Go to login',
-    showCancelButton: false,
-    buttonsStyling: true,
-    customClass: {
-      popup: 'lp-swal-popup',
-      title: 'lp-swal-title',
-      htmlContainer: 'lp-swal-text',
-      confirmButton: 'lp-swal-confirm',
-    },
-  });
-
-  return result.isConfirmed ? loginUrl : false;
+  return router.createUrlTree(['/']);
 };
 
-export const authMatchGuard: CanMatchFn = () => inject(AuthService).isAuthenticated();
+export const authMatchGuard: CanMatchFn = () => {
+  if (inject(AuthService).isAuthenticated()) {
+    return true;
+  }
+
+  const platformId = inject(PLATFORM_ID);
+  if (isPlatformBrowser(platformId)) {
+    inject(AuthDialogService).openLoginAtHome();
+  }
+
+  return false;
+};

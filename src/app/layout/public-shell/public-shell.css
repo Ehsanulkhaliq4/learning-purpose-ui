@@ -97,6 +97,14 @@
   color: var(--text-main);
 }
 
+.auth-dialog.login-dialog {
+  width: min(470px, calc(100vw - 2rem));
+}
+
+.auth-dialog.register-dialog {
+  width: min(610px, calc(100vw - 2rem));
+}
+
 .auth-dialog::backdrop {
   background: rgba(8, 24, 39, 0.62);
   backdrop-filter: blur(5px);
@@ -113,26 +121,6 @@
   margin: 0;
 }
 
-.auth-dialog-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 3;
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 50%;
-  color: #075985;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
-  font-size: 1.4rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.auth-dialog-close:focus-visible,
 .public-nav button:focus-visible {
   outline: 3px solid rgba(56, 189, 248, 0.65);
   outline-offset: 3px;

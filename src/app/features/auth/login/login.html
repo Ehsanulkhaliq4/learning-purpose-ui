@@ -1,110 +1,78 @@
 <section class="login-card">
-	<div class="login-aside">
-		<span class="aside-kicker">Welcome back</span>
-		<div class="aside-image">
-			<img
-				src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=85"
-				alt="Notebook and coffee ready for study"
-			/>
-			<span class="image-badge"><span></span> Your focus space</span>
-		</div>
-		<h1>Your next breakthrough starts here.</h1>
-		<p>Pick up where you left off with your courses, assessments, and personal learning path.</p>
-		<div class="mobile-highlights" aria-label="Learning workspace features">
-			<span><strong>01</strong> Courses</span>
-			<span><strong>02</strong> Quizzes</span>
-			<span><strong>03</strong> Progress</span>
-		</div>
-		<div class="aside-note">
-			<span class="note-mark">+</span>
-			<span><strong>One focused workspace</strong><small>Everything you need to keep moving.</small></span>
-		</div>
-	</div>
+  <div class="auth-brandline">
+    <span class="auth-brand-mark" aria-hidden="true"><span></span></span>
+    <span class="auth-brand-name">LearningPurpose</span>
+    <span class="auth-brand-caption">A little progress, every day.</span>
+  </div>
 
-	<div class="login-form-panel">
-		<div class="form-heading">
-			<span class="form-icon">↗</span>
-			<div>
-				<p class="eyebrow">Learner access</p>
-				<h2>Sign in to continue</h2>
-			</div>
-		</div>
-		<p class="form-intro">Enter your details to open your learning workspace.</p>
+  <div class="login-form-panel">
+    <div class="form-heading">
+      <span class="form-icon" aria-hidden="true">
+        @if (isForgotMode()) { <span>↺</span> } @else { <span>↗</span> }
+      </span>
+      <div>
+        <p class="eyebrow">{{ isForgotMode() ? 'Account recovery' : 'Learner access' }}</p>
+        <h1>{{ isForgotMode() ? 'Reset your password' : 'Welcome back' }}</h1>
+      </div>
+    </div>
+    <p class="form-intro">
+      {{ isForgotMode() ? 'We’ll send a one-time password to your account email.' : 'Sign in and pick up where your learning left off.' }}
+    </p>
 
-		@if (toast(); as notice) {
-			<div class="toast" [class.toast-error]="notice.type === 'error'" role="status"><span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span><span>{{ notice.message }}</span></div>
-		}
+    @if (toast(); as notice) {
+      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status">
+        <span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span>
+        <span>{{ notice.message }}</span>
+      </div>
+    }
 
-		@if (isForgotMode()) {
-			<div class="reset-heading">
-				<h3>Reset your password</h3>
-				<p>Enter your account email and we will send a one-time password.</p>
-			</div>
+    @if (isForgotMode()) {
+      <form [formGroup]="loginForm" (ngSubmit)="requestPasswordReset()" novalidate>
+        <div class="form-group">
+          <label for="reset-email">Email address</label>
+          <input id="reset-email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" class="form-control" [class.input-error]="isInvalid('email')" />
+          @if (isInvalid('email')) { <span class="field-error">Enter a valid email address</span> }
+        </div>
+        <button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Sending OTP...' : 'Send reset OTP' }}
+          @if (!isSubmitting()) { <span aria-hidden="true">→</span> }
+        </button>
+      </form>
+      <button type="button" class="back-link" (click)="showLogin()">← Back to sign in</button>
+    } @else {
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" type="text" formControlName="username" autocomplete="username" placeholder="your username" class="form-control" [class.input-error]="isInvalid('username')" />
+          @if (isInvalid('username')) { <span class="field-error">Username is required</span> }
+        </div>
 
-			<form [formGroup]="loginForm" (ngSubmit)="requestPasswordReset()" novalidate>
-				<div class="form-group">
-					<label for="reset-email">Email address</label>
-					<input id="reset-email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" class="form-control" [class.input-error]="isInvalid('email')" />
-					@if (isInvalid('email')) { <span class="field-error">Enter a valid email address</span> }
-				</div>
-				<button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
-					{{ isSubmitting() ? 'Sending OTP...' : 'Send reset OTP' }}
-					@if (!isSubmitting()) { <span aria-hidden="true">→</span> }
-				</button>
-			</form>
+        <div class="form-group">
+          <div class="label-row"><label for="password">Password</label><span>Secure access</span></div>
+          <div class="password-wrap">
+            <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" placeholder="Enter your password" class="form-control" [class.input-error]="isInvalid('password')" />
+            <button type="button" class="password-toggle" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">{{ showPassword() ? 'Hide' : 'Show' }}</button>
+          </div>
+          @if (isInvalid('password')) { <span class="field-error">Password must be at least 6 characters</span> }
+        </div>
 
-			<button type="button" class="back-link" (click)="showLogin()">← Back to sign in</button>
-		} @else {
-		<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-			<div class="form-group">
-				<label for="username">Username</label>
-				<input
-					id="username"
-					type="text"
-					formControlName="username"
-					autocomplete="username"
-					placeholder="your username"
-					class="form-control"
-					[class.input-error]="isInvalid('username')"
-				/>
-				@if (isInvalid('username')) { <span class="field-error">Username is required</span> }
-			</div>
+        <button type="button" class="forgot-link" (click)="showForgotPassword()">Forgot password?</button>
+        <button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Signing in...' : 'Sign in to workspace' }}
+          @if (!isSubmitting()) { <span aria-hidden="true">→</span> }
+        </button>
+      </form>
 
-			<div class="form-group">
-				<div class="label-row"><label for="password">Password</label><span>Secure access</span></div>
-				<div class="password-wrap">
-					<input
-						id="password"
-						[type]="showPassword() ? 'text' : 'password'"
-						formControlName="password"
-						autocomplete="current-password"
-						placeholder="Enter your password"
-						class="form-control"
-						[class.input-error]="isInvalid('password')"
-					/>
-					<button type="button" class="password-toggle" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
-						{{ showPassword() ? 'Hide' : 'Show' }}
-					</button>
-				</div>
-				@if (isInvalid('password')) { <span class="field-error">Password must be at least 6 characters</span> }
-			</div>
+      <p class="register-prompt">
+        New to LearningPurpose?
+        @if (dialogMode) {
+          <button type="button" class="auth-switch-button" (click)="dialogModeChange.emit('register')">Create an account</button>
+        } @else {
+          <a routerLink="/auth/register">Create an account</a>
+        }
+      </p>
+    }
+  </div>
 
-			<button type="button" class="forgot-link" (click)="showForgotPassword()">Forgot password?</button>
-
-			<button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
-				{{ isSubmitting() ? 'Signing in...' : 'Sign in to workspace' }}
-				@if (!isSubmitting()) { <span aria-hidden="true">→</span> }
-			</button>
-		</form>
-
-		<p class="register-prompt">
-			New to LearningPurpose?
-			@if (dialogMode) {
-				<button type="button" class="auth-switch-button" (click)="dialogModeChange.emit('register')">Create an account</button>
-			} @else {
-				<a routerLink="/auth/register">Create an account</a>
-			}
-		</p>
-		}
-	</div>
+  <div class="auth-footnote"><span aria-hidden="true"></span>Your learning space is ready when you are.</div>
 </section>

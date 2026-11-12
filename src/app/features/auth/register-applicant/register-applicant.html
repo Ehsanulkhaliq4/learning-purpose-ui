@@ -1,142 +1,68 @@
 <section class="register-card">
-  <aside class="register-aside">
-    <span class="aside-kicker">Start your path</span>
-    <div class="aside-image">
-      <img
-        src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=85"
-        alt="Notebook and coffee ready for study"
-      />
-      <span class="image-badge"><span></span> Your focus space</span>
-    </div>
-    <h1>Make your learning goals actionable.</h1>
-    <p>Create one profile for courses, assessments, and the progress you want to see.</p>
-    <div class="mobile-highlights" aria-label="Learning workspace benefits">
-      <span><strong>01</strong> Workspace</span>
-      <span><strong>02</strong> Practice</span>
-      <span><strong>03</strong> Progress</span>
-    </div>
-    <div class="benefit-list">
-      <div><span>01</span><p><strong>Personal workspace</strong><small>Your learning journey, organized.</small></p></div>
-      <div><span>02</span><p><strong>Useful practice</strong><small>Turn study time into real confidence.</small></p></div>
-      <div><span>03</span><p><strong>Visible progress</strong><small>Know exactly what to focus on next.</small></p></div>
-    </div>
-  </aside>
+  <div class="auth-brandline">
+    <span class="auth-brand-mark" aria-hidden="true"><span></span></span>
+    <span class="auth-brand-name">LearningPurpose</span>
+    <span class="auth-brand-caption">Make room for what’s next.</span>
+  </div>
 
   <div class="register-form-panel">
     <div class="form-heading">
-      <span class="form-icon">+</span>
+      <span class="form-icon" aria-hidden="true">+</span>
       <div>
-        <p class="eyebrow">Applicant profile</p>
-        <h2>Create your account</h2>
+        <p class="eyebrow">A fresh start</p>
+        <h1>Create your account</h1>
       </div>
     </div>
-    <p class="form-intro">A few details are all you need to begin.</p>
+    <p class="form-intro">Set up your space and start building momentum.</p>
 
     @if (toast(); as notice) {
-      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status"><span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span><span>{{ notice.message }}</span></div>
+      <div class="toast" [class.toast-error]="notice.type === 'error'" role="status">
+        <span class="toast-mark">{{ notice.type === 'success' ? '&#10003;' : '!' }}</span>
+        <span>{{ notice.message }}</span>
+      </div>
     }
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate class="register-form">
       <div class="form-row-duo">
         <div class="form-group">
           <label for="firstName">First name</label>
-          <input
-            id="firstName"
-            type="text"
-            formControlName="firstName"
-            placeholder="John"
-            class="form-control"
-            [class.input-error]="isFieldInvalid('firstName')"
-          />
-        @if (isFieldInvalid('firstName')) {
-            <span class="field-error">First name is required</span>
-          }
+          <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name" placeholder="John" class="form-control" [class.input-error]="isFieldInvalid('firstName')" />
+          @if (isFieldInvalid('firstName')) { <span class="field-error">First name is required</span> }
         </div>
-
         <div class="form-group">
           <label for="lastName">Last name</label>
-          <input
-            id="lastName"
-            type="text"
-            formControlName="lastName"
-            placeholder="Doe"
-            class="form-control"
-            [class.input-error]="isFieldInvalid('lastName')"
-          />
-        @if (isFieldInvalid('lastName')) {
-            <span class="field-error">Last name is required</span>
-          }
+          <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name" placeholder="Doe" class="form-control" [class.input-error]="isFieldInvalid('lastName')" />
+          @if (isFieldInvalid('lastName')) { <span class="field-error">Last name is required</span> }
         </div>
       </div>
 
       <div class="form-group">
         <label for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="candidate_jdoe"
-          class="form-control"
-          [class.input-error]="isFieldInvalid('username')"
-        />
-        @if (isFieldInvalid('username')) {
-          <span class="field-error">Valid username required (min 3 chars)</span>
-        }
+        <input id="username" type="text" formControlName="username" autocomplete="username" placeholder="candidate_jdoe" class="form-control" [class.input-error]="isFieldInvalid('username')" />
+        @if (isFieldInvalid('username')) { <span class="field-error">Valid username required (min 3 chars)</span> }
       </div>
 
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="candidate@domain.com"
-          class="form-control"
-          [class.input-error]="isFieldInvalid('email')"
-        />
-        @if (isFieldInvalid('email')) {
-          <span class="field-error">Valid email address is required</span>
-        }
-      </div>
-
-      <div class="form-group">
-        <label for="phone">Phone number</label>
-        <input
-          id="phone"
-          type="tel"
-          formControlName="phone"
-          autocomplete="tel"
-          placeholder="+1 555 010 2020"
-          class="form-control"
-          [class.input-error]="isFieldInvalid('phone')"
-        />
-        @if (isFieldInvalid('phone')) {
-          <span class="field-error">Enter a valid phone number</span>
-        }
+      <div class="form-row-duo">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input id="email" type="email" formControlName="email" autocomplete="email" placeholder="you@example.com" class="form-control" [class.input-error]="isFieldInvalid('email')" />
+          @if (isFieldInvalid('email')) { <span class="field-error">Valid email address is required</span> }
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" placeholder="+1 555 010 2020" class="form-control" [class.input-error]="isFieldInvalid('phone')" />
+          @if (isFieldInvalid('phone')) { <span class="field-error">Enter a valid phone number</span> }
+        </div>
       </div>
 
       <div class="form-group">
         <div class="label-row"><label for="password">Password</label><span>6+ characters</span></div>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          autocomplete="new-password"
-          placeholder="Create a secure password"
-          class="form-control"
-          [class.input-error]="isFieldInvalid('password')"
-        />
-        @if (isFieldInvalid('password')) {
-          <span class="field-error">Password must be at least 6 characters</span>
-        }
+        <input id="password" type="password" formControlName="password" autocomplete="new-password" placeholder="Create a secure password" class="form-control" [class.input-error]="isFieldInvalid('password')" />
+        @if (isFieldInvalid('password')) { <span class="field-error">Password must be at least 6 characters</span> }
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary w-full submit-btn"
-        [disabled]="isSubmitting()"
-      >
-        {{ isSubmitting() ? 'Creating account...' : 'Create applicant account' }}
+      <button type="submit" class="btn btn-primary submit-btn" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Creating account...' : 'Create my account' }}
         @if (!isSubmitting()) { <span aria-hidden="true">→</span> }
       </button>
 
@@ -150,4 +76,6 @@
       </p>
     </form>
   </div>
+
+  <div class="auth-footnote"><span aria-hidden="true"></span>A focused space for your next big idea.</div>
 </section>

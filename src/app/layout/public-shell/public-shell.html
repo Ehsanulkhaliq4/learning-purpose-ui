@@ -16,8 +16,14 @@
     <router-outlet />
   </main>
 
-  <dialog #authDialog class="auth-dialog" (click)="closeOnBackdrop($event)" (close)="closeAuthDialog()">
-    <button type="button" class="auth-dialog-close" aria-label="Close dialog" (click)="closeAuthDialog()">×</button>
+  <dialog
+    #authDialog
+    class="auth-dialog"
+    [class.login-dialog]="authDialogService.mode() === 'login'"
+    [class.register-dialog]="authDialogService.mode() === 'register'"
+    (click)="closeOnBackdrop($event)"
+    (close)="closeAuthDialog()"
+  >
     @if (authDialogService.mode() === 'login') {
       <app-login [dialogMode]="true" (dialogModeChange)="authDialogService.open($event)" />
     } @else if (authDialogService.mode() === 'register') {

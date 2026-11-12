@@ -89,7 +89,7 @@
         @if (errorMessage()) { <div class="state-panel error" role="alert">{{ errorMessage() }}</div> }
         @if (isLoading()) { <div class="state-panel">Loading the latest stories...</div> }
         @else if (posts().length === 0 && !errorMessage()) { <div class="state-panel">No stories have been published yet.</div> }
-        @else { <div class="story-grid">@for (post of posts(); track post.id) { <article class="story-card"><div class="card-topline"><span>{{ post.tags[0] || 'Learning' }}</span><span>{{ post.createdAt | date:'mediumDate' }}</span></div><h3>{{ post.name }}</h3><p>{{ post.content }}</p><div class="card-footer"><span>By {{ post.postedBy }}</span><a [routerLink]="authService.isAuthenticated() ? ['/explore', post.id] : null" (click)="handleRead($event, post.id)" aria-label="Read {{ post.name }}">Read story <span aria-hidden="true">&#8594;</span></a></div></article> }</div> }
+        @else { <div class="story-grid">@for (post of posts(); track post.id) { <article class="story-card"><div class="card-topline"><span>{{ post.tags[0] || 'Learning' }}</span><span>{{ post.createdAt | date:'mediumDate' }}</span></div><h3>{{ post.name }}</h3><p>{{ post.content }}</p><div class="card-footer"><span>By {{ post.postedBy }}</span><a [routerLink]="authService.isAuthenticated() ? ['/explore', post.id] : null" (click)="handleRead($event)" aria-label="Read {{ post.name }}">Read story <span aria-hidden="true">&#8594;</span></a></div></article> }</div> }
       </section>
 
       <aside class="side-column right-column" aria-label="Learning resources">
@@ -169,7 +169,7 @@
               <li><span class="conference-feature-mark" aria-hidden="true">SH</span> Screen sharing</li>
               <li><span class="conference-feature-mark" aria-hidden="true">CC</span> Captions and chat</li>
             </ul>
-            <a routerLink="/conference" class="conference-promo-action">Start or join a meeting <span aria-hidden="true">&#8594;</span></a>
+            <button type="button" (click)="openConference()" class="conference-promo-action">Start or join a meeting <span aria-hidden="true">&#8594;</span></button>
           </div>
         </section>
       </aside>

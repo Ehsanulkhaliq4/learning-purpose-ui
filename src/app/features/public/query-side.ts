@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { PostService } from '../../core/services/post.service';
 import { BlogPost } from '../../core/models/catalog.models';
@@ -9,7 +9,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { QuizService } from '../../core/services/quiz.service';
 import { AuthDialogService } from '../../core/services/auth-dialog.service';
 import { forkJoin } from 'rxjs';
-import Swal from 'sweetalert2';
 
 export interface BookDocument {
   id: number;
@@ -32,6 +31,7 @@ export class QuerySide implements OnInit {
   private readonly postService = inject(PostService);
   private readonly quizService = inject(QuizService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
   readonly authService = inject(AuthService);
   readonly authDialogService = inject(AuthDialogService);
@@ -52,33 +52,22 @@ export class QuerySide implements OnInit {
   readonly booksError = signal<string | null>(null);
   private readonly BOOKS_API = 'http://localhost:8080/api/v1/public/books';
 
-  handleRead(event: Event, postId: number): void {
+  openConference(): void {
+    if (this.authService.isAuthenticated()) {
+      void this.router.navigate(['/conference']);
+      return;
+    }
+
+    this.authDialogService.open('login');
+  }
+
+  handleRead(event: Event): void {
     if (this.authService.isAuthenticated()) {
       return;
     }
 
     event.preventDefault();
-    void Swal.fire({
-      title: 'Sign in to keep learning',
-      text: 'Please log in before reading community stories.',
-      icon: 'info',
-      confirmButtonText: 'Go to login',
-      showCancelButton: true,
-      cancelButtonText: 'Maybe later',
-      reverseButtons: true,
-      buttonsStyling: true,
-      customClass: {
-        popup: 'lp-swal-popup',
-        title: 'lp-swal-title',
-        htmlContainer: 'lp-swal-text',
-        confirmButton: 'lp-swal-confirm',
-        cancelButton: 'lp-swal-cancel',
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = `/auth/login?returnUrl=/explore/${postId}`;
-      }
-    });
+    this.authDialogService.open('login');
   }
 
   ngOnInit(): void {
