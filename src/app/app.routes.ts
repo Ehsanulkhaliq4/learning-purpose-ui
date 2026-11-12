@@ -84,6 +84,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/account/user-profile/user-profile').then(
+            (m) => m.UserProfilePage
+          )
+      },
+      {
         path: 'chat',
         loadComponent: () =>
           import('./features/chat/chat').then((m) => m.Chat)

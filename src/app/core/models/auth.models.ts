@@ -4,6 +4,9 @@ export interface UserIdentity {
   email: string;
   firstName?: string;
   lastName?: string;
+  phone?: string;
+  profile?: string;
+  enabled?: boolean;
   roles: string[];
 }
 

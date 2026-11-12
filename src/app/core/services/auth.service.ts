@@ -39,10 +39,13 @@ export class AuthService {
       .get<{
         id: number;
         username: string;
+        email: string;
         firstName?: string;
         lastName?: string;
-        roles?: Array<string | { roleName?: string; authority?: string }>;
-      }>(`http://localhost:8080/api/v1/users/${encodeURIComponent(user.username)}`)
+        phone?: string;
+        profile?: string;
+        enabled?: boolean;
+      }>('http://localhost:8080/api/v1/users/me')
       .pipe(
         map((profile) => {
           if (!Number.isSafeInteger(profile.id) || profile.id <= 0) {
@@ -52,11 +55,12 @@ export class AuthService {
           const identity: UserIdentity = {
             ...user,
             id: profile.id,
+            email: profile.email ?? user.email,
             firstName: profile.firstName ?? user.firstName,
             lastName: profile.lastName ?? user.lastName,
-            roles: profile.roles?.map((role) =>
-              typeof role === 'string' ? role : role.authority ?? role.roleName ?? '',
-            ).filter(Boolean) ?? user.roles,
+            phone: profile.phone,
+            profile: profile.profile,
+            enabled: profile.enabled,
           };
           this.userSignal.set(identity);
           if (this.isBrowser) {
@@ -65,6 +69,16 @@ export class AuthService {
           return profile.id;
         }),
       );
+  }
+
+  updateCurrentUser(identity: Partial<UserIdentity>): void {
+    const user = this.userSignal();
+    if (!user) return;
+    const updated = { ...user, ...identity };
+    this.userSignal.set(updated);
+    if (this.isBrowser) {
+      localStorage.setItem('auth_user', JSON.stringify(updated));
+    }
   }
 
   registerApplicant(payload: RegisterApplicantRequest): Observable<RegisterApplicantResponse> {

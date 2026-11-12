@@ -1,0 +1,187 @@
+<section class="profile-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h1>Your profile</h1>
+      <p class="page-intro">Manage your personal information and keep track of your learning progress.</p>
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="notice notice-error" role="alert">{{ errorMessage() }}</div>
+  }
+  @if (successMessage()) {
+    <div class="notice notice-success" role="status">{{ successMessage() }}</div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-card" role="status">Loading your profile…</div>
+  } @else if (profile(); as account) {
+    <div class="profile-layout">
+      <div class="profile-main">
+        <section class="card identity-card" aria-labelledby="identity-heading">
+          <div class="identity-overview">
+            <div class="profile-avatar">
+              @if (account.profile) {
+                <img [src]="account.profile" alt="Profile image" />
+              } @else {
+                <span>{{ initials(account) }}</span>
+              }
+            </div>
+            <div class="identity-copy">
+              <h2 id="identity-heading">{{ account.firstName }} {{ account.lastName }}</h2>
+              <p>&#64;{{ account.username }}</p>
+              <span class="account-status"><span></span> {{ account.enabled ? 'Active account' : 'Deactivated' }}</span>
+            </div>
+            <div class="avatar-actions">
+              <input
+                #profileImageInput
+                class="visually-hidden"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                aria-label="Choose a profile image"
+                (change)="onProfileImageSelected($event)"
+              />
+              <button type="button" class="button button-outline" (click)="chooseProfileImage()">Upload image</button>
+              @if (account.profile) {
+                <button type="button" class="text-button" (click)="removeProfileImage()">Remove image</button>
+              }
+              <small>JPG, PNG or WebP. Max 512 KB after compression.</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="card details-card" aria-labelledby="details-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Personal information</p>
+              <h2 id="details-heading">Profile details</h2>
+            </div>
+            <span class="readonly-note">Username cannot be changed</span>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="saveProfile()" novalidate>
+            <div class="form-grid">
+              <label class="form-field">
+                <span>First name</span>
+                <input type="text" formControlName="firstName" autocomplete="given-name" />
+                @if (form.controls.firstName.invalid && form.controls.firstName.touched) {
+                  <small class="field-error">Enter a first name up to 100 characters.</small>
+                }
+              </label>
+              <label class="form-field">
+                <span>Last name</span>
+                <input type="text" formControlName="lastName" autocomplete="family-name" />
+              </label>
+              <label class="form-field">
+                <span>Email address</span>
+                <input type="email" formControlName="email" autocomplete="email" />
+                @if (form.controls.email.invalid && form.controls.email.touched) {
+                  <small class="field-error">Enter a valid email address.</small>
+                }
+              </label>
+              <label class="form-field">
+                <span>Phone number</span>
+                <input type="tel" formControlName="phone" autocomplete="tel" placeholder="Optional" />
+                @if (form.controls.phone.invalid && form.controls.phone.touched) {
+                  <small class="field-error">Enter a valid phone number.</small>
+                }
+              </label>
+              <div class="form-field readonly-field">
+                <span>Username</span>
+                <input type="text" [value]="'@' + account.username" readonly />
+              </div>
+              <div class="form-field readonly-field">
+                <span>Member since</span>
+                <input type="text" [value]="account.createdAt | date:'longDate'" readonly />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="button button-primary" type="submit" [disabled]="isSaving()">
+                {{ isSaving() ? 'Saving…' : 'Save changes' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card activity-card" aria-labelledby="activity-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Learning history</p>
+              <h2 id="activity-heading">Recent quiz activity</h2>
+            </div>
+            <a routerLink="/quizzes" class="text-link">Browse quizzes →</a>
+          </div>
+          @if (account.recentQuizAttempts.length) {
+            <div class="activity-list">
+              @for (attempt of account.recentQuizAttempts; track $index) {
+                <article class="activity-row">
+                  <span class="activity-icon" aria-hidden="true">✓</span>
+                  <div class="activity-copy">
+                    <strong>{{ attempt.title.replace('Completed ', '') }}</strong>
+                    <span>{{ attempt.subtitle }}</span>
+                  </div>
+                  <time [attr.datetime]="attempt.completedAt">{{ attempt.completedAt | date:'mediumDate' }}</time>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="empty-activity">
+              <strong>No quiz attempts yet</strong>
+              <p>Your completed quizzes and scores will appear here.</p>
+            </div>
+          }
+        </section>
+      </div>
+
+      <aside class="profile-sidebar">
+        <section class="card stats-card" aria-labelledby="stats-heading">
+          <p class="eyebrow">Your progress</p>
+          <h2 id="stats-heading">Learning at a glance</h2>
+          <div class="stats-grid">
+            <div class="stat-tile">
+              <span class="stat-icon">◎</span>
+              <strong>{{ account.quizAttempts }}</strong>
+              <span>Quizzes attempted</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">✓</span>
+              <strong>{{ account.completedLessons }}</strong>
+              <span>Lessons completed</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">↗</span>
+              <strong>{{ account.bestScore | number:'1.0-1' }}<small>%</small></strong>
+              <span>Best assessment score</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">◷</span>
+              <strong>{{ account.studyTimeHours | number:'1.0-1' }}<small>h</small></strong>
+              <span>Total study time</span>
+            </div>
+            <div class="stat-tile stat-wide">
+              <span class="stat-icon">✦</span>
+              <strong>{{ account.currentStreakDays }}<small> days</small></strong>
+              <span>Current learning streak</span>
+            </div>
+          </div>
+          <a routerLink="/dashboard" class="dashboard-link">Open learning dashboard <span>→</span></a>
+        </section>
+
+        <section class="card danger-card" aria-labelledby="danger-heading">
+          <p class="eyebrow">Account controls</p>
+          <h2 id="danger-heading">Deactivate account</h2>
+          <p>Deactivation signs you out and prevents future sign-ins. Your learning history will be retained.</p>
+          <button
+            type="button"
+            class="button button-danger"
+            (click)="deactivateAccount()"
+            [disabled]="isDeactivating()"
+          >
+            {{ isDeactivating() ? 'Deactivating…' : 'Deactivate my account' }}
+          </button>
+        </section>
+      </aside>
+    </div>
+  }
+</section>

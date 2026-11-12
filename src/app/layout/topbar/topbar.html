@@ -33,7 +33,11 @@
         title="View user details"
       >
         <div class="avatar-ring">
-          <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+          @if (auth.currentUser()?.profile; as avatar) {
+            <img [src]="avatar" alt="" />
+          } @else {
+            <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+          }
         </div>
         <div class="user-details">
           <span class="user-name">{{ auth.currentUser()?.username || 'Scholar Candidate' }}</span>
@@ -59,7 +63,11 @@
         <div class="user-dropdown-card" role="menu">
           <div class="dropdown-header">
             <div class="dropdown-avatar">
-              <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+              @if (auth.currentUser()?.profile; as avatar) {
+                <img [src]="avatar" alt="" />
+              } @else {
+                <span>{{ (auth.currentUser()?.username || 'U').charAt(0).toUpperCase() }}</span>
+              }
             </div>
             <div class="dropdown-identity">
               <span class="dropdown-fullname">
@@ -133,18 +141,20 @@
               </div>
               <div class="detail-content">
                 <span class="detail-label">Account Status</span>
-                <span class="status-indicator">
-                  <span class="status-dot"></span> Active & Verified
+                <span class="status-indicator" [class.status-inactive]="auth.currentUser()?.enabled === false">
+                  <span class="status-dot"></span> {{ auth.currentUser()?.enabled === false ? 'Deactivated' : 'Active' }}
                 </span>
               </div>
             </div>
           </div>
 
           <div class="dropdown-footer">
-            <a routerLink="/dashboard" (click)="closeDropdown()" class="dropdown-link">
-              <span>View Dashboard</span>
-              <span aria-hidden="true">&#8594;</span>
-            </a>
+            <div class="dropdown-nav-links">
+              <a routerLink="/profile" (click)="closeDropdown()" class="dropdown-link">
+                <span>View Profile</span>
+                <span aria-hidden="true">&#8594;</span>
+              </a>
+            </div>
             <button type="button" class="dropdown-logout-btn" (click)="auth.logout(); closeDropdown()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
