@@ -63,10 +63,34 @@ export class QuerySide implements OnInit {
 
   handleRead(event: Event): void {
     if (this.authService.isAuthenticated()) {
-      return;
+      return; 
     }
 
     event.preventDefault();
+    this.authDialogService.open('login');
+  }
+
+  handleBookRead(): void {
+    if (this.authService.isAuthenticated()) {
+      void this.router.navigate(['/books']);
+      return;
+    }
+    this.authDialogService.open('login');
+  }
+
+  handleQuizRead(): void {
+    if (this.authService.isAuthenticated()) {
+      void this.router.navigate(['/quizzes']);
+      return;
+    }
+    this.authDialogService.open('login');
+  }
+
+  handleChat(): void {
+    if (this.authService.isAuthenticated()) {
+      void this.router.navigate(['/chat']);
+      return;
+    }
     this.authDialogService.open('login');
   }
 
