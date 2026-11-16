@@ -27,6 +27,7 @@ export class AdminQuizManager implements OnInit, OnDestroy {
   readonly selectedQuizId = signal(0);
   readonly isLoading = signal(true);
   readonly isSubmitting = signal(false);
+  readonly pendingDeletion = signal<{ type: 'category' | 'quiz' | 'question'; id: number; title: string } | null>(null);
   readonly toast = signal<{ type: 'success' | 'error'; message: string } | null>(null);
   private toastTimer?: ReturnType<typeof setTimeout>;
 
@@ -70,7 +71,7 @@ export class AdminQuizManager implements OnInit, OnDestroy {
     this.isLoading.set(true);
     forkJoin({
       categories: this.quizService.getCategories(),
-      quizzes: this.quizService.getActiveQuizzes(),
+      quizzes: this.quizService.getQuizzes(),
     }).subscribe({
       next: ({ categories, quizzes }) => {
         const categoriesById = new Map(categories.map((category) => [category.id, category]));
@@ -124,6 +125,87 @@ export class AdminQuizManager implements OnInit, OnDestroy {
     return quiz.category?.title || `Category ${quiz.categoryId}`;
   }
 
+  requestDeleteCategory(category: CategoryDto): void {
+    this.pendingDeletion.set({ type: 'category', id: category.id, title: category.title });
+  }
+
+  requestDeleteQuiz(quiz: Quiz): void {
+    this.pendingDeletion.set({ type: 'quiz', id: quiz.id, title: quiz.title });
+  }
+
+  requestDeleteQuestion(question: Question): void {
+    this.pendingDeletion.set({ type: 'question', id: question.id, title: question.content });
+  }
+
+  cancelDelete(): void {
+    this.pendingDeletion.set(null);
+  }
+
+  confirmDelete(): void {
+    const pending = this.pendingDeletion();
+    if (!pending || this.isSubmitting()) return;
+
+    const request = pending.type === 'category'
+      ? this.quizService.deleteCategory(pending.id)
+      : pending.type === 'quiz'
+        ? this.quizService.deleteQuiz(pending.id)
+        : this.quizService.deleteQuestion(pending.id);
+
+    this.isSubmitting.set(true);
+    request.subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.pendingDeletion.set(null);
+        if (pending.type === 'category') {
+          const removedQuizIds = new Set(
+            this.quizzes().filter((quiz) => quiz.categoryId === pending.id).map((quiz) => quiz.id),
+          );
+          this.categories.update((categories) => categories.filter((category) => category.id !== pending.id));
+          this.quizzes.update((quizzes) => quizzes.filter((quiz) => quiz.categoryId !== pending.id));
+          this.clearDeletedQuizSelection(removedQuizIds);
+          this.showToast('success', 'Category and its quizzes and questions deleted.');
+        } else if (pending.type === 'quiz') {
+          this.quizzes.update((quizzes) => quizzes.filter((quiz) => quiz.id !== pending.id));
+          this.clearDeletedQuizSelection(new Set([pending.id]));
+          this.showToast('success', 'Quiz and its questions deleted.');
+        } else {
+          this.questions.update((questions) => questions.filter((question) => question.id !== pending.id));
+          this.showToast('success', 'Question deleted.');
+        }
+      },
+      error: (error) => {
+        this.isSubmitting.set(false);
+        this.showToast('error', this.errorMessage(error, 'Unable to delete this item.'));
+      },
+    });
+  }
+
+  toggleQuizStatus(quiz: Quiz): void {
+    if (this.isSubmitting()) return;
+
+    this.isSubmitting.set(true);
+    this.quizService.updateQuizStatus(quiz.id, !quiz.active).subscribe({
+      next: (updatedQuiz) => {
+        this.quizzes.update((quizzes) =>
+          quizzes.map((current) => current.id === updatedQuiz.id ? { ...current, active: updatedQuiz.active } : current),
+        );
+        this.isSubmitting.set(false);
+        this.showToast('success', updatedQuiz.active ? 'Quiz activated.' : 'Quiz deactivated.');
+      },
+      error: (error) => {
+        this.isSubmitting.set(false);
+        this.showToast('error', this.errorMessage(error, 'Unable to update quiz status.'));
+      },
+    });
+  }
+
+  private clearDeletedQuizSelection(quizIds: Set<number>): void {
+    if (!quizIds.has(this.selectedQuizId())) return;
+    this.selectedQuizId.set(0);
+    this.questionForm.controls.quizId.setValue(0);
+    this.questions.set([]);
+  }
+
   private loadQuestions(quizId: number): void {
     if (!quizId) {
       this.questions.set([]);
@@ -145,9 +227,13 @@ export class AdminQuizManager implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isSubmitting.set(false);
-        this.showToast('error', error?.error?.message || 'Unable to save this item.');
+        this.showToast('error', this.errorMessage(error, 'Unable to save this item.'));
       },
     });
+  }
+
+  private errorMessage(error: { error?: { message?: string; error?: string } }, fallback: string): string {
+    return error?.error?.message || error?.error?.error || fallback;
   }
 
   private showToast(type: 'success' | 'error', message: string): void {

@@ -12,6 +12,10 @@ export class QuizService {
     return this.http.get<Quiz[]>(`${this.GATEWAY_URL}/quizzes/active`);
   }
 
+  getQuizzes(): Observable<Quiz[]> {
+    return this.http.get<Quiz[]>(`${this.GATEWAY_URL}/quizzes`);
+  }
+
   getCategories(): Observable<CategoryDto[]> {
     return this.http.get<CategoryDto[]>(`${this.GATEWAY_URL}/categories`);
   }
@@ -28,12 +32,28 @@ export class QuizService {
     return this.http.post<CategoryDto>(`${this.GATEWAY_URL}/categories`, request);
   }
 
+  deleteCategory(categoryId: number): Observable<void> {
+    return this.http.delete<void>(`${this.GATEWAY_URL}/categories/${categoryId}`);
+  }
+
   createQuiz(request: QuizRequest): Observable<Quiz> {
     return this.http.post<Quiz>(`${this.GATEWAY_URL}/quizzes`, request);
   }
 
+  deleteQuiz(quizId: number): Observable<void> {
+    return this.http.delete<void>(`${this.GATEWAY_URL}/quizzes/${quizId}`);
+  }
+
+  updateQuizStatus(quizId: number, active: boolean): Observable<Quiz> {
+    return this.http.patch<Quiz>(`${this.GATEWAY_URL}/quizzes/${quizId}/status`, { active });
+  }
+
   createQuestion(request: QuestionRequest): Observable<Question> {
     return this.http.post<Question>(`${this.GATEWAY_URL}/questions`, request);
+  }
+
+  deleteQuestion(questionId: number): Observable<void> {
+    return this.http.delete<void>(`${this.GATEWAY_URL}/questions/${questionId}`);
   }
 
   getQuestionsByQuiz(quizId: number): Observable<Question[]> {

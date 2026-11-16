@@ -1,0 +1,111 @@
+@if (!auth.isAdmin()) {
+  <section class="access-denied">
+    <span class="eyebrow">Restricted workspace</span>
+    <h1>Administrator access required</h1>
+    <p>User account management is available to administrators only.</p>
+  </section>
+} @else {
+  <main class="user-admin-page">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Account administration</p>
+        <h1>User management</h1>
+        <p>View users’ contact details and activate or deactivate their accounts.</p>
+      </div>
+      <button class="button button-secondary" type="button" (click)="loadUsers()" [disabled]="loading()">Refresh list</button>
+    </header>
+
+    @if (error()) {
+      <div class="notice notice-error" role="alert">{{ error() }}</div>
+    }
+
+    <section class="user-panel" aria-label="User accounts">
+      <div class="panel-heading">
+        <div>
+          <h2>Accounts</h2>
+          <p>{{ users().length }} user{{ users().length === 1 ? '' : 's' }}</p>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <p class="empty-state" role="status">Loading user accounts…</p>
+      } @else {
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Status</th>
+                <th scope="col">Reactivation</th>
+                <th scope="col">Joined</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                <tr>
+                  <td><strong>{{ displayName(user) }}</strong><small>{{ user.username }}</small></td>
+                  <td><a [href]="'mailto:' + user.email">{{ user.email }}</a></td>
+                  <td>{{ user.phone || '—' }}</td>
+                  <td><span class="status" [class.status-inactive]="!user.enabled">{{ user.enabled ? 'Active' : 'Deactivated' }}</span></td>
+                  <td>
+                    @if (user.enabled) {
+                      —
+                    } @else if (user.deactivatedUntil) {
+                      {{ user.deactivatedUntil | date:'medium' }}
+                    } @else {
+                      Permanent
+                    }
+                  </td>
+                  <td>{{ user.createdAt ? (user.createdAt | date:'mediumDate') : '—' }}</td>
+                  <td class="action-cell">
+                    @if (user.enabled) {
+                      <button class="button button-danger" type="button" (click)="openDeactivation(user)">Deactivate</button>
+                    } @else {
+                      <button class="button button-primary" type="button" (click)="activate(user)" [disabled]="saving()">Activate</button>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td class="empty-state" colspan="7">No user accounts to display.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    @if (selectedUser(); as user) {
+      <div class="dialog-backdrop" role="presentation">
+        <section class="deactivation-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+          <p class="eyebrow">Account action</p>
+          <h2 id="dialog-title">Deactivate {{ displayName(user) }}?</h2>
+          <p class="dialog-copy">The user will be prevented from signing in while the account is deactivated.</p>
+          <form (submit)="$event.preventDefault(); deactivateSelected()">
+            <label for="deactivation-period">Deactivation period</label>
+            <select id="deactivation-period" [value]="selectedPeriod()" (change)="selectedPeriod.set($any($event.target).value)">
+              <option value="FIFTEEN_DAYS">15 days (automatic reactivation)</option>
+              <option value="THIRTY_DAYS">30 days (automatic reactivation)</option>
+              <option value="PERMANENT">Permanent, until an admin activates it</option>
+              <option value="CUSTOM">Choose reactivation date and time</option>
+            </select>
+
+            @if (selectedPeriod() === 'CUSTOM') {
+              <label for="reactivation-time">Reactivation date and time</label>
+              <input id="reactivation-time" type="datetime-local" [value]="customReactivationTime()" (input)="customReactivationTime.set($any($event.target).value)" required>
+            }
+
+            <div class="dialog-actions">
+              <button class="button button-secondary" type="button" (click)="cancelDeactivation()" [disabled]="saving()">Cancel</button>
+              <button class="button button-danger" type="submit" [disabled]="saving() || (selectedPeriod() === 'CUSTOM' && !customReactivationTime())">
+                {{ saving() ? 'Saving…' : 'Deactivate account' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    }
+  </main>
+}

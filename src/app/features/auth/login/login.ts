@@ -102,7 +102,7 @@ export class Login implements OnDestroy {
       },
       error: (err) => {
         this.isSubmitting.set(false);
-        this.showToast('error', err?.error?.message || 'Sign in failed. Check your username and password.');
+        this.showToast('error', err?.error?.message || err?.error?.error || 'Sign in failed. Check your username and password.');
       },
     });
   }
