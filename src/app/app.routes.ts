@@ -141,6 +141,13 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'admin/operations/external-services',
+        loadComponent: () =>
+          import('./features/operations/external-services/external-services').then(
+            (m) => m.ExternalServices
+          )
+      },
+      {
         path: 'admin/operations/logs',
         loadComponent: () =>
           import('./features/operations/kafka-log-detail/kafka-log-detail').then(

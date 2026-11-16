@@ -1,0 +1,127 @@
+@if (!auth.isAdmin()) {
+  <section class="access-denied">
+    <span class="eyebrow">Restricted workspace</span>
+    <h1>Administrator access required</h1>
+    <p>External platform services are available to administrators only.</p>
+    <a class="back-link" routerLink="/dashboard">Back to dashboard</a>
+  </section>
+} @else {
+<main class="external-services-page">
+  <header class="services-header">
+    <div>
+      <p class="eyebrow">Platform administration</p>
+      <h1>External services</h1>
+      <p>Choose a platform tool. It will open in a new tab after you confirm leaving LearningPurpose.</p>
+    </div>
+    <a class="back-link" routerLink="/admin/operations">← Operations console</a>
+  </header>
+
+  <section class="service-grid" aria-label="External platform services">
+    @for (service of services; track service.id) {
+      <button
+        class="service-card"
+        [class.service-debezium]="service.id === 'debezium'"
+        [class.service-minio]="service.id === 'minio'"
+        [class.service-mailpit]="service.id === 'mailpit'"
+        [class.service-elasticsearch]="service.id === 'elasticsearch'"
+        [class.service-dozzle]="service.id === 'dozzle'"
+        [class.service-pgadmin]="service.id === 'pgadmin'"
+        type="button"
+        (click)="warnBeforeLeaving(service)"
+        [attr.aria-label]="'Open ' + service.name + ' after confirmation'">
+        <span class="service-icon" aria-hidden="true">
+          @switch (service.icon) {
+            @case ('data') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+                <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3 1.4 0 2.8-.2 4-.5"></path>
+                <path d="m16 17 2 2 4-4"></path>
+              </svg>
+            }
+            @case ('storage') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M3 7h7l2 2h9v10H3z"></path>
+                <path d="M3 7V5h7l2 2M8 13h8M8 16h5"></path>
+              </svg>
+            }
+            @case ('mail') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="m4 7 8 6 8-6"></path>
+              </svg>
+            }
+            @case ('search') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                <path d="m16 16 5 5M8 8h5M8 11h5M8 14h3"></path>
+              </svg>
+            }
+            @case ('logs') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"></path>
+                <path d="m2 8 1.5 1.5L6 7"></path>
+              </svg>
+            }
+            @case ('database') {
+              <svg viewBox="0 0 24 24" fill="none">
+                <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+                <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path>
+              </svg>
+            }
+          }
+        </span>
+        <span class="service-card-content">
+          <strong>{{ service.name }}</strong>
+          <span>{{ service.description }}</span>
+          <small>
+            <span class="endpoint-label">Endpoint</span>
+            {{ service.destination }}
+          </small>
+        </span>
+        <span class="service-arrow" aria-hidden="true">↗</span>
+      </button>
+    }
+  </section>
+
+  @if (pendingService(); as service) {
+    <div class="warning-backdrop" role="presentation">
+      <section
+        class="warning-dialog"
+        [class.service-debezium]="service.id === 'debezium'"
+        [class.service-minio]="service.id === 'minio'"
+        [class.service-mailpit]="service.id === 'mailpit'"
+        [class.service-elasticsearch]="service.id === 'elasticsearch'"
+        [class.service-dozzle]="service.id === 'dozzle'"
+        [class.service-pgadmin]="service.id === 'pgadmin'"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="external-warning-title"
+        aria-describedby="external-warning-description">
+        <button class="dialog-close" type="button" aria-label="Close confirmation" (click)="cancelNavigation()">×</button>
+        <div class="warning-heading">
+          <span class="warning-icon" aria-hidden="true">↗</span>
+          <div>
+            <p class="eyebrow">External destination</p>
+            <h2 id="external-warning-title">Open {{ service.name }}?</h2>
+          </div>
+        </div>
+        <p id="external-warning-description" class="warning-description">You are about to open an external service in a new tab. Make sure you recognize and trust this destination.</p>
+        <div class="destination-card">
+          <span class="destination-mark" aria-hidden="true">↗</span>
+          <div>
+            <span class="destination-label">Destination</span>
+            <strong>{{ service.destination }}</strong>
+          </div>
+          <span class="new-tab-label">NEW TAB</span>
+        </div>
+        <p class="warning-note"><span aria-hidden="true">!</span> LearningPurpose can’t verify the content of external services.</p>
+        <div class="warning-actions">
+          <a class="continue-button" [href]="service.url" target="_blank" rel="noopener noreferrer" (click)="cancelNavigation()">
+            Continue to {{ service.name }} <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  }
+</main>
+}
