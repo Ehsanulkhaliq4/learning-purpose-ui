@@ -153,6 +153,15 @@ html, body {
   transform: translateY(-1px);
 }
 
+/* Red confirm action (leave / end meeting). */
+.lp-swal-confirm.danger-confirm {
+  background: var(--status-danger) !important;
+}
+
+.lp-swal-confirm.danger-confirm:hover {
+  background: #b91c1c !important;
+}
+
 .lp-swal-cancel {
   color: var(--text-secondary);
   background: var(--surface-subtle);
@@ -181,6 +190,33 @@ html, body {
 .lp-swal-danger:hover {
   background: #b91c1c;
   transform: translateY(-1px);
+}
+
+/* Light dialog shell used by the conference and other feature popups.
+   SweetAlert renders outside component view encapsulation, so this must
+   live in the global stylesheet. */
+.lp-swal-popup {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-white, #ffffff);
+  box-shadow: 0 24px 60px -20px rgba(15, 23, 42, 0.25);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+}
+
+.lp-swal-popup .swal2-title,
+.lp-swal-popup .lp-swal-title {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.lp-swal-popup .swal2-html-container,
+.lp-swal-popup .lp-swal-text {
+  color: var(--text-secondary);
+}
+
+.lp-swal-popup .swal2-icon {
+  border-width: 3px;
 }
 
 .swal2-actions {

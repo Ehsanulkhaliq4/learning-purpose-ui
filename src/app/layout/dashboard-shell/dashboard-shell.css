@@ -22,6 +22,25 @@
   padding: 2rem;
 }
 
+/* The live call owns the available workspace so its controls stay in view. */
+.main-canvas:has(app-conference-room) {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.viewport-workspace:has(app-conference-room) {
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.viewport-workspace:has(app-conference-room) app-conference-room {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
 @media (max-width: 700px) {
   .main-canvas > app-topbar {
     display: none;
@@ -43,5 +62,9 @@
 
   .viewport-workspace {
     padding: 1.25rem 0.9rem 2rem;
+  }
+
+  .viewport-workspace:has(app-conference-room) {
+    padding: 0;
   }
 }

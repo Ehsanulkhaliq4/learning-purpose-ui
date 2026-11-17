@@ -272,21 +272,31 @@
 
             <div class="form-actions">
               @if (activeTab() === 'create') {
-                <button type="button" class="btn-launch-meeting" (click)="createRoom()">
+                <button
+                  type="button"
+                  class="btn-launch-meeting"
+                  (click)="createRoom()"
+                  [disabled]="isConnecting()"
+                >
                   <svg viewBox="0 0 24 24" fill="currentColor" class="btn-icon">
                     <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z" />
                     <rect x="3" y="6" width="12" height="12" rx="3" />
                   </svg>
-                  <span>New Meeting</span>
+                  <span>{{ isConnecting() ? 'Connecting…' : 'New Meeting' }}</span>
                 </button>
               } @else {
-                <button type="button" class="btn-launch-meeting" (click)="joinRoom()">
+                <button
+                  type="button"
+                  class="btn-launch-meeting"
+                  (click)="joinRoom()"
+                  [disabled]="isConnecting()"
+                >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
                     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                     <polyline points="10 17 15 12 10 7"></polyline>
                     <line x1="15" y1="12" x2="3" y2="12"></line>
                   </svg>
-                  <span>Join Meeting</span>
+                  <span>{{ isConnecting() ? 'Connecting…' : 'Join Meeting' }}</span>
                 </button>
               }
             </div>
@@ -408,19 +418,25 @@
       </header>
 
       <!-- PRESENTATION / SCREEN SHARING BANNER (IF ACTIVE) -->
-      @if (isScreenSharing()) {
+      @if (isAnyoneScreenSharing()) {
         <div class="presentation-active-bar">
           <div class="pres-info">
             <span class="pres-badge">Live Share</span>
-            <span class="pres-text">You are sharing your screen with everyone in the room</span>
+            @if (isScreenSharing()) {
+              <span class="pres-text">You are sharing your screen with everyone in the room</span>
+            } @else if (remoteScreenShare(); as share) {
+              <span class="pres-text">{{ share.name }} is sharing their screen</span>
+            }
           </div>
-          <button type="button" class="pres-stop-btn" (click)="toggleScreenShare()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            <span>Stop Sharing</span>
-          </button>
+          @if (isScreenSharing()) {
+            <button type="button" class="pres-stop-btn" (click)="toggleScreenShare()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-svg">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              <span>Stop Sharing</span>
+            </button>
+          }
         </div>
       }
 
@@ -437,10 +453,12 @@
           }
 
           <!-- SCREEN SHARE DISPLAY WHEN ACTIVE -->
-          @if (isScreenSharing()) {
+          @if (isAnyoneScreenSharing()) {
             <div class="screen-share-presentation-window">
-              @if (screenStream()) {
-                <video [srcObject]="screenStream()" autoplay playsinline class="screen-video-feed"></video>
+              @if (isScreenSharing() && screenStream(); as localScreen) {
+                <video [srcObject]="localScreen" autoplay muted playsinline class="screen-video-feed"></video>
+              } @else if (remoteScreenShare(); as share) {
+                <video [srcObject]="share.stream" autoplay playsinline class="screen-video-feed"></video>
               } @else {
                 <div class="screen-simulation-canvas">
                   <div class="screen-chrome-header">
@@ -476,7 +494,7 @@
           }
 
           <!-- SPOTLIGHT / SPEAKER FOCUS MODE -->
-          @if (layoutMode() === 'spotlight' && !isScreenSharing()) {
+          @if (layoutMode() === 'spotlight' && !isAnyoneScreenSharing()) {
             <div class="spotlight-focus-stage">
               <!-- Big Spotlight Tile -->
               <div
@@ -484,18 +502,35 @@
                 [class.speaking]="activeSpotlight().speaking"
                 [class.has-border]="activeSpotlight().speaking"
               >
-                @if (activeSpotlight().id === 1 && localStream() && isVideoOn()) {
-                  <video [srcObject]="localStream()" autoplay muted playsinline class="feed-video"></video>
-                } @else {
-                  <div class="tile-fallback-gradient">
-                    <div class="spotlight-avatar-pulse">
-                      <span class="spotlight-avatar-initials">{{ activeSpotlight().avatar }}</span>
-                      @if (activeSpotlight().speaking) {
-                        <div class="pulse-ring ring-1"></div>
-                        <div class="pulse-ring ring-2"></div>
-                      }
+                @if (activeSpotlight().isSelf) {
+                  @if (localStream() && isVideoOn()) {
+                    <video [srcObject]="localStream()" autoplay muted playsinline class="feed-video"></video>
+                  } @else {
+                    <div class="tile-fallback-gradient">
+                      <div class="spotlight-avatar-pulse">
+                        <span class="spotlight-avatar-initials">{{ activeSpotlight().avatar }}</span>
+                        @if (activeSpotlight().speaking) {
+                          <div class="pulse-ring ring-1"></div>
+                          <div class="pulse-ring ring-2"></div>
+                        }
+                      </div>
                     </div>
-                  </div>
+                  }
+                } @else {
+                  @if (remoteStreams().get(activeSpotlight().id); as stream) {
+                    <video [srcObject]="stream" autoplay playsinline class="feed-video"></video>
+                  }
+                  @if (!activeSpotlight().videoOn || !remoteStreams().get(activeSpotlight().id)) {
+                    <div class="tile-fallback-gradient">
+                      <div class="spotlight-avatar-pulse">
+                        <span class="spotlight-avatar-initials">{{ activeSpotlight().avatar }}</span>
+                        @if (activeSpotlight().speaking) {
+                          <div class="pulse-ring ring-1"></div>
+                          <div class="pulse-ring ring-2"></div>
+                        }
+                      </div>
+                    </div>
+                  }
                 }
 
                 <div class="tile-meta-overlay">
@@ -537,12 +572,19 @@
                     [class.is-spotlighted]="person.id === activeSpotlight().id"
                     (click)="pinParticipant(person.id)"
                   >
-                    @if (person.id === 1 && localStream() && isVideoOn()) {
-                      <video [srcObject]="localStream()" autoplay muted playsinline class="filmstrip-video"></video>
+                    @if (person.isSelf) {
+                      @if (localStream() && isVideoOn()) {
+                        <video [srcObject]="localStream()" autoplay muted playsinline class="filmstrip-video"></video>
+                      } @else {
+                        <div class="filmstrip-avatar">{{ person.avatar }}</div>
+                      }
                     } @else {
-                      <div class="filmstrip-avatar">
-                        {{ person.avatar }}
-                      </div>
+                      @if (remoteStreams().get(person.id); as stream) {
+                        <video [srcObject]="stream" autoplay playsinline class="filmstrip-video"></video>
+                      }
+                      @if (!person.videoOn || !remoteStreams().get(person.id)) {
+                        <div class="filmstrip-avatar">{{ person.avatar }}</div>
+                      }
                     }
                     <div class="filmstrip-name">{{ person.name }}</div>
                   </div>
@@ -552,14 +594,14 @@
           }
 
           <!-- GRID VIEW (DYNAMIC RESPONSIVE TILES MATRIX) -->
-          @if (layoutMode() === 'grid' || isScreenSharing()) {
-            <div class="pro-grid-layout" [class.screen-sharing-mode]="isScreenSharing()">
+          @if (layoutMode() === 'grid' || isAnyoneScreenSharing()) {
+            <div class="pro-grid-layout" [class.screen-sharing-mode]="isAnyoneScreenSharing()">
               <!-- Local Participant Tile (You) -->
-              <article class="pro-video-tile self-tile" [class.speaking]="!isMuted()">
+              <article class="pro-video-tile self-tile" [class.speaking]="isSelfSpeaking()">
                 @if (localStream() && isVideoOn()) {
                   <video [srcObject]="localStream()" autoplay muted playsinline class="feed-video mirror"></video>
                 } @else {
-                  <div class="tile-fallback-gradient" style="background: radial-gradient(circle at center, #1e293b, #0f172a 80%);">
+                  <div class="tile-fallback-gradient">
                     <div class="pro-avatar-bubble">
                       <span class="avatar-letter">{{ effectiveUserName().charAt(0).toUpperCase() }}</span>
                     </div>
@@ -572,14 +614,14 @@
                       <span>✋ Hand raised</span>
                     </div>
                   }
-                  <button type="button" class="tile-quick-btn" (click)="pinParticipant(1)" title="Pin self-view">
+                  <button type="button" class="tile-quick-btn" (click)="pinParticipant(selfParticipantId())" title="Pin self-view">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="tile-icon-svg"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>
                   </button>
                 </div>
 
                 <div class="tile-bottom-bar">
                   <div class="user-id-chip">
-                    <span class="user-display-name">You (Host)</span>
+                    <span class="user-display-name">You @if (isHost()) { (Host) }</span>
                     <span class="audio-state-tag" [class.muted]="isMuted()">
                       @if (isMuted()) {
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tiny-icon">
@@ -599,22 +641,16 @@
 
               <!-- Remote Participants Tiles -->
               @for (person of participants(); track person.id) {
-                @if (person.id !== 1) {
+                @if (!person.isSelf) {
                   <article
                     class="pro-video-tile"
                     [class.speaking]="person.speaking"
                     [class.is-pinned]="pinnedParticipantId() === person.id"
                   >
-                    @if (person.videoOn) {
-                      <div class="video-feed-simulation">
-                        <div class="remote-video-placeholder">
-                          <div class="simulated-feed-overlay"></div>
-                          <div class="participant-glow-avatar">
-                            <span>{{ person.avatar }}</span>
-                          </div>
-                        </div>
-                      </div>
-                    } @else {
+                    @if (remoteStreams().get(person.id); as stream) {
+                      <video [srcObject]="stream" autoplay playsinline class="feed-video"></video>
+                    }
+                    @if (!person.videoOn || !remoteStreams().get(person.id)) {
                       <div class="tile-fallback-gradient">
                         <div class="pro-avatar-bubble">
                           <span class="avatar-letter">{{ person.avatar }}</span>
@@ -1179,7 +1215,20 @@
 
         <!-- End / Leave Meeting Button (Red) -->
         <div class="dock-btn-group leave-group">
-          <button type="button" class="dock-btn btn-leave-call" (click)="leaveCall()" title="Leave or end the call">
+          @if (isHost()) {
+            <button
+              type="button"
+              class="dock-btn btn-leave-call btn-end-call"
+              (click)="endMeetingForAll()"
+              title="End the meeting for everyone"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" class="dock-svg phone-down-icon">
+                <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+              </svg>
+              <span class="dock-btn-label">End</span>
+            </button>
+          }
+          <button type="button" class="dock-btn btn-leave-call" (click)="leaveCall()" title="Leave the call">
             <svg viewBox="0 0 24 24" fill="currentColor" class="dock-svg phone-down-icon">
               <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
             </svg>
